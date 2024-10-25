@@ -551,6 +551,8 @@
 
     "editor.machine.recipe_type_ui_view.progress": "Progress Bar",
     "editor.machine.recipe_type_ui_view.fuel_progress": "Fuel Bar",
+    "editor.machine.recipe_type_ui_view.xei_lookup": "XEI Lookup",
+    "editor.machine.recipe_type_ui_view.xei_lookup.hover": "Recipes lookup",
     "editor.machine.recipe_type_ui_view.duration": "Duration Text",
     "editor.machine.recipe_type_ui_view.condition": "Conditions Group",
     "editor.machine.recipe_type_ui_view.add": "add",

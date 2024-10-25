@@ -267,7 +267,7 @@ public class MultiblockAreaPanel extends WidgetGroup {
                                 addNewResource = true;
                             }
                         } else {
-                            id = block == Blocks.AIR ? "air" : Optional.ofNullable(ForgeRegistries.BLOCKS.getKey(block)).map(ResourceLocation::toString).orElse("any");
+                            id = block == Blocks.AIR ? "any" : Optional.ofNullable(ForgeRegistries.BLOCKS.getKey(block)).map(ResourceLocation::toString).orElse("any");
                             if (!predicateResource.hasResource(id)) {
                                 predicateResource.addResource(id, new PredicateBlocks(block));
                                 addNewResource = true;

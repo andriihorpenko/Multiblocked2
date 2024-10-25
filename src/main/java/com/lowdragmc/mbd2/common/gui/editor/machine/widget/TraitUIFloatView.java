@@ -76,6 +76,18 @@ public class TraitUIFloatView extends FloatViewWidget {
                     project.getUi().addWidget(progress);
                 }
             });
+            // add xei lookup
+            addButton(new ButtonWidget(0, 0, 18, 18,
+                    new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("XEI").scale(0.8f)), null),
+                    () -> "editor.machine.recipe_type_ui_view.xei_lookup", () -> {
+                        if (WidgetUtils.getFirstWidgetById(project.getUi(), "ui:xei_lookup") == null) {
+                            var button = new ButtonWidget(5, 5, 18, 18,
+                                    new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("XEI").scale(0.8f)), null);
+                            button.setId("ui:xei_lookup");
+                            button.setHoverTooltips("editor.machine.recipe_type_ui_view.xei_lookup.hover");
+                            project.getUi().addWidget(button);
+                        }
+            });
             // add traits
             project.getDefinition().machineSettings().traitDefinitions()
                     .stream().filter(IUIProviderTrait.class::isInstance).map(IUIProviderTrait.class::cast)

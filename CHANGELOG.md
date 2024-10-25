@@ -1,4 +1,5 @@
 # ChangeLog
 
-* fix create generator keep working after broken
+* add xei lookup button.
+* fix multiblock formed issue
 

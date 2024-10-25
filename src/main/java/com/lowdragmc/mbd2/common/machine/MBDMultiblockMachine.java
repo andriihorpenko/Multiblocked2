@@ -31,7 +31,6 @@ import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -87,19 +86,6 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
     public void onLoad() {
         super.onLoad();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            if (isFormed && getDefinition().multiblockSettings().catalyst().isEnable()) {
-                // check pattern in the next tick
-                serverLevel.getServer().tell(new TickTask(0, () -> {
-                    if (checkPatternWithLock()) {
-                        onStructureFormed();
-                        var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                        mwsd.addMapping(getMultiblockState());
-                        mwsd.removeAsyncLogic(this);
-                        // notify recipe logic
-                        notifyRecipeStatusChanged(getRecipeLogic().getStatus(), getRecipeLogic().getStatus());
-                    }
-                }));
-            }
             MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
         }
     }
@@ -118,6 +104,19 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
     }
 
     @Override
+    public void serverTick() {
+        if (isFormed && !isFormedValid && getLevel() instanceof ServerLevel serverLevel) {
+            if (checkPatternWithLock()) {
+                onStructureFormed();
+                var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
+                mwsd.addMapping(getMultiblockState());
+                mwsd.removeAsyncLogic(this);
+            }
+        }
+        super.serverTick();
+    }
+
+    @Override
     public MultiblockMachineDefinition getDefinition() {
         return (MultiblockMachineDefinition) super.getDefinition();
     }
@@ -126,6 +125,8 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
      * Called when recipe logic status changed.
      * <br>
      * By default, We will update the machine state to match the recipe logic status.
+     * <br>
+     * It will also be called when the machine is formed {@link #onStructureFormed()} while the oldStatus is same as the newStatus.
      */
     @Override
     public void notifyRecipeStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
@@ -338,6 +339,8 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
         initCapabilitiesProxy();
         // post event
         MinecraftForge.EVENT_BUS.post(new MachineStructureFormedEvent(this).postCustomEvent());
+        // notify recipe logic
+        notifyRecipeStatusChanged(getRecipeLogic().getStatus(), getRecipeLogic().getStatus());
     }
 
     /**

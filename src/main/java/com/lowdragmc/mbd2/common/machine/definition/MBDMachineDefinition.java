@@ -1,21 +1,24 @@
 package com.lowdragmc.mbd2.common.machine.definition;
 
 import com.google.common.collect.Queues;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.client.renderer.impl.UIResourceRenderer;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurable;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
 import com.lowdragmc.lowdraglib.gui.editor.data.resource.IRendererResource;
-import com.lowdragmc.lowdraglib.gui.editor.data.resource.Resource;
 import com.lowdragmc.lowdraglib.gui.editor.data.resource.TexturesResource;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.editor.ui.Editor;
+import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.syncdata.IPersistedSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.mbd2.MBD2;
 import com.lowdragmc.mbd2.api.blockentity.IMachineBlockEntity;
+import com.lowdragmc.mbd2.api.recipe.MBDRecipeType;
 import com.lowdragmc.mbd2.client.renderer.MBDBESRenderer;
 import com.lowdragmc.mbd2.client.renderer.MBDBlockRenderer;
 import com.lowdragmc.mbd2.client.renderer.MBDItemRenderer;
@@ -26,10 +29,15 @@ import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.machine.MBDPartMachine;
 import com.lowdragmc.mbd2.common.machine.definition.config.*;
 import com.lowdragmc.mbd2.common.trait.IUIProviderTrait;
+import com.lowdragmc.mbd2.integration.emi.MBDRecipeTypeEmiCategory;
+import com.lowdragmc.mbd2.integration.jei.MBDRecipeTypeCategory;
+import com.lowdragmc.mbd2.integration.rei.MBDRecipeTypeDisplayCategory;
 import com.lowdragmc.mbd2.utils.WidgetUtils;
+import dev.emi.emi.api.EmiApi;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -248,23 +256,26 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
         }
     }
 
-    /**
-     * Setup ui by project. Called after loading the machine definition.
-     */
-    public void setUiCreator(CompoundTag uiTag, Resource<IGuiTexture> texturesResource) {
-        uiCreator = machine -> {
-            var machineUI = new WidgetGroup();
-            IConfigurableWidget.deserializeNBT(machineUI, uiTag, texturesResource, false);
-            bindMachineUI(machine, machineUI);
-            return machineUI;
-        };
-    }
-
     protected void bindMachineUI(MBDMachine machine, WidgetGroup ui) {
         WidgetUtils.widgetByIdForEach(ui, "ui:progress_bar", ProgressWidget.class,
                 progressWidget -> progressWidget.setProgressSupplier(() -> machine.getRecipeLogic().getProgressPercent()));
         WidgetUtils.widgetByIdForEach(ui, "ui:fuel_bar", ProgressWidget.class,
                 progressWidget -> progressWidget.setProgressSupplier(() -> machine.getRecipeLogic().getFuelProgressPercent()));
+        WidgetUtils.widgetByIdForEach(ui, "ui:xei_lookup", ButtonWidget.class,
+                buttonWidget -> buttonWidget.setOnPressCallback(cd -> {
+                    if (cd.isRemote && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded()) && Editor.INSTANCE == null) {
+                        var recipeType = machine.getRecipeType();
+                        if (recipeType != MBDRecipeType.DUMMY && recipeType.isXEIVisible()) {
+                            if (LDLib.isReiLoaded()) {
+                                ViewSearchBuilder.builder().addCategory(MBDRecipeTypeDisplayCategory.CATEGORIES.apply(recipeType)).open();
+                            } else if (LDLib.isJeiLoaded()) {
+                                JEIPlugin.jeiRuntime.getRecipesGui().showTypes(List.of(MBDRecipeTypeCategory.TYPES.apply(recipeType)));
+                            } else if (LDLib.isEmiLoaded()) {
+                                EmiApi.displayRecipeCategory(MBDRecipeTypeEmiCategory.CATEGORIES.apply(recipeType));
+                            }
+                        }
+                    }
+                }));
         for (var traitDefinition : machineSettings.traitDefinitions()) {
             if (traitDefinition instanceof IUIProviderTrait provider) {
                 var trait = machine.getTraitByDefinition(traitDefinition);
