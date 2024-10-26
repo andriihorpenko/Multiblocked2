@@ -62,7 +62,7 @@ public class MBDRecipeType implements RecipeType<MBDRecipe>, ITagSerializable<Co
     @Configurable(name = "recipe_type.registry_name", tips = {
             "recipe_type.registry_name.tooltip",
             "config.require_restart"
-    })
+    }, forceUpdate = false)
     @Getter
     private ResourceLocation registryName;
     @Setter

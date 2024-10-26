@@ -98,7 +98,7 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
         STATE.remove();
     }
 
-    @Configurable(tips = "config.definition.id.tooltip", forceUpdate = false)
+    @Configurable(tips = {"config.definition.id.tooltip", "config.require_restart"}, forceUpdate = false)
     private ResourceLocation id;
     protected final StateMachine<?> stateMachine;
     @Configurable(name = "config.definition.block_properties", subConfigurable = true, tips = "config.definition.block_properties.tooltip", collapse = false)
@@ -107,6 +107,11 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
     protected final ConfigItemProperties itemProperties;
     @Configurable(name = "config.definition.machine_settings", subConfigurable = true, tips = "config.definition.machine_settings.tooltip", collapse = false)
     protected ConfigMachineSettings machineSettings;
+    @Configurable(name = "config.definition.recipe_logic_settings", subConfigurable = true, tips = {
+            "config.definition.recipe_logic_settings.tooltip.0",
+            "config.definition.recipe_logic_settings.tooltip.1"
+    }, collapse = false)
+    protected ConfigRecipeLogicSettings recipeLogicSettings;
     @Nullable
     @Configurable(name = "config.definition.part_settings", subConfigurable = true, tips = {
             "config.definition.part_settings.tooltip.0",
@@ -136,12 +141,14 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
                                    @Nullable ConfigBlockProperties blockProperties,
                                    @Nullable ConfigItemProperties itemProperties,
                                    @Nullable ConfigMachineSettingsFactory machineSettingsFactory,
+                                   @Nullable ConfigRecipeLogicSettings recipeLogicSettings,
                                    @Nullable ConfigPartSettingsFactory partSettingsFactory) {
         this.id = id == null ? new ResourceLocation("mbd2", "undefined") : id;
         this.stateMachine = new StateMachine<>(rootState == null ? createDefaultRootState() : rootState);
         this.blockProperties = blockProperties == null ? ConfigBlockProperties.builder().build() : blockProperties;
         this.itemProperties = itemProperties == null ? ConfigItemProperties.builder().build() : itemProperties;
         this.machineSettingsFactory = machineSettingsFactory == null ? () -> ConfigMachineSettings.builder().build() : machineSettingsFactory;
+        this.recipeLogicSettings = recipeLogicSettings == null ? ConfigRecipeLogicSettings.builder().build() : recipeLogicSettings;
         this.partSettingsFactory = allowPartSettings() ? (partSettingsFactory == null ? () -> ConfigPartSettings.builder().build() : partSettingsFactory) : null;
         this.machineEvents = createMachineEvents();
     }
@@ -177,6 +184,7 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
                 ConfigBlockProperties.builder().build(),
                 ConfigItemProperties.builder().build(),
                 () -> ConfigMachineSettings.builder().build(),
+                ConfigRecipeLogicSettings.builder().build(),
                 () -> ConfigPartSettings.builder().build());
     }
 
@@ -214,6 +222,14 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
         UIResourceRenderer.clearCurrentResource();
         postTask.add(() -> {
             machineSettings.deserializeNBT(definitionTag.getCompound("machineSettings"));
+            if (definitionTag.contains("recipeLogicSettings")) {
+                recipeLogicSettings.deserializeNBT(definitionTag.getCompound("recipeLogicSettings"));
+            } else {
+                // compatible with old project
+                var tag = definitionTag.getCompound("machineSettings");
+                recipeLogicSettings.deserializeNBT(tag);
+                recipeLogicSettings.setEnable(tag.getBoolean("hasRecipeLogic"));
+            }
             if (partSettings != null) {
                 partSettings.deserializeNBT(definitionTag.getCompound("partSettings"));
             }
@@ -377,6 +393,7 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
         protected ConfigBlockProperties blockProperties;
         protected ConfigItemProperties itemProperties;
         protected ConfigMachineSettingsFactory machineSettings;
+        protected ConfigRecipeLogicSettings recipeLogicSettings;
         @Nullable
         protected ConfigPartSettingsFactory partSettings;
 
@@ -384,7 +401,7 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
         }
 
         public MBDMachineDefinition build() {
-            return new MBDMachineDefinition(id, rootState, blockProperties, itemProperties, machineSettings, partSettings);
+            return new MBDMachineDefinition(id, rootState, blockProperties, itemProperties, machineSettings, recipeLogicSettings, partSettings);
         }
     }
 }

@@ -88,7 +88,7 @@ public class MBDRecipeTypeDisplayCategory extends ModularUIDisplayCategory<MBDRe
         for (var mbdRecipeType : MBDRegistries.RECIPE_TYPES) {
             if (mbdRecipeType.isXEIVisible()) {
                 for (var definition : MBDRegistries.MACHINE_DEFINITIONS) {
-                    var recipeType = definition.machineSettings().getRecipeType();
+                    var recipeType = definition.recipeLogicSettings().getRecipeType();
                     if (recipeType == mbdRecipeType) {
                         registry.addWorkstations(MBDRecipeTypeDisplayCategory.CATEGORIES.apply(mbdRecipeType), EntryStack.of(VanillaEntryTypes.ITEM, definition.item().getDefaultInstance()));
                     }

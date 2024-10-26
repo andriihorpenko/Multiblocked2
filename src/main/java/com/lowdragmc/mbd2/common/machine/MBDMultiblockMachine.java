@@ -147,12 +147,12 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
     @Override
     public @Nullable MBDRecipe getModifiedRecipe(@Nonnull MBDRecipe recipe) {
         return IMultiController.super.getModifiedRecipe(
-                getDefinition().machineSettings().recipeModifiers().applyModifiers(getRecipeLogic(), recipe));
+                getDefinition().recipeLogicSettings().recipeModifiers().applyModifiers(getRecipeLogic(), recipe));
     }
 
     @Override
     public ContentModifier getMaxParallel(@Nonnull MBDRecipe recipe) {
-        var maxParallel = getDefinition().machineSettings().recipeModifiers().getMaxParallel(getRecipeLogic(), recipe);
+        var maxParallel = getDefinition().recipeLogicSettings().recipeModifiers().getMaxParallel(getRecipeLogic(), recipe);
         return maxParallel.merge(IMultiController.super.getMaxParallel(recipe));
     }
 
@@ -356,6 +356,9 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
     public void onStructureInvalid() {
         setFormed(false);
         this.isFormedValid = false;
+        // reset recipe Logic
+        getRecipeLogic().resetRecipeLogic();
+        // clear parts
         for (IMultiPart part : parts) {
             part.removedFromController(this);
         }
@@ -363,8 +366,6 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
         updatePartPositions();
         // refresh traits
         initCapabilitiesProxy();
-        // reset recipe Logic
-        getRecipeLogic().resetRecipeLogic();
         // restore original blocks
         for (var pos : renderingDisabledPositions) {
             if (getLevel().getBlockEntity(pos) instanceof ProxyPartBlockEntity proxyPartBlockEntity) {

@@ -55,8 +55,9 @@ public class MultiblockMachineDefinition extends MBDMachineDefinition {
                                        @Nullable ConfigBlockProperties blockProperties,
                                        @Nullable ConfigItemProperties itemProperties,
                                        @Nullable ConfigMachineSettingsFactory machineSettingsFactory,
+                                       @Nullable ConfigRecipeLogicSettings recipeLogicSettings,
                                        @Nullable ConfigMultiblockSettingsFactory multiblockSettingsFactory) {
-        super(id, rootState, blockProperties, itemProperties, machineSettingsFactory, null);
+        super(id, rootState, blockProperties, itemProperties, machineSettingsFactory, recipeLogicSettings, null);
         this.multiblockSettingsFactory = multiblockSettingsFactory == null ? () -> ConfigMultiblockSettings.builder().build() : multiblockSettingsFactory;
     }
 
@@ -72,6 +73,7 @@ public class MultiblockMachineDefinition extends MBDMachineDefinition {
                 ConfigBlockProperties.builder().build(),
                 ConfigItemProperties.builder().build(),
                 () -> ConfigMachineSettings.builder().build(),
+                ConfigRecipeLogicSettings.builder().build(),
                 () -> ConfigMultiblockSettings.builder().build());
     }
 
@@ -165,7 +167,7 @@ public class MultiblockMachineDefinition extends MBDMachineDefinition {
         }
 
         public MultiblockMachineDefinition build() {
-            return new MultiblockMachineDefinition(id, rootState, blockProperties, itemProperties, machineSettings, multiblockSettings);
+            return new MultiblockMachineDefinition(id, rootState, blockProperties, itemProperties, machineSettings, recipeLogicSettings, multiblockSettings);
         }
     }
 }

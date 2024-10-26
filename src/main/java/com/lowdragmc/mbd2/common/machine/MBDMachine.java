@@ -326,12 +326,12 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
     }
 
     /**
-     * Get the recipe type. which is defined in the {@link ConfigMachineSettings#getRecipeType()}.
+     * Get the recipe type. which is defined in the {@link com.lowdragmc.mbd2.common.machine.definition.config.ConfigRecipeLogicSettings#getRecipeType()}.
      */
     @NotNull
     @Override
     public MBDRecipeType getRecipeType() {
-        return definition.machineSettings().getRecipeType();
+        return definition.recipeLogicSettings().getRecipeType();
     }
 
     /**
@@ -442,7 +442,7 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
      * if the machine has no recipe logic or using the {@link MBDRecipeType#DUMMY}, it will return false.
      */
     public boolean runRecipeLogic() {
-        return getDefinition().machineSettings().hasRecipeLogic() && getRecipeType() != MBDRecipeType.DUMMY;
+        return getDefinition().recipeLogicSettings().isEnable() && getRecipeType() != MBDRecipeType.DUMMY;
     }
 
     @Nullable
@@ -469,12 +469,12 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
     @Nullable
     @Override
     public MBDRecipe getModifiedRecipe(@Nonnull MBDRecipe recipe) {
-        return getDefinition().machineSettings().recipeModifiers().applyModifiers(getRecipeLogic(), recipe);
+        return getDefinition().recipeLogicSettings().recipeModifiers().applyModifiers(getRecipeLogic(), recipe);
     }
 
     @Override
     public ContentModifier getMaxParallel(@Nonnull MBDRecipe recipe) {
-        return getDefinition().machineSettings().recipeModifiers().getMaxParallel(getRecipeLogic(), recipe);
+        return getDefinition().recipeLogicSettings().recipeModifiers().getMaxParallel(getRecipeLogic(), recipe);
     }
 
     /**
@@ -484,7 +484,16 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
      */
     @Override
     public boolean alwaysTryModifyRecipe() {
-        return !getDefinition().machineSettings().recipeModifiers().recipeModifiers.isEmpty();
+        return !getDefinition().recipeLogicSettings().recipeModifiers().recipeModifiers.isEmpty();
+    }
+
+    /**
+     * Always re-search recipe when the recipe is finished.
+     * @return true - will re-search recipe when the last recipe is finished.
+     */
+    @Override
+    public boolean alwaysReSearchRecipe() {
+        return getDefinition().recipeLogicSettings().alwaysSearchRecipe();
     }
 
     /**
@@ -493,7 +502,7 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
      */
     @Override
     public int getRecipeDampingValue() {
-        return getDefinition().machineSettings().recipeDampingValue();
+        return getDefinition().recipeLogicSettings().recipeDampingValue();
     }
 
     @Override

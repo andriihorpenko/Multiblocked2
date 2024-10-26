@@ -40,9 +40,10 @@ public class CreateKineticMachineDefinition extends MBDMachineDefinition {
                                              @Nullable ConfigBlockProperties blockProperties,
                                              @Nullable ConfigItemProperties itemProperties,
                                              @Nullable ConfigMachineSettingsFactory machineSettings,
+                                             @Nullable ConfigRecipeLogicSettings recipeLogicSettings,
                                              @Nullable ConfigPartSettingsFactory partSettings,
                                              @Nullable ConfigKineticMachineSettings kineticMachineSettings) {
-        super(id, rootState, blockProperties, itemProperties, machineSettings, partSettings);
+        super(id, rootState, blockProperties, itemProperties, machineSettings, recipeLogicSettings, partSettings);
         this.kineticMachineSettings = kineticMachineSettings == null ? ConfigKineticMachineSettings.builder().build() : kineticMachineSettings;
     }
 
@@ -62,6 +63,7 @@ public class CreateKineticMachineDefinition extends MBDMachineDefinition {
                 ConfigBlockProperties.builder().build(),
                 ConfigItemProperties.builder().build(),
                 () -> ConfigMachineSettings.builder().build(),
+                ConfigRecipeLogicSettings.builder().build(),
                 () -> ConfigPartSettings.builder().build(),
                 ConfigKineticMachineSettings.builder().build());
     }
@@ -174,7 +176,7 @@ public class CreateKineticMachineDefinition extends MBDMachineDefinition {
         }
 
         public CreateKineticMachineDefinition build() {
-            return new CreateKineticMachineDefinition(id, rootState, blockProperties, itemProperties, machineSettings, partSettings, kineticMachineSettings);
+            return new CreateKineticMachineDefinition(id, rootState, blockProperties, itemProperties, machineSettings, recipeLogicSettings, partSettings, kineticMachineSettings);
         }
 
     }

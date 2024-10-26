@@ -88,6 +88,7 @@ public class RecipeLogic implements IEnhancedManaged {
      * Call it to abort current recipe and reset the first state.
      */
     public void resetRecipeLogic() {
+        interruptRecipe();
         recipeDirty = false;
         lastRecipe = null;
         lastOriginRecipe = null;
@@ -396,7 +397,10 @@ public class RecipeLogic implements IEnhancedManaged {
         if (lastRecipe != null) {
             lastRecipe.postWorking(this.machine);
             lastRecipe.handleRecipeIO(IO.OUT, this.machine);
-            if (machine.alwaysTryModifyRecipe()) {
+            if (machine.alwaysReSearchRecipe()) {
+                markLastRecipeDirty();
+            }
+            if (!recipeDirty && machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
                     var modified = machine.doModifyRecipe(lastOriginRecipe);
                     if (modified == null) {

@@ -106,21 +106,23 @@ public class TraitList extends DraggableScrollableWidgetGroup {
                     });
             if (selected != null) {
                 menu.crossLine();
-                menu.leaf(Icons.COPY, "ldlib.gui.editor.menu.copy", () -> {
-                    var name = selected.getName();
-                    var tag = selected.serializeNBT();
-                    var definition = TraitDefinition.deserializeDefinition(tag);
-                    if (definition != null) {
-                        var index = 0;
-                        while (project.getDefinition().machineSettings().traitDefinitions().stream().anyMatch(e -> e.getName().equals(definition.getName()))) {
-                            definition.setName(name + "_copied_%d".formatted(index));
-                            index++;
+                if (selected.allowMultiple()) {
+                    menu.leaf(Icons.COPY, "ldlib.gui.editor.menu.copy", () -> {
+                        var name = selected.getName();
+                        var tag = selected.serializeNBT();
+                        var definition = TraitDefinition.deserializeDefinition(tag);
+                        if (definition != null) {
+                            var index = 0;
+                            while (project.getDefinition().machineSettings().traitDefinitions().stream().anyMatch(e -> e.getName().equals(definition.getName()))) {
+                                definition.setName(name + "_copied_%d".formatted(index));
+                                index++;
+                            }
+                            project.getDefinition().machineSettings().addTraitDefinition(definition);
+                            addDefinition(definition);
+                            updateScenePreviewMachine();
                         }
-                        project.getDefinition().machineSettings().addTraitDefinition(definition);
-                        addDefinition(definition);
-                        updateScenePreviewMachine();
-                    }
-                });
+                    });
+                }
                 menu.leaf(Icons.REMOVE_FILE, "editor.machine.machine_traits.remove_trait", () -> removeDefinition(selected));
             }
             editor.openMenu(mouseX, mouseY, menu);

@@ -293,6 +293,14 @@ public interface IMachine extends IRecipeCapabilityHolder {
     }
 
     /**
+     * Always re-search recipe when the recipe is finished.
+     * @return true - will re-search recipe when the last recipe is finished.
+     */
+    default boolean alwaysReSearchRecipe() {
+        return false;
+    }
+
+    /**
      * if the recipe handling is waiting, damping value is the decreased ticks of the current progress.
      * @return damping value in tick.
      */
