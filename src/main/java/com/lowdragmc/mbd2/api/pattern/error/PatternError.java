@@ -41,14 +41,13 @@ public class PatternError {
 
     public Component getErrorInfo() {
         List<List<ItemStack>> candidates = getCandidates();
-        StringBuilder builder = new StringBuilder();
+        var items = Component.empty();
         for (List<ItemStack> candidate : candidates) {
             if (!candidate.isEmpty()) {
-                builder.append(candidate.get(0).getDisplayName());
-                builder.append(", ");
+                items.append(candidate.get(0).getDisplayName());
+                items.append(Component.literal(", "));
             }
         }
-        builder.append("...");
-        return Component.translatable("mbd2.multiblock.pattern.error", builder.toString(), worldState.getPos());
+        return Component.translatable("mbd2.multiblock.pattern.error", items, worldState.getPos());
     }
 }

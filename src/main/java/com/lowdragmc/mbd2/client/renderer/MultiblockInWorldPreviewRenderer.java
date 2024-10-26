@@ -3,6 +3,8 @@ package com.lowdragmc.mbd2.client.renderer;
 
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.client.scene.forge.WorldSceneRendererImpl;
+import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
+import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.lowdragmc.mbd2.api.block.RotationState;
@@ -62,7 +64,10 @@ public class MultiblockInWorldPreviewRenderer {
     private static Thread THREAD = null;
     @Nullable
     private static Set<BlockPos> BLOCK_ENTITIES;
-    private final static AtomicInteger LEFT_TICK = new AtomicInteger(-1);
+    private final static AtomicInteger PREVIEW_LEFT_TICK = new AtomicInteger(-1);
+    @Nullable
+    private static BlockPos PATTERN_ERROR_POS = null;
+    private final static AtomicInteger PATTERN_ERROR_LEFT_TICK = new AtomicInteger(-1);
 
     /**
      * It will be cached by lombok#@Getter(lazy=true)
@@ -86,7 +91,7 @@ public class MultiblockInWorldPreviewRenderer {
         CACHE_STATE.set(CacheState.UNUSED);
         LEVEL = null;
         BLOCK_ENTITIES = null;
-        LEFT_TICK.set(-1);
+        PREVIEW_LEFT_TICK.set(-1);
         LAST_POS = null;
         LAST_LAYER = -1;
     }
@@ -95,6 +100,16 @@ public class MultiblockInWorldPreviewRenderer {
         if (LAST_POS != null && LAST_POS.equals(pos)) {
             cleanPreview();
         }
+    }
+
+    public static void clearPatternError() {
+        PATTERN_ERROR_POS = null;
+        PATTERN_ERROR_LEFT_TICK.set(-1);
+    }
+
+    public static void showPatternErrorPos(BlockPos pos, int duration) {
+        PATTERN_ERROR_POS = pos;
+        PATTERN_ERROR_LEFT_TICK.set(duration);
     }
 
     /**
@@ -253,14 +268,34 @@ public class MultiblockInWorldPreviewRenderer {
     }
 
     public static void onClientTick() {
-        if (LEFT_TICK.get() > 0) {
-            if (LEFT_TICK.decrementAndGet() <= 0) {
+        if (PREVIEW_LEFT_TICK.get() > 0) {
+            if (PREVIEW_LEFT_TICK.decrementAndGet() <= 0) {
                 cleanPreview();
+            }
+        }
+        if (PATTERN_ERROR_LEFT_TICK.get() > 0) {
+            if (PATTERN_ERROR_LEFT_TICK.decrementAndGet() <= 0) {
+                clearPatternError();
             }
         }
     }
 
     public static void renderInWorldPreview(PoseStack poseStack, Camera camera, float partialTicks) {
+        if (PATTERN_ERROR_POS != null) {
+            poseStack.pushPose();
+            Vec3 projectedView = camera.getPosition();
+            poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
+
+            RenderSystem.disableDepthTest();
+            RenderSystem.depthMask(false);
+
+            RenderUtils.renderBlockOverLay(poseStack, PATTERN_ERROR_POS, 0.6f, 0, 0, 1.01f);
+
+            RenderSystem.depthMask(true);
+            RenderSystem.enableDepthTest();
+
+            poseStack.popPose();
+        }
         if (CACHE_STATE.get() == CacheState.COMPILED && LEVEL != null) {
             poseStack.pushPose();
             Vec3 projectedView = camera.getPosition();
@@ -423,7 +458,7 @@ public class MultiblockInWorldPreviewRenderer {
             BLOCK_ENTITIES = poses;
             CACHE_STATE.set(CacheState.COMPILED);
             THREAD = null;
-            LEFT_TICK.set(duration);
+            PREVIEW_LEFT_TICK.set(duration);
         });
         THREAD.start();
     }

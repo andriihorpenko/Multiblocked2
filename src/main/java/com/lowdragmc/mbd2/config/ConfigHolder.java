@@ -29,6 +29,10 @@ public class ConfigHolder {
             .comment("Duration of the multiblock in-world preview (s)")
             .defineInRange("multiblockPreviewDuration", 10, 1, 999);
 
+    private static final ForgeConfigSpec.IntValue MULTIBLOCK_PATTERN_ERROR_DURATION = BUILDER
+            .comment("Duration of the multiblock in-world pattern error position (s)")
+            .defineInRange("multiblockPatternErrorPosDuration", 10, 1, 999);
+
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static boolean asyncRecipeSearching;
@@ -36,11 +40,13 @@ public class ConfigHolder {
     public static boolean useVBO;
 
     public static int multiblockPreviewDuration;
+    public static int multiblockPatternErrorPosDuration;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         asyncRecipeSearching = ASYNC_RECIPE_SEARCHING.get();
         useVBO = USE_VBO.get();
         multiblockPreviewDuration = MULTIBLOCK_PREVIEW_DURATION.get();
+        multiblockPatternErrorPosDuration = MULTIBLOCK_PATTERN_ERROR_DURATION.get();
     }
 }

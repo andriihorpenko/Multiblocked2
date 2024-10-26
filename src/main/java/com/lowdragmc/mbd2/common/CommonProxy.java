@@ -18,6 +18,7 @@ import com.lowdragmc.mbd2.common.gui.editor.RecipeTypeProject;
 import com.lowdragmc.mbd2.common.gui.factory.MachineUIFactory;
 import com.lowdragmc.mbd2.common.machine.definition.MBDMachineDefinition;
 import com.lowdragmc.mbd2.common.machine.definition.MultiblockMachineDefinition;
+import com.lowdragmc.mbd2.common.network.MBD2Network;
 import com.lowdragmc.mbd2.config.ConfigHolder;
 import com.lowdragmc.mbd2.integration.create.machine.CreateKineticMachineDefinition;
 import com.lowdragmc.mbd2.integration.kubejs.events.MBDMachineRegistryEventJS;
@@ -64,6 +65,7 @@ public class CommonProxy {
         if (Platform.isDevEnv()) {
             eventBus.register(new MBDTest());
         }
+        MBD2Network.init();
         ForgeRegistries.RECIPE_SERIALIZERS.register("mbd_recipe_serializer", MBDRecipeSerializer.SERIALIZER);
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHolder.SPEC);
