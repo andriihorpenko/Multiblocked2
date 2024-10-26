@@ -104,6 +104,12 @@ public class GeckolibRenderer implements ISerializableRenderer, GeoRenderer<GeoA
     protected boolean useTranslucent = false;
     @Configurable(name = "geckolib_renderer.use_entity_gui_lighting", tips="geckolib_renderer.use_entity_gui_lighting.tips")
     protected boolean useEntityGuiLighting = false;
+    @Configurable(name = "geckolib_renderer.schedule_state_anim", tips={
+            "geckolib_renderer.schedule_state_anim.tips.0",
+            "geckolib_renderer.schedule_state_anim.tips.1",
+            "geckolib_renderer.schedule_state_anim.tips.2",
+    })
+    protected boolean scheduleStateAnimation = false;
     protected List<Animation> animations = new ArrayList<>();
 
     // runtime

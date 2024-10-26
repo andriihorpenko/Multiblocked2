@@ -25,7 +25,16 @@ public class AnimatableMachine implements GeoAnimatable {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        var controller = new AnimationController<>(this, state -> PlayState.STOP);
+        var controller = new AnimationController<>(this, state -> {
+            if (renderer.scheduleStateAnimation) {
+                var stateName = machine.getMachineState().name();
+                var animation = renderer.getRawAnimation(stateName);
+                if (animation != null) {
+                    state.setAndContinue(animation);
+                }
+            }
+            return PlayState.STOP;
+        });
         for (var animation : renderer.animations) {
             var rawAnimation = renderer.getRawAnimation(animation.getName());
             if (rawAnimation != null) {
