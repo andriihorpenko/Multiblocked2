@@ -29,6 +29,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -69,6 +70,11 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
     protected Set<BlockPos> renderingDisabledPositions = new HashSet<>();
     @Getter
     private final Lock patternLock = new ReentrantLock();
+    @Getter
+    @Setter
+    @Persisted
+    @Nullable
+    private BlockState originalBlock; // original block Before Structure Formed
     // runtime
     @Getter
     private boolean isFormedValid = false;
@@ -353,7 +359,7 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
      * 2 - Before controller machine removed.
      */
     @Override
-    public void onStructureInvalid() {
+    public void onStructureInvalid(boolean isControllerRemoved) {
         setFormed(false);
         this.isFormedValid = false;
         // reset recipe Logic
@@ -375,6 +381,10 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
         this.renderingDisabledPositions.clear();
         // post event
         MinecraftForge.EVENT_BUS.post(new MachineStructureInvalidEvent(this).postCustomEvent());
+        // back to original block
+        if (!isControllerRemoved && originalBlock != null) {
+            getLevel().setBlockAndUpdate(getPos(), originalBlock);
+        }
     }
 
     /**
@@ -476,5 +486,13 @@ public class MBDMultiblockMachine extends MBDMachine implements IMultiController
                 yield false;
             }
         };
+    }
+
+    @Override
+    public ItemStack getDropItem() {
+        if (originalBlock != null) {
+            return originalBlock.getBlock().asItem().getDefaultInstance();
+        }
+        return super.getDropItem();
     }
 }

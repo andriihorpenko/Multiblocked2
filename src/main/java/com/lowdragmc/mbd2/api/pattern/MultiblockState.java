@@ -157,9 +157,11 @@ public class MultiblockState {
             if (pos.equals(controllerPos)) {
                 if (lastController != null) {
                     if (!state.is(lastController.getBlockState().getBlock())) {
-                        lastController.onStructureInvalid();
-                        var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                        mwsd.removeMapping(this);
+                        if (!isInternalStructureInvaliding) {
+                            lastController.onStructureInvalid(true);
+                            var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
+                            mwsd.removeMapping(this);
+                        }
                     }
                 }
             } else if (state.getBlock() == ProxyPartBlock.BLOCK) {

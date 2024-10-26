@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
@@ -183,7 +182,20 @@ public interface IMultiController extends IMachine {
      * <br>
      * 2 - Before controller machine removed.
      */
-    void onStructureInvalid();
+    default void onStructureInvalid() {
+        onStructureInvalid(false);
+    }
+
+    /**
+     * Called when structure is invalid. (server-side / fake scene only)
+     * <br>
+     * Trigger points:
+     * <br>
+     * 1 - Blocks in structure changed.
+     * <br>
+     * 2 - Before controller machine removed.
+     */
+    void onStructureInvalid(boolean isControllerRemoved);
 
     /**
      * Get all parts

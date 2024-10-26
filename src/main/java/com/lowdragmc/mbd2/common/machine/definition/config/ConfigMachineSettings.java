@@ -12,6 +12,7 @@ import lombok.Singular;
 import lombok.experimental.Accessors;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,14 @@ public class ConfigMachineSettings implements IPersistedSerializable, IConfigura
     @Builder.Default
     @Configurable(name = "config.machine_settings.has_ui", tips = "config.machine_settings.has_ui.tooltip")
     private boolean hasUI = true;
+    @Getter
+    @Builder.Default
+    @Configurable(name = "config.machine_settings.drop_machine_item", tips = {
+            "config.machine_settings.drop_machine_item.tooltip.0",
+            "config.machine_settings.drop_machine_item.tooltip.1",
+            "config.machine_settings.drop_machine_item.tooltip.2",
+    })
+    private boolean dropMachineItem = true;
     @Singular
     @NonNull
     @Getter

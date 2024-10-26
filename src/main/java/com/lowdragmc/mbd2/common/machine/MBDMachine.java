@@ -48,6 +48,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -594,9 +595,22 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
     }
 
     /**
+     * Get the drop item when the machine is broken.
+     */
+    public ItemStack getDropItem() {
+        return getDefinition().asStack();
+    }
+
+    /**
      * On machine broken and drops items.
      */
     public void onDrops(Entity entity, List<ItemStack> drops) {
+        if (getDefinition().machineSettings().dropMachineItem()) {
+            var drop = getDropItem();
+            if (!drop.isEmpty()) {
+                drops.add(drop);
+            }
+        }
         MinecraftForge.EVENT_BUS.post(new MachineDropsEvent(this, entity, drops).postCustomEvent());
     }
 

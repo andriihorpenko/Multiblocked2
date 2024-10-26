@@ -171,9 +171,7 @@ public class MBDGadgetsItem extends Item implements HeldItemUIFactory.IHeldItemU
                         var error = controller.getMultiblockState().error;
                         if (error != null) {
                             MBD2Network.NETWORK.sendToPlayer(new SPatternErrorPosPacket(error.getPos()), serverPlayer);
-                            serverPlayer.sendSystemMessage(Component.translatable("item.mbd2.mbd_gadgets.multiblock_debugger.failure.error.pos", error.getPos()));
                             serverPlayer.sendSystemMessage(Component.translatable("item.mbd2.mbd_gadgets.multiblock_debugger.failure.error.info", error.getErrorInfo()));
-                            serverPlayer.sendSystemMessage(error.getErrorInfo());
                         } else {
                             serverPlayer.sendSystemMessage(Component.translatable("item.mbd2.mbd_gadgets.multiblock_debugger.failure.no_error"));
                         }

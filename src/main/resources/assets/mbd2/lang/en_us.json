@@ -24,7 +24,6 @@
     "item.mbd2.mbd_gadgets.multiblock_debugger.catalyst.items": "§cCatalyst Items§r %s",
     "item.mbd2.mbd_gadgets.multiblock_debugger.catalyst.tags": "§cCatalyst Tags§r %s",
     "item.mbd2.mbd_gadgets.multiblock_debugger.failure.no_error": "§cFailure§r: No error found.",
-    "item.mbd2.mbd_gadgets.multiblock_debugger.failure.error.pos": "§cFailure pos§r: %s",
     "item.mbd2.mbd_gadgets.multiblock_debugger.failure.error.info": "§cFailure info§r: %s",
 
     "gui.mbd2.io.import": "Import",
@@ -201,6 +200,10 @@
     "config.machine_settings.machine_level.tooltip": "The machine level. It can be used for recipe conditions.",
     "config.machine_settings.has_ui": "Has UI",
     "config.machine_settings.has_ui.tooltip": "Whether the machine has a GUI.",
+    "config.machine_settings.drop_machine_item": "Drop machine item when broken",
+    "config.machine_settings.drop_machine_item.tooltip.0": "Whether the machine will drop the machine item when it is broken.",
+    "config.machine_settings.drop_machine_item.tooltip.1": "If its a multiblock controller formed with a candidate block, it will drop the candidate block instead of the machine item.",
+    "config.machine_settings.drop_machine_item.tooltip.2": "You can still use the loot table or the node graph to control the drop.",
     "config.machine_settings.parallel": "Has Parallel",
     "config.machine_settings.max_parallel": "Max Parallel",
     "config.machine_settings.max_parallel.tooltip": "The value is he maximum number of parallel that can be processed. Do not set it too high.",

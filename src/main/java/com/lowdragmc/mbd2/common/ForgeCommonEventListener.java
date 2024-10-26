@@ -78,6 +78,7 @@ public class ForgeCommonEventListener {
                                             var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
                                             mwsd.addMapping(machine.getMultiblockState());
                                             mwsd.removeAsyncLogic(machine);
+                                            machine.setOriginalBlock(originalState);
                                             return true;
                                         }
                                     }
