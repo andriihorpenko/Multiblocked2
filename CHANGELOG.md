@@ -9,4 +9,5 @@
 * machines formed with a catalyst candidate, will back to the original block when it is unformed
 * add a drop machine item option (when broken)
   - machines formed with a catalyst candidate will drop the original block now
+* add catalyst displays for multiblock xei page
 

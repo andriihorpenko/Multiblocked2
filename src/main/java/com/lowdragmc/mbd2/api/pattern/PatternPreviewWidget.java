@@ -13,6 +13,7 @@ import com.lowdragmc.mbd2.api.machine.IMultiController;
 import com.lowdragmc.mbd2.api.pattern.predicates.SimplePredicate;
 import com.lowdragmc.mbd2.common.block.MBDMachineBlock;
 import com.lowdragmc.mbd2.common.machine.definition.MultiblockMachineDefinition;
+import com.lowdragmc.mbd2.common.machine.definition.config.toggle.ToggleCatalyst;
 import com.lowdragmc.mbd2.config.ConfigHolder;
 import com.lowdragmc.mbd2.utils.ControllerBlockInfo;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -25,7 +26,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -48,6 +51,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
     private final SceneWidget sceneWidget;
     public final MultiblockMachineDefinition controllerDefinition;
+    public final ImageWidget descriptionWidget;
     public final MBPattern[] patterns;
     private int index;
     public int layer;
@@ -138,6 +142,44 @@ public class PatternPreviewWidget extends WidgetGroup {
         }
         addWidget(layerButton);
         addWidget(formedButton);
+
+        // catalyst
+        if (controllerDefinition.multiblockSettings().catalyst().isEnable()) {
+            var catalyst = controllerDefinition.multiblockSettings().catalyst();
+            List<ItemStack> catalystItems = new ArrayList<>();
+            for (var stack : catalyst.getFilterItems()) {
+                catalystItems.add(stack.copy());
+            }
+            for (var filterTag : catalyst.getFilterTags()) {
+                BuiltInRegistries.ITEM.getTag(ItemTags.create(filterTag)).ifPresent(values -> {
+                    for (var stack : values) {
+                        catalystItems.add(stack.value().getDefaultInstance());
+                    }
+                });
+            }
+            if (!catalystItems.isEmpty()) {
+                addWidget(new SlotWidget(new CycleItemStackHandler(List.of(catalystItems)), 0,
+                        136, 80, false, false)
+                        .setIngredientIO(IngredientIO.CATALYST)
+                        .setOnAddedTooltips((widget, tooltips) -> {
+                            tooltips.add(Component.translatable("config.multiblock_settings.catalyst.tooltip"));
+                            tooltips.add(Component.translatable(catalyst.getCatalystType().getTranslateKey()));
+                            if (catalyst.getCatalystType() == ToggleCatalyst.CatalystType.CONSUME_ITEM) {
+                                tooltips.add(Component.translatable("config.multiblock_settings.catalyst.consume_type.consume_item.amount")
+                                        .append(Component.literal(" " + catalyst.getConsumeItemAmount())));
+                            } else {
+                                tooltips.add(Component.translatable("config.multiblock_settings.catalyst.consume_type.consume_durability.amount")
+                                        .append(Component.literal(" " + catalyst.getConsumeDurabilityValue())));
+                            }
+                        })
+                        .setBackground(buttonTexture));
+            }
+        }
+
+        // description
+        addWidget(descriptionWidget = new ImageWidget(sceneWidget.getPositionX() + sceneWidget.getSizeWidth() - 20,
+                sceneWidget.getPositionY() + sceneWidget.getSizeHeight() - 20, 16, 16,
+                IGuiTexture.EMPTY));
 
         // candidates
         var items = new ArrayList<List<ItemStack>>();
@@ -230,6 +272,7 @@ public class PatternPreviewWidget extends WidgetGroup {
         MBPattern pattern = patterns[index];
         setupScene(pattern);
         setupPatternCandidates(pattern);
+        setupDescription(pattern);
     }
 
     private void setupPatternCandidates(MBPattern pattern) {
@@ -244,6 +287,17 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
         }
         candidatesItemHandler.updateStacks(items);
+    }
+
+    private void setupDescription(MBPattern pattern) {
+        var description = pattern.description;
+        if (description.isEmpty()) {
+            descriptionWidget.setImage(IGuiTexture.EMPTY);
+            descriptionWidget.setHoverTooltips(Collections.emptyList());
+        } else {
+            descriptionWidget.setImage(new ResourceTexture("mbd2:textures/gui/information.png"));
+            descriptionWidget.setHoverTooltips(description.stream().map(Component::translatable).collect(Collectors.toList()));
+        }
     }
 
     private void onFormedSwitch(boolean isFormed) {
@@ -369,7 +423,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             if (one.blockId != two.blockId) return two.blockId - one.blockId;
             return two.amount - one.amount;
         }).map(PartInfo::getItemStack).filter(list -> !list.isEmpty()).collect(Collectors.toList()), predicateMap,
-                controllerBase);
+                controllerBase, shapeInfo.getDescription());
     }
 
     private void loadControllerFormed(Collection<BlockPos> poses, IMultiController controllerBase) {
@@ -450,14 +504,17 @@ public class PatternPreviewWidget extends WidgetGroup {
         @NotNull
         final IMultiController controllerBase;
         final int maxY, minY;
+        final List<String> description;
 
         public MBPattern(@NotNull Map<BlockPos, BlockInfo> blockMap, @NotNull List<List<ItemStack>> parts,
                          @NotNull Map<BlockPos, TraceabilityPredicate> predicateMap,
-                         @NotNull IMultiController controllerBase) {
+                         @NotNull IMultiController controllerBase,
+                         @NotNull List<String> description) {
             this.parts = parts;
             this.blockMap = blockMap;
             this.predicateMap = predicateMap;
             this.controllerBase = controllerBase;
+            this.description = description;
             int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
             for (BlockPos pos : blockMap.keySet()) {
                 min = Math.min(min, pos.getY());
