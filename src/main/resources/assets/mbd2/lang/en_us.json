@@ -299,6 +299,8 @@
     "config.kinetic_machine.max_stress": "Max Stress",
     "config.kinetic_machine.use_flywheel": "Use Flywheel",
     "config.kinetic_machine.use_flywheel.tooltip": "Whether the kinetic renderer uses the flywheel instance. (flywheel will have better performance)",
+    "config.kinetic_machine.flywheel_render_layer": "Flywheel Render Layer",
+    "config.kinetic_machine.flywheel_render_layer.tooltip": "The render layer of the flywheel instance.",
 
     "config.create_machine_state.rotation_renderer": "Rotation Renderer",
     "config.create_machine_state.rotation_renderer.tooltip": "Kinetic Part Renderer",

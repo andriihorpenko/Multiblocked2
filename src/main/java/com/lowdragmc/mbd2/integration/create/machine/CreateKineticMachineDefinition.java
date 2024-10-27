@@ -92,7 +92,7 @@ public class CreateKineticMachineDefinition extends MBDMachineDefinition {
         if (kineticMachineSettings.useFlywheel) {
             var model = getRotationPartialModel();
             InstancedRenderRegistry.configure((BlockEntityType<MBDKineticMachineBlockEntity>) blockEntityType())
-                    .factory((materialManager, be) -> new MBDKineticInstance(materialManager, be, model))
+                    .factory((materialManager, be) -> new MBDKineticInstance(materialManager, be, model, kineticMachineSettings.renderLayer()))
                     .skipRender((be) -> false)
                     .apply();
         }
