@@ -132,8 +132,9 @@ public class MBDKineticMachineBlockEntity extends KineticBlockEntity implements 
         return 0;
     }
 
-    public void scheduleWorking(float su) {
-        scheduleWorking(su, false);
+    public float scheduleWorkingRPM(float rpm, boolean simulate) {
+        var stress = rpm * definition.kineticMachineSettings.getCapacity();
+        return scheduleWorking(stress, simulate);
     }
 
     @Override

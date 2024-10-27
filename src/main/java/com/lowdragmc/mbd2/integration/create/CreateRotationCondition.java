@@ -31,20 +31,28 @@ public class CreateRotationCondition extends RecipeCondition {
     @Configurable(name = "config.recipe.condition.rpm.max")
     @NumberRange(range = {0f, Float.MAX_VALUE})
     private float maxRPM;
+    @Configurable(name = "config.recipe.condition.stress.min")
+    @NumberRange(range = {0f, Float.MAX_VALUE})
+    private float minStress;
+    @Configurable(name = "config.recipe.condition.stress.min")
+    @NumberRange(range = {0f, Float.MAX_VALUE})
+    private float maxStress;
 
-    public CreateRotationCondition(float minRPM, float maxRPM) {
+    public CreateRotationCondition(float minRPM, float maxRPM, float minStress, float maxStress) {
         this.minRPM = minRPM;
         this.maxRPM = maxRPM;
+        this.minStress = minStress;
+        this.maxStress = maxStress;
     }
 
     @Override
     public String getType() {
-        return "create_rpm";
+        return "create_rotation";
     }
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.create_rpm.tooltip", minRPM, maxRPM);
+        return Component.translatable("recipe.condition.create_rpm.tooltip", minRPM, maxRPM, minStress, maxStress);
     }
 
     @Override
@@ -59,7 +67,9 @@ public class CreateRotationCondition extends RecipeCondition {
         if (inputs != null) {
             for (var input : inputs) {
                 if (input instanceof CreateRotationTrait trait) {
-                    if (trait.getLastSpeed() >= minRPM && trait.getLastSpeed() <= maxRPM) {
+                    var rpm = Math.abs(trait.getLastSpeed());
+                    var stress = rpm * trait.getImpact();
+                    if (rpm >= minRPM && rpm <= maxRPM && stress >= minStress && stress <= maxStress) {
                         return true;
                     }
                 }
@@ -74,6 +84,8 @@ public class CreateRotationCondition extends RecipeCondition {
         JsonObject config = super.serialize();
         config.addProperty("minRPM", minRPM);
         config.addProperty("maxRPM", maxRPM);
+        config.addProperty("minStress", minStress);
+        config.addProperty("maxStress", maxStress);
         return config;
     }
 
@@ -82,6 +94,8 @@ public class CreateRotationCondition extends RecipeCondition {
         super.deserialize(config);
         minRPM = GsonHelper.getAsFloat(config, "minRPM", 0);
         maxRPM = GsonHelper.getAsFloat(config, "maxRPM", 1);
+        minStress = GsonHelper.getAsFloat(config, "minStress", 0);
+        maxStress = GsonHelper.getAsFloat(config, "maxStress", 1);
         return this;
     }
 
@@ -90,6 +104,8 @@ public class CreateRotationCondition extends RecipeCondition {
         super.fromNetwork(buf);
         minRPM = buf.readFloat();
         maxRPM = buf.readFloat();
+        minStress = buf.readFloat();
+        maxStress = buf.readFloat();
         return this;
     }
 
@@ -98,6 +114,8 @@ public class CreateRotationCondition extends RecipeCondition {
         super.toNetwork(buf);
         buf.writeFloat(minRPM);
         buf.writeFloat(maxRPM);
+        buf.writeFloat(minStress);
+        buf.writeFloat(maxStress);
     }
 
     @Override
@@ -105,6 +123,8 @@ public class CreateRotationCondition extends RecipeCondition {
         var tag = super.toNBT();
         tag.putFloat("minRPM", minRPM);
         tag.putFloat("maxRPM", maxRPM);
+        tag.putFloat("minStress", minStress);
+        tag.putFloat("maxStress", maxStress);
         return tag;
     }
 
@@ -113,6 +133,8 @@ public class CreateRotationCondition extends RecipeCondition {
         super.fromNBT(tag);
         minRPM = tag.getFloat("minRPM");
         maxRPM = tag.getFloat("maxRPM");
+        minStress = tag.getFloat("minStress");
+        maxStress = tag.getFloat("maxStress");
         return this;
     }
 

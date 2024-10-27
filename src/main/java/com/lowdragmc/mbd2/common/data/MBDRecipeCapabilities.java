@@ -5,6 +5,7 @@ import com.lowdragmc.mbd2.api.registry.MBDRegistries;
 import com.lowdragmc.mbd2.common.capability.recipe.*;
 import com.lowdragmc.mbd2.integration.botania.BotaniaManaRecipeCapability;
 import com.lowdragmc.mbd2.common.event.MBDRegistryEvent;
+import com.lowdragmc.mbd2.integration.create.CreateRPMRecipeCapability;
 import com.lowdragmc.mbd2.integration.create.CreateStressRecipeCapability;
 import com.lowdragmc.mbd2.integration.embers.EmbersEmberRecipeCapability;
 import com.lowdragmc.mbd2.integration.gtm.GTMEnergyRecipeCapability;
@@ -39,6 +40,7 @@ public class MBDRecipeCapabilities {
         }
         if (MBD2.isCreateLoaded()) {
              MBDRegistries.RECIPE_CAPABILITIES.register(CreateStressRecipeCapability.CAP.name, CreateStressRecipeCapability.CAP);
+             MBDRegistries.RECIPE_CAPABILITIES.register(CreateRPMRecipeCapability.CAP.name, CreateRPMRecipeCapability.CAP);
         }
         if (MBD2.isNaturesAuraLoaded()) {
             MBDRegistries.RECIPE_CAPABILITIES.register(NaturesAuraRecipeCapability.CAP.name, NaturesAuraRecipeCapability.CAP);

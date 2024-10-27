@@ -15,6 +15,7 @@ import com.lowdragmc.mbd2.api.registry.MBDRegistries;
 import com.lowdragmc.mbd2.common.capability.recipe.*;
 import com.lowdragmc.mbd2.common.recipe.*;
 import com.lowdragmc.mbd2.integration.botania.BotaniaManaRecipeCapability;
+import com.lowdragmc.mbd2.integration.create.CreateRPMRecipeCapability;
 import com.lowdragmc.mbd2.integration.create.CreateRotationCondition;
 import com.lowdragmc.mbd2.integration.create.CreateStressRecipeCapability;
 import com.lowdragmc.mbd2.integration.embers.EmbersEmberRecipeCapability;
@@ -334,6 +335,20 @@ public interface MBDRecipeSchema {
             return outputs(CreateStressRecipeCapability.CAP, stress);
         }
 
+        public MBDRecipeJS inputRPM(float stress) {
+            if (!MBD2.isCreateLoaded()) {
+                throw new IllegalStateException("Try to add a rpm ingredient while the create is not loaded!");
+            }
+            return inputs(CreateRPMRecipeCapability.CAP, stress);
+        }
+
+        public MBDRecipeJS outputRPM(float stress) {
+            if (!MBD2.isCreateLoaded()) {
+                throw new IllegalStateException("Try to add a rpm ingredient while the create is not loaded!");
+            }
+            return outputs(CreateRPMRecipeCapability.CAP, stress);
+        }
+
         public MBDRecipeJS inputGases(String... stack) {
             if (!MBD2.isMekanismLoaded()) {
                 throw new IllegalStateException("Try to add a gas ingredient while the mekanism is not loaded!");
@@ -437,11 +452,11 @@ public interface MBDRecipeSchema {
             return this;
         }
 
-        public MBDRecipeJS rpmRange(float min, float max) {
+        public MBDRecipeJS rotationCondition(float minRPM, float maxRPM, float minStress, float maxStress) {
             if (!MBD2.isCreateLoaded()) {
-                throw new IllegalStateException("Try to add a rpm condition while the create is not loaded!");
+                throw new IllegalStateException("Try to add a rotation condition while the create is not loaded!");
             }
-            addCondition(new CreateRotationCondition(min, max));
+            addCondition(new CreateRotationCondition(minRPM, maxRPM, minStress, maxStress));
             return this;
         }
 

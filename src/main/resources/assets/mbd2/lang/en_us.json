@@ -75,7 +75,7 @@
     "recipe.condition.block": "block",
     "recipe.condition.block.tooltip": "blocks [%s] count in the structure from %d to %d",
     "recipe.condition.create_rpm": "RPM",
-    "recipe.condition.create_rpm.tooltip": "RPM range: %d <= Y <= %d",
+    "recipe.condition.create_rpm.tooltip": "RPM range [%d, %d], Stress range [%d, %d]",
 
     "project.reload": " reloaded!",
     "project.reload.recipe": "§cNOTE:§r You have to execute /reload or re-enter the world to actually reload the built-in recipes.",
@@ -98,6 +98,8 @@
     "config.recipe.condition.machine_custom_data.data.tooltip": "The machine custom data of the machine.",
     "config.recipe.condition.rpm.min": "min rpm",
     "config.recipe.condition.rpm.max": "max rpm",
+    "config.recipe.condition.stress.min": "min stress",
+    "config.recipe.condition.stress.max": "max stress",
 
     "config.block_properties.render_types": "Render Types",
     "config.block_properties.render_types.tooltip": "The render type of the block.",
@@ -649,6 +651,11 @@
     "recipe.capability.create_stress.stress": "Stress",
     "recipe.capability.create_stress.stress.unit": "%d su",
     "ldlib.gui.editor.register.widget.container.create_stress": "Create Stress Slot",
+
+    "recipe.capability.create_rpm.name": "Create RPM",
+    "recipe.capability.create_rpm.rpm": "RPM",
+    "recipe.capability.create_rpm.rpm.unit": "%d rpm",
+    "ldlib.gui.editor.register.widget.container.create_rpm": "Create RPM Slot",
 
     "editor.machine.machine_tab": "Machine",
     "editor.machine.multiblock.area_panel.sceneRadius": "Scene Radius",

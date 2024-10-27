@@ -10,6 +10,7 @@ import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
 import com.lowdragmc.mbd2.common.trait.TraitDefinition;
+import com.lowdragmc.mbd2.integration.create.CreateRPMRecipeCapability;
 import com.lowdragmc.mbd2.integration.create.CreateStressRecipeCapability;
 import lombok.Getter;
 import net.minecraft.util.Mth;
@@ -57,7 +58,8 @@ public class CreateRotationTrait implements ITrait {
     private float impact;
     @Getter
     private float available, lastSpeed;
-    private final StressRecipeHandler recipeHandler = new StressRecipeHandler();
+    private final StressRecipeHandler stressRecipeHandler = new StressRecipeHandler();
+    private final RPMRecipeHandler rpmRecipeHandler = new RPMRecipeHandler();
 
     public CreateRotationTrait(MBDMachine machine) {
         this.machine = machine;
@@ -85,9 +87,29 @@ public class CreateRotationTrait implements ITrait {
         return DEFINITION;
     }
 
+    public void preWorking(IO io) {
+        if (machine.getHolder() instanceof MBDKineticMachineBlockEntity blockEntity) {
+            if (available > 0 && isGenerator && io == IO.OUT) {
+                blockEntity.scheduleWorking(available, false);
+            }
+        }
+    }
+
+    public void postWorking(IO io) {
+        if (machine.getHolder() instanceof MBDKineticMachineBlockEntity blockEntity) {
+            if (isGenerator && io == IO.OUT) {
+                blockEntity.stopWorking();
+            }
+        }
+    }
+
+    public IO getHandlerIO() {
+        return (getMachine().getDefinition() instanceof CreateKineticMachineDefinition definition && definition.kineticMachineSettings.isGenerator) ? IO.OUT : IO.IN;
+    }
+
     @Override
     public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
-        return List.of(recipeHandler);
+        return List.of(stressRecipeHandler, rpmRecipeHandler);
     }
 
     public class StressRecipeHandler implements IRecipeHandlerTrait<Float> {
@@ -120,20 +142,17 @@ public class CreateRotationTrait implements ITrait {
 
         @Override
         public void preWorking(IRecipeCapabilityHolder holder, IO io, MBDRecipe recipe) {
-            if (machine.getHolder() instanceof MBDKineticMachineBlockEntity blockEntity) {
-                if (available > 0 && isGenerator && io == IO.OUT) {
-                    blockEntity.scheduleWorking(available, false);
-                }
-            }
+            CreateRotationTrait.this.preWorking(io);
         }
 
         @Override
         public void postWorking(IRecipeCapabilityHolder holder, IO io, MBDRecipe recipe) {
-            if (machine.getHolder() instanceof MBDKineticMachineBlockEntity blockEntity) {
-                if (isGenerator && io == IO.OUT) {
-                    blockEntity.stopWorking();
-                }
-            }
+            CreateRotationTrait.this.postWorking(io);
+        }
+
+        @Override
+        public IO getHandlerIO() {
+            return CreateRotationTrait.this.getHandlerIO();
         }
 
         @Override
@@ -141,9 +160,53 @@ public class CreateRotationTrait implements ITrait {
             return CreateStressRecipeCapability.CAP;
         }
 
+    }
+
+    public class RPMRecipeHandler implements IRecipeHandlerTrait<Float> {
+        @Override
+        public ISubscription addChangedListener(Runnable listener) {
+            listeners.add(listener);
+            return () -> listeners.remove(listener);
+        }
+
+        @Override
+        public List<Float> handleRecipeInner(IO io, MBDRecipe recipe, List<Float> left, @Nullable String slotName, boolean simulate) {
+            if (io != getHandlerIO()) return left;
+            if (machine.getHolder() instanceof MBDKineticMachineBlockEntity holder) {
+                float sum = left.stream().reduce(0f, Float::max);
+                if (io == IO.IN && !isGenerator) {
+                    float rpm = Mth.abs(holder.getSpeed());
+                    if (rpm >= sum) {
+                        return null;
+                    }
+                } else if (io == IO.OUT && isGenerator) {
+                    if (simulate) {
+                        available = holder.scheduleWorkingRPM(sum, true);
+                    }
+                    return null;
+                }
+            }
+            return left;
+        }
+
+        @Override
+        public void preWorking(IRecipeCapabilityHolder holder, IO io, MBDRecipe recipe) {
+            CreateRotationTrait.this.preWorking(io);
+        }
+
+        @Override
+        public void postWorking(IRecipeCapabilityHolder holder, IO io, MBDRecipe recipe) {
+            CreateRotationTrait.this.postWorking(io);
+        }
+
         @Override
         public IO getHandlerIO() {
-            return (getMachine().getDefinition() instanceof CreateKineticMachineDefinition definition && definition.kineticMachineSettings.isGenerator) ? IO.OUT : IO.IN;
+            return CreateRotationTrait.this.getHandlerIO();
+        }
+
+        @Override
+        public RecipeCapability<Float> getRecipeCapability() {
+            return CreateRPMRecipeCapability.CAP;
         }
     }
 }
