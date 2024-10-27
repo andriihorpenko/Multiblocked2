@@ -9,7 +9,7 @@ import com.lowdragmc.mbd2.api.capability.recipe.IO;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.api.recipe.RecipeCondition;
 import com.lowdragmc.mbd2.api.recipe.RecipeLogic;
-import com.lowdragmc.mbd2.integration.create.machine.CreateStressTrait;
+import com.lowdragmc.mbd2.integration.create.machine.CreateRotationTrait;
 import com.simibubi.create.AllBlocks;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,7 +58,7 @@ public class CreateRotationCondition extends RecipeCondition {
         var inputs = proxy.get(IO.IN, CreateStressRecipeCapability.CAP);
         if (inputs != null) {
             for (var input : inputs) {
-                if (input instanceof CreateStressTrait trait) {
+                if (input instanceof CreateRotationTrait trait) {
                     if (trait.getLastSpeed() >= minRPM && trait.getLastSpeed() <= maxRPM) {
                         return true;
                     }

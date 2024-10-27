@@ -4,10 +4,13 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.mbd2.api.capability.recipe.IO;
+import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
+import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeCapabilityTrait;
+import com.lowdragmc.mbd2.integration.pneumaticcraft.PNCPressureAirRecipeCapability;
 import com.lowdragmc.mbd2.integration.pneumaticcraft.PressureAir;
 import me.desht.pneumaticcraft.api.PNCCapabilities;
 import me.desht.pneumaticcraft.api.tileentity.IAirHandler;
@@ -17,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait<PressureAir> implements ICapabilityProviderTrait<IAirHandler> {
+public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements ICapabilityProviderTrait<IAirHandler>, IRecipeHandlerTrait<PressureAir> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PNCPressureAirHandlerTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -85,6 +88,16 @@ public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait<PressureAi
             }
         }
         return left.isEmpty() ? null : left;
+    }
+
+    @Override
+    public RecipeCapability<PressureAir> getRecipeCapability() {
+        return PNCPressureAirRecipeCapability.CAP;
+    }
+
+    @Override
+    public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
+        return List.of(this);
     }
 
     @Override

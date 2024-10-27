@@ -9,22 +9,19 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
 import com.lowdragmc.mbd2.common.trait.IUIProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeCapabilityTraitDefinition;
-import com.lowdragmc.mbd2.integration.naturesaura.NaturesAuraRecipeCapability;
 import com.lowdragmc.mbd2.utils.WidgetUtils;
 import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import de.ellpeck.naturesaura.blocks.ModBlocks;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
 
 @LDLRegister(name = "aura_handler", group = "trait", modID = "naturesaura")
-public class AuraHandlerTraitDefinition extends RecipeCapabilityTraitDefinition<Integer> implements IUIProviderTrait {
+public class AuraHandlerTraitDefinition extends RecipeCapabilityTraitDefinition implements IUIProviderTrait {
 
     @Getter
     @Setter
@@ -40,11 +37,6 @@ public class AuraHandlerTraitDefinition extends RecipeCapabilityTraitDefinition<
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(ModBlocks.NATURE_ALTAR.asItem());
-    }
-
-    @Override
-    public RecipeCapability<Integer> getRecipeCapability() {
-        return NaturesAuraRecipeCapability.CAP;
     }
 
     @Override

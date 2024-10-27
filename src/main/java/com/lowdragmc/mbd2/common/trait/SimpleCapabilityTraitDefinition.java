@@ -11,7 +11,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
 
-public abstract class SimpleCapabilityTraitDefinition<T, CONTENT> extends RecipeCapabilityTraitDefinition<CONTENT> implements IUIProviderTrait {
+public abstract class SimpleCapabilityTraitDefinition<T> extends RecipeCapabilityTraitDefinition implements IUIProviderTrait {
     public static class CapabilityIO {
         @Getter @Setter
         @Configurable(name = "config.definition.trait.capability_io.internal", tips = "config.definition.trait.capability_io.internal.tooltip")
@@ -66,7 +66,7 @@ public abstract class SimpleCapabilityTraitDefinition<T, CONTENT> extends Recipe
     private IO guiIO = IO.BOTH;
 
     @Override
-    public abstract SimpleCapabilityTrait<T, CONTENT> createTrait(MBDMachine machine);
+    public abstract SimpleCapabilityTrait<T> createTrait(MBDMachine machine);
 
     /**
      * Get the capability for {@link ICapabilityProvider}.

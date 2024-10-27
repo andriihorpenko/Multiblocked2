@@ -60,11 +60,11 @@ public class MBDKineticMachineBlockEntity extends KineticBlockEntity implements 
         }
         metaMachine = newMachine;
         if (newMachine instanceof MBDMachine machine) {
-            var trait = CreateStressTrait.DEFINITION.createTrait(machine);
+            var trait = CreateRotationTrait.DEFINITION.createTrait(machine);
             machine.getAdditionalTraits().add(trait);
             if (trait instanceof IManaged managed) {
                 for (IRef ref : managed.getSyncStorage().getPersistedFields()) {
-                    ref.setPersistedPrefixName("trait." + CreateStressTrait.DEFINITION.getName());
+                    ref.setPersistedPrefixName("trait." + CreateRotationTrait.DEFINITION.getName());
                 }
                 rootStorage.attach(managed.getSyncStorage());
             }

@@ -10,7 +10,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
@@ -26,7 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.Capability;
 
 @LDLRegister(name = "mek_heat_container", group = "trait", modID = "mekanism")
-public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IHeatHandler, Double> {
+public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IHeatHandler> {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.mek_heat_container.capacity")
@@ -40,18 +39,13 @@ public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefin
     private double inverseConduction = 1d;
 
     @Override
-    public SimpleCapabilityTrait<IHeatHandler, Double> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait<IHeatHandler> createTrait(MBDMachine machine) {
         return new MekHeatCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(MekanismBlocks.RESISTIVE_HEATER.getItemStack());
-    }
-
-    @Override
-    public RecipeCapability<Double> getRecipeCapability() {
-        return MekanismHeatRecipeCapability.CAP;
     }
 
     @Override

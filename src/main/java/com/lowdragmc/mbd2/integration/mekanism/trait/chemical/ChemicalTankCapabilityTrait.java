@@ -4,6 +4,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.mbd2.api.capability.recipe.IO;
+import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
+import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
@@ -27,7 +29,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> extends SimpleCapabilityTrait<HANDLER, STACK> {
+public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> extends SimpleCapabilityTrait<HANDLER> implements IRecipeHandlerTrait<STACK> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChemicalTankCapabilityTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -58,6 +60,10 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
         }
     }
 
+    @Override
+    public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
+        return List.of(this);
+    }
 
     protected ChemicalStorage<CHEMICAL, STACK>[] createStorages() {
         var storages = new ChemicalStorage[getDefinition().getTankSize()];
@@ -71,6 +77,11 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
     public void onContentsChanged() {
         isEmpty = null;
         notifyListeners();
+    }
+
+    @Override
+    public RecipeCapability<STACK> getRecipeCapability() {
+        return getDefinition().getRecipeCapability();
     }
 
     @Override

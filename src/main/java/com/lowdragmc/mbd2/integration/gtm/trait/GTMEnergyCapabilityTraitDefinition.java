@@ -12,7 +12,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.machine.IMachine;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
@@ -26,7 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.Capability;
 
 @LDLRegister(name = "gtm_energy_container", group = "trait", modID = "gtceu")
-public class GTMEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEnergyContainer, Long> {
+public class GTMEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEnergyContainer> {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.gtm_energy_container.capacity")
@@ -62,18 +61,13 @@ public class GTMEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDef
     private final GTMEnergyFancyRendererSettings fancyRendererSettings = new GTMEnergyFancyRendererSettings(this);
 
     @Override
-    public SimpleCapabilityTrait<IEnergyContainer, Long> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait<IEnergyContainer> createTrait(MBDMachine machine) {
         return new GTMEnergyCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(GTItems.BATTERY_HV_SODIUM.asItem());
-    }
-
-    @Override
-    public RecipeCapability<Long> getRecipeCapability() {
-        return GTMEnergyRecipeCapability.CAP;
     }
 
     @Override

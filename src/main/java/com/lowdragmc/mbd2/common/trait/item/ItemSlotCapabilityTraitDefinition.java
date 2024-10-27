@@ -17,9 +17,7 @@ import com.lowdragmc.lowdraglib.utils.ColorUtils;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 import com.lowdragmc.mbd2.api.capability.recipe.IO;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.machine.IMachine;
-import com.lowdragmc.mbd2.common.capability.recipe.ItemRecipeCapability;
 import com.lowdragmc.mbd2.common.gui.editor.machine.MachineTraitPanel;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
@@ -35,7 +33,6 @@ import lombok.Setter;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,7 +45,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 @LDLRegister(name = "item_slot", group = "trait", priority = -100)
-public class ItemSlotCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IItemHandler, Ingredient> {
+public class ItemSlotCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IItemHandler> {
 
     @Getter @Setter
     @Configurable(name = "config.definition.trait.item_slot.slot_size", tips = "config.definition.trait.item_slot.slot_size.tooltip")
@@ -101,11 +98,6 @@ public class ItemSlotCapabilityTraitDefinition extends SimpleCapabilityTraitDefi
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(Items.CHEST);
-    }
-
-    @Override
-    public RecipeCapability<Ingredient> getRecipeCapability() {
-        return ItemRecipeCapability.CAP;
     }
 
     @Override

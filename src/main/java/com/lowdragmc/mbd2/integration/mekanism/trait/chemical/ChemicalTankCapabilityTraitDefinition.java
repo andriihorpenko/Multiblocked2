@@ -37,7 +37,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraftforge.common.capabilities.Capability;
 
-public abstract class ChemicalTankCapabilityTraitDefinition<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> extends SimpleCapabilityTraitDefinition<HANDLER, STACK> {
+public abstract class ChemicalTankCapabilityTraitDefinition<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> extends SimpleCapabilityTraitDefinition<HANDLER> {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.fluid_tank.tank_size", tips = "config.definition.trait.fluid_tank.tank_size.tooltip")
@@ -117,7 +117,7 @@ public abstract class ChemicalTankCapabilityTraitDefinition<CHEMICAL extends Che
         }
 
         @Override
-        public SimpleCapabilityTrait<IGasHandler, GasStack> createTrait(MBDMachine machine) {
+        public SimpleCapabilityTrait<IGasHandler> createTrait(MBDMachine machine) {
             return new ChemicalTankCapabilityTrait.Gas(machine, this);
         }
 
@@ -134,7 +134,7 @@ public abstract class ChemicalTankCapabilityTraitDefinition<CHEMICAL extends Che
         }
 
         @Override
-        public SimpleCapabilityTrait<IInfusionHandler, InfusionStack> createTrait(MBDMachine machine) {
+        public SimpleCapabilityTrait<IInfusionHandler> createTrait(MBDMachine machine) {
             return new ChemicalTankCapabilityTrait.Infuse(machine, this);
         }
 
@@ -151,7 +151,7 @@ public abstract class ChemicalTankCapabilityTraitDefinition<CHEMICAL extends Che
         }
 
         @Override
-        public SimpleCapabilityTrait<IPigmentHandler, PigmentStack> createTrait(MBDMachine machine) {
+        public SimpleCapabilityTrait<IPigmentHandler> createTrait(MBDMachine machine) {
             return new ChemicalTankCapabilityTrait.Pigment(machine, this);
         }
 
@@ -168,7 +168,7 @@ public abstract class ChemicalTankCapabilityTraitDefinition<CHEMICAL extends Che
         }
 
         @Override
-        public SimpleCapabilityTrait<ISlurryHandler, SlurryStack> createTrait(MBDMachine machine) {
+        public SimpleCapabilityTrait<ISlurryHandler> createTrait(MBDMachine machine) {
             return new ChemicalTankCapabilityTrait.Slurry(machine, this);
         }
 

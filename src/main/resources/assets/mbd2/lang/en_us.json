@@ -578,7 +578,10 @@
     "editor.machine.recipe_list.data": "data",
 
     "recipe.capability.item.name": "Item Capability",
+    "recipe.capability.item_durability.name": "Item Durability Capability",
     "recipe.capability.item.ingredient.count": "Item Count",
+    "recipe.capability.item.ingredient.durability": "Item Durability",
+    "recipe.capability.item.ingredient.durability.content": "§6Consumed/Produced durability:§r %d",
     "recipe.capability.item.ingredient.type": "Ingredient Type",
     "recipe.capability.item.ingredient.type.vanilla": "Vanilla Type",
     "recipe.capability.item.ingredient.type.nbt": "NBT Type",

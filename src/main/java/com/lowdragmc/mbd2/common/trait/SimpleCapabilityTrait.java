@@ -6,15 +6,15 @@ import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class SimpleCapabilityTrait<T, CONTENT> extends RecipeCapabilityTrait<CONTENT> implements ICapabilityProviderTrait<T> {
+public abstract class SimpleCapabilityTrait<T> extends RecipeCapabilityTrait implements ICapabilityProviderTrait<T> {
 
-    public SimpleCapabilityTrait(MBDMachine machine, SimpleCapabilityTraitDefinition<T, CONTENT> definition) {
+    public SimpleCapabilityTrait(MBDMachine machine, SimpleCapabilityTraitDefinition<T> definition) {
         super(machine, definition);
     }
 
     @Override
-    public SimpleCapabilityTraitDefinition<T, CONTENT> getDefinition() {
-        return (SimpleCapabilityTraitDefinition<T, CONTENT>)super.getDefinition();
+    public SimpleCapabilityTraitDefinition<T> getDefinition() {
+        return (SimpleCapabilityTraitDefinition<T>)super.getDefinition();
     }
 
     @Override

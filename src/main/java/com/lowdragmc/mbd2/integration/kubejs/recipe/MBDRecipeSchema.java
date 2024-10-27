@@ -12,10 +12,7 @@ import com.lowdragmc.mbd2.api.recipe.ingredient.EntityIngredient;
 import com.lowdragmc.mbd2.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.mbd2.api.recipe.ingredient.SizedIngredient;
 import com.lowdragmc.mbd2.api.registry.MBDRegistries;
-import com.lowdragmc.mbd2.common.capability.recipe.EntityRecipeCapability;
-import com.lowdragmc.mbd2.common.capability.recipe.FluidRecipeCapability;
-import com.lowdragmc.mbd2.common.capability.recipe.ForgeEnergyRecipeCapability;
-import com.lowdragmc.mbd2.common.capability.recipe.ItemRecipeCapability;
+import com.lowdragmc.mbd2.common.capability.recipe.*;
 import com.lowdragmc.mbd2.common.recipe.*;
 import com.lowdragmc.mbd2.integration.botania.BotaniaManaRecipeCapability;
 import com.lowdragmc.mbd2.integration.create.CreateRotationCondition;
@@ -191,6 +188,14 @@ public interface MBDRecipeSchema {
 
         public MBDRecipeJS outputItems(InputItem... items) {
             return outputs(ItemRecipeCapability.CAP, Arrays.stream(items).map(item -> SizedIngredient.create(item.ingredient, item.count)).toArray());
+        }
+
+        public MBDRecipeJS inputItemsDurability(InputItem... items) {
+            return inputs(ItemDurabilityRecipeCapability.CAP, Arrays.stream(items).map(item -> SizedIngredient.create(item.ingredient, item.count)).toArray());
+        }
+
+        public MBDRecipeJS outputItemsDurability(InputItem... items) {
+            return outputs(ItemDurabilityRecipeCapability.CAP, Arrays.stream(items).map(item -> SizedIngredient.create(item.ingredient, item.count)).toArray());
         }
         
         public MBDRecipeJS inputFluids(FluidIngredientJS... fluids) {

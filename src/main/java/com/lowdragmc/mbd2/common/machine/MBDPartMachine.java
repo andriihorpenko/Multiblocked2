@@ -83,9 +83,7 @@ public class MBDPartMachine extends MBDMachine implements IMultiPart {
     public List<IRecipeHandlerTrait<?>> getRecipeHandlers() {
         var handlers = new ArrayList<IRecipeHandlerTrait<?>>();
         for (ITrait additionalTrait : getAdditionalTraits()) {
-            if (additionalTrait instanceof IRecipeHandlerTrait<?> recipeHandlerTrait) {
-                handlers.add(recipeHandlerTrait);
-            }
+            handlers.addAll(additionalTrait.getRecipeHandlerTraits());
         }
         return handlers;
     }

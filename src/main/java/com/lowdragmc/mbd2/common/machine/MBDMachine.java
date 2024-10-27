@@ -260,7 +260,7 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
     public void initCapabilitiesProxy() {
         recipeCapabilitiesProxy.clear();
         for (var trait : additionalTraits) {
-            if (trait instanceof IRecipeHandlerTrait<?> recipeHandlerTrait) {
+            for (var recipeHandlerTrait : trait.getRecipeHandlerTraits()) {
                 if (!recipeCapabilitiesProxy.contains(recipeHandlerTrait.getHandlerIO(), recipeHandlerTrait.getRecipeCapability())) {
                     recipeCapabilitiesProxy.put(recipeHandlerTrait.getHandlerIO(), recipeHandlerTrait.getRecipeCapability(), new ArrayList<>());
                 }

@@ -10,7 +10,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.machine.IMachine;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
@@ -28,7 +27,7 @@ import vazkii.botania.api.mana.ManaReceiver;
 import vazkii.botania.common.block.BotaniaBlocks;
 
 @LDLRegister(name = "botania_mana_storage", group = "trait", modID = "botania")
-public class BotaniaManaCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<ManaPool, Integer> {
+public class BotaniaManaCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<ManaPool> {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.botania_mana_storage.capacity")
@@ -39,18 +38,13 @@ public class BotaniaManaCapabilityTraitDefinition extends SimpleCapabilityTraitD
     private final BotaniaManaFancyRendererSettings fancyRendererSettings = new BotaniaManaFancyRendererSettings(this);
 
     @Override
-    public SimpleCapabilityTrait<ManaPool, Integer> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait<ManaPool> createTrait(MBDMachine machine) {
         return new BotaniaManaCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(BotaniaBlocks.manaPool.asItem());
-    }
-
-    @Override
-    public RecipeCapability<Integer> getRecipeCapability() {
-        return BotaniaManaRecipeCapability.CAP;
     }
 
     @Override

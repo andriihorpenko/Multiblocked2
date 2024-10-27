@@ -6,14 +6,17 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.mbd2.api.capability.recipe.IO;
+import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.lowdragmc.mbd2.common.trait.RecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
+import com.lowdragmc.mbd2.integration.gtm.GTMEnergyRecipeCapability;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyContainer, Long> {
+public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyContainer> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GTMEnergyCapabilityTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -21,6 +24,7 @@ public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyConta
     @Persisted
     @DescSynced
     public final CopiableEnergyContainer container;
+    private final EnergyRecipeHandler recipeHandler = new EnergyRecipeHandler();
 
     public GTMEnergyCapabilityTrait(MBDMachine machine, GTMEnergyCapabilityTraitDefinition definition) {
         super(machine, definition);
@@ -45,27 +49,6 @@ public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyConta
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, MBDRecipe recipe, List<Long> left, @Nullable String slotName, boolean simulate) {
-        if (io != getHandlerIO()) return left;
-        long required = left.stream().reduce(0L, Long::sum);
-        var capability = simulate ? container.copy() : container;
-        if (io == IO.IN) {
-            var canOutput = capability.getEnergyStored();
-            if (!simulate) {
-                capability.addEnergy(-Math.min(canOutput, required));
-            }
-            required -= canOutput;
-        } else if (io == IO.OUT) {
-            long canInput = capability.getEnergyCapacity() - capability.getEnergyStored();
-            if (!simulate) {
-                capability.addEnergy(Math.min(canInput, required));
-            }
-            required -= canInput;
-        }
-        return required > 0 ? List.of(required) : null;
-    }
-
-    @Override
     public IEnergyContainer getCapContent(IO capbilityIO) {
         return new EnergyContainerWrapper(this.container, capbilityIO);
     }
@@ -73,5 +56,37 @@ public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyConta
     @Override
     public IEnergyContainer mergeContents(List<IEnergyContainer> contents) {
         return new EnergyContainerList(contents);
+    }
+
+    @Override
+    public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
+        return List.of(recipeHandler);
+    }
+
+    public class EnergyRecipeHandler extends RecipeHandlerTrait<Long> {
+        protected EnergyRecipeHandler() {
+            super(GTMEnergyCapabilityTrait.this, GTMEnergyRecipeCapability.CAP);
+        }
+
+        @Override
+        public List<Long> handleRecipeInner(IO io, MBDRecipe recipe, List<Long> left, @Nullable String slotName, boolean simulate) {
+            if (io != getHandlerIO()) return left;
+            long required = left.stream().reduce(0L, Long::sum);
+            var capability = simulate ? container.copy() : container;
+            if (io == IO.IN) {
+                var canOutput = capability.getEnergyStored();
+                if (!simulate) {
+                    capability.addEnergy(-Math.min(canOutput, required));
+                }
+                required -= canOutput;
+            } else if (io == IO.OUT) {
+                long canInput = capability.getEnergyCapacity() - capability.getEnergyStored();
+                if (!simulate) {
+                    capability.addEnergy(Math.min(canInput, required));
+                }
+                required -= canInput;
+            }
+            return required > 0 ? List.of(required) : null;
+        }
     }
 }

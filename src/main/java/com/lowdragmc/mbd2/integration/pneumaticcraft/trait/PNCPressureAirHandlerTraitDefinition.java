@@ -10,11 +10,9 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.*;
 import com.lowdragmc.mbd2.integration.pneumaticcraft.PNCPressureAirRecipeCapability;
-import com.lowdragmc.mbd2.integration.pneumaticcraft.PressureAir;
 import com.lowdragmc.mbd2.utils.WidgetUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +20,7 @@ import me.desht.pneumaticcraft.common.core.ModItems;
 import net.minecraft.network.chat.Component;
 
 @LDLRegister(name = "pneumatic_pressure_air_handler", group = "trait", modID = "pneumaticcraft")
-public class PNCPressureAirHandlerTraitDefinition extends RecipeCapabilityTraitDefinition<PressureAir> implements IUIProviderTrait {
+public class PNCPressureAirHandlerTraitDefinition extends RecipeCapabilityTraitDefinition implements IUIProviderTrait {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.pneumatic_pressure_air_handler.volume")
@@ -43,11 +41,6 @@ public class PNCPressureAirHandlerTraitDefinition extends RecipeCapabilityTraitD
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(ModItems.PRESSURE_GAUGE.get());
-    }
-
-    @Override
-    public RecipeCapability<PressureAir> getRecipeCapability() {
-        return PNCPressureAirRecipeCapability.CAP;
     }
 
     @Override

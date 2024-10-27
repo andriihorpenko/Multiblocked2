@@ -1,13 +1,17 @@
 package com.lowdragmc.mbd2.common.trait;
 
 
+import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.gui.editor.machine.MachineTraitPanel;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A trait that represent a capability / behaviour / function a machine has, e.g. item container, energy storage, fluid tank, etc.
  * <br/>
- * To provide capability behavior in the world see {@link ICapabilityProviderTrait}. For recipe handling, see {@link IRecipeCapabilityTrait}.
+ * To provide capability behavior in the world see {@link ICapabilityProviderTrait}. For recipe handling, see {@link RecipeHandlerTrait}.
  * To provide UI representation, see {@link IUIProviderTrait}.
  */
 public interface ITrait {
@@ -55,6 +59,13 @@ public interface ITrait {
      */
     default void clientTick() {
 
+    }
+
+    /**
+     * Get all available recipe handler traits for this trait which will be used for recipe logic.
+     */
+    default List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
+        return Collections.emptyList();
     }
 
 }

@@ -11,7 +11,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.machine.IMachine;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
@@ -27,7 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.Capability;
 
 @LDLRegister(name = "embers_ember_capability", group = "trait", modID = "embers")
-public class EmbersEmberCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEmberCapability, Double> {
+public class EmbersEmberCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEmberCapability> {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.embers_ember_capability.capacity")
@@ -46,11 +45,6 @@ public class EmbersEmberCapabilityTraitDefinition extends SimpleCapabilityTraitD
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(RegistryManager.EMBER_CRYSTAL.get());
-    }
-
-    @Override
-    public RecipeCapability<Double> getRecipeCapability() {
-        return EmbersEmberRecipeCapability.CAP;
     }
 
     @Override

@@ -13,10 +13,7 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import com.lowdragmc.mbd2.api.capability.recipe.IO;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.machine.IMachine;
-import com.lowdragmc.mbd2.api.recipe.ingredient.FluidIngredient;
-import com.lowdragmc.mbd2.common.capability.recipe.FluidRecipeCapability;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
@@ -30,7 +27,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 @LDLRegister(name = "fluid_tank", group = "trait", priority = -100)
-public class FluidTankCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IFluidHandler, FluidIngredient> {
+public class FluidTankCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IFluidHandler> {
 
     @Getter
     @Setter
@@ -54,18 +51,13 @@ public class FluidTankCapabilityTraitDefinition extends SimpleCapabilityTraitDef
     private final FluidFancyRendererSettings fancyRendererSettings = new FluidFancyRendererSettings(this);
 
     @Override
-    public SimpleCapabilityTrait<IFluidHandler, FluidIngredient> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait<IFluidHandler> createTrait(MBDMachine machine) {
         return new FluidTankCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(Items.WATER_BUCKET);
-    }
-
-    @Override
-    public RecipeCapability<FluidIngredient> getRecipeCapability() {
-        return FluidRecipeCapability.CAP;
     }
 
     @Override

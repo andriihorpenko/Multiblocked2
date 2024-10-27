@@ -11,9 +11,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextTextureWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.machine.IMachine;
-import com.lowdragmc.mbd2.common.capability.recipe.ForgeEnergyRecipeCapability;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
@@ -27,7 +25,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 
 @LDLRegister(name = "forge_energy_storage", group = "trait", priority = -100)
-public class ForgeEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEnergyStorage, Integer> {
+public class ForgeEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEnergyStorage> {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.forge_energy_storage.capacity")
@@ -48,18 +46,13 @@ public class ForgeEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitD
     private final ForgeEnergyFancyRendererSettings fancyRendererSettings = new ForgeEnergyFancyRendererSettings(this);
 
     @Override
-    public SimpleCapabilityTrait<IEnergyStorage, Integer> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait<IEnergyStorage> createTrait(MBDMachine machine) {
         return new ForgeEnergyCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ResourceTexture("mbd2:textures/gui/forge_energy.png");
-    }
-
-    @Override
-    public RecipeCapability<Integer> getRecipeCapability() {
-        return ForgeEnergyRecipeCapability.CAP;
     }
 
     @Override

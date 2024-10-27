@@ -9,9 +9,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
-import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
-import com.lowdragmc.mbd2.api.recipe.ingredient.EntityIngredient;
-import com.lowdragmc.mbd2.common.capability.recipe.EntityRecipeCapability;
 import com.lowdragmc.mbd2.common.gui.editor.machine.MachineTraitPanel;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.ITrait;
@@ -36,7 +33,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 @LDLRegister(name = "entity_handler", group = "trait", priority = -99)
-public class EntityHandlerTraitDefinition extends RecipeCapabilityTraitDefinition<EntityIngredient> {
+public class EntityHandlerTraitDefinition extends RecipeCapabilityTraitDefinition {
 
     @Getter
     @Configurable(name = "config.definition.trait.entity_handler.area", tips = {
@@ -57,11 +54,6 @@ public class EntityHandlerTraitDefinition extends RecipeCapabilityTraitDefinitio
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(Items.PIG_SPAWN_EGG);
-    }
-
-    @Override
-    public RecipeCapability<EntityIngredient> getRecipeCapability() {
-        return EntityRecipeCapability.CAP;
     }
 
     @ConfigSetter(field = "area")
