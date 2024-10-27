@@ -199,6 +199,10 @@ public class MBDMachineDefinition implements IConfigurable, IPersistedSerializab
     public void deserializeNBT(CompoundTag tag) {
         IPersistedSerializable.super.deserializeNBT(tag);
         stateMachine.deserializeNBT(tag.getCompound("stateMachine"));
+        if (!tag.contains("recipeLogicSettings")) {
+            // compatible with old project
+            recipeLogicSettings.deserializeNBT(tag.getCompound("machineSettings"));
+        }
     }
 
     /**
