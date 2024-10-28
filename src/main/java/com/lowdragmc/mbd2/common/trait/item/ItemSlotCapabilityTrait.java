@@ -227,7 +227,7 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler>
                         ItemStack output = items[0];
                         if (!output.isEmpty()) {
                             for (int i = 0; i < capability.getSlots(); i++) {
-                                ItemStack leftStack = capability.insertItem(i, output.copy(), false);
+                                ItemStack leftStack = capability.insertItem(i, output, false);
                                 output.setCount(leftStack.getCount());
                                 if (output.isEmpty()) break;
                             }
@@ -239,10 +239,10 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler>
                         // find index
                         var index = -1;
                         for (int i = 0; i < shuffledItems.size(); i++) {
-                            ItemStack output = shuffledItems.get(i);
+                            var output = shuffledItems.get(i).copy();
                             if (!output.isEmpty()) {
                                 for (int slot = 0; i < capability.getSlots(); i++) {
-                                    ItemStack leftStack = capability.insertItem(slot, output.copy(), true);
+                                    var leftStack = capability.insertItem(slot, output, true);
                                     output.setCount(leftStack.getCount());
                                     if (output.isEmpty()) break;
                                 }
@@ -254,9 +254,9 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler>
                         }
                         if (index != -1) {
                             if (!simulate) {
-                                ItemStack output = shuffledItems.get(index);
+                                var output = shuffledItems.get(index);
                                 for (int slot = 0; slot < capability.getSlots(); slot++) {
-                                    ItemStack leftStack = capability.insertItem(slot, output.copy(), false);
+                                    ItemStack leftStack = capability.insertItem(slot, output, false);
                                     output.setCount(leftStack.getCount());
                                     if (output.isEmpty()) break;
                                 }
