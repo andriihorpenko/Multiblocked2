@@ -23,13 +23,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemSlotCapabilityTrait.class);
+    private final Random random = new Random();
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
 
@@ -227,22 +225,23 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler>
                         ItemStack output = items[0];
                         if (!output.isEmpty()) {
                             for (int i = 0; i < capability.getSlots(); i++) {
-                                ItemStack leftStack = capability.insertItem(i, output, false);
+                                ItemStack leftStack = capability.insertItem(i, output.copy(), false);
                                 output.setCount(leftStack.getCount());
                                 if (output.isEmpty()) break;
                             }
                         }
                         if (output.isEmpty()) iterator.remove();
                     } else { // random output
-                        var shuffledItems = Arrays.asList(items);
-                        Collections.shuffle(shuffledItems);
+                        var shuffledItems = Arrays.asList(Arrays.copyOf(items, items.length));
+                        random.setSeed(getMachine().getOffsetTimer());
+                        Collections.shuffle(shuffledItems, random);
                         // find index
                         var index = -1;
                         for (int i = 0; i < shuffledItems.size(); i++) {
                             var output = shuffledItems.get(i).copy();
                             if (!output.isEmpty()) {
                                 for (int slot = 0; i < capability.getSlots(); i++) {
-                                    var leftStack = capability.insertItem(slot, output, true);
+                                    var leftStack = capability.insertItem(slot, output.copy(), true);
                                     output.setCount(leftStack.getCount());
                                     if (output.isEmpty()) break;
                                 }
@@ -256,9 +255,12 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler>
                             if (!simulate) {
                                 var output = shuffledItems.get(index);
                                 for (int slot = 0; slot < capability.getSlots(); slot++) {
-                                    ItemStack leftStack = capability.insertItem(slot, output, false);
-                                    output.setCount(leftStack.getCount());
-                                    if (output.isEmpty()) break;
+                                    ItemStack leftStack = capability.insertItem(slot, output.copy(), true);
+                                    if (leftStack.getCount() < output.getCount()) {
+                                        leftStack = capability.insertItem(slot, output.copy(), false);
+                                        output.setCount(leftStack.getCount());
+                                        if (output.isEmpty()) break;
+                                    }
                                 }
                             }
                             iterator.remove();
