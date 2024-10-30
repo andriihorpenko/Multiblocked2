@@ -1,4 +1,4 @@
 # ChangeLog
 
-* add mekanism heat condition
+* fix geckolib model offset
 

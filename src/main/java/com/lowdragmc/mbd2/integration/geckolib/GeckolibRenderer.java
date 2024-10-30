@@ -203,6 +203,7 @@ public class GeckolibRenderer implements ISerializableRenderer, GeoRenderer<GeoA
         }
         poseStack.popPose();
         IItemRendererProvider.disabled.set(false);
+        this.currentItemStack = null;
     }
 
     public GeoAnimatable getAnimatableFromMachine(MBDMachine machine) {
