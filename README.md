@@ -8,6 +8,20 @@ Discord: [https://discord.com/invite/sDdf2yD9bh](https://discord.com/invite/sDdf
 
 Github: https://github.com/Low-Drag-MC/Multiblocked2
 
+```gradle
+repositories{
+    maven {
+        name "firstdarkdev"
+        url "https://maven.firstdarkdev.xyz/snapshots"
+    }
+}
+
+dependencies {
+    implementation fg.deobf("com.lowdragmc.ldlib:ldlib-forge-{minecraft_version}:{latest_version}") { transitive = false }
+    implementation fg.deobf("com.lowdragmc.multiblocked2:Multiblocked2:{minecraft_version}-{latest_version}") { transitive = false }
+}
+```
+
 What's new
 ------------------
 ### Demo
