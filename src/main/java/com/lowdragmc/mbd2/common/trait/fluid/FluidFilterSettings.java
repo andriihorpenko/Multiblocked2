@@ -13,7 +13,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class FluidFilterSettings implements IToggleConfigurable, Predicate<FluidStack> {
@@ -47,10 +46,10 @@ public class FluidFilterSettings implements IToggleConfigurable, Predicate<Fluid
         }
         for (var filterFluids : filterFluids) {
             if (matchNBT) {
-                if (filterFluids.isFluidStackEqual(fluidStack) && Objects.equals(filterFluids.getTag(), fluidStack.getTag())) {
+                if (filterFluids.isFluidEqual(fluidStack)) {
                     return isWhitelist;
                 }
-            } else if (filterFluids.isFluidStackEqual(fluidStack)) {
+            } else if (filterFluids.getFluid() == fluidStack.getFluid()) {
                 return isWhitelist;
             }
         }

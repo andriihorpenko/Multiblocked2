@@ -1,6 +1,16 @@
 package com.lowdragmc.mbd2.test;
 
+import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+import com.lowdragmc.mbd2.MBD2;
 import com.lowdragmc.mbd2.common.event.MBDRegistryEvent;
+import com.lowdragmc.mbd2.common.machine.definition.MBDMachineDefinition;
+import com.lowdragmc.mbd2.common.machine.definition.config.ConfigBlockProperties;
+import com.lowdragmc.mbd2.common.machine.definition.config.ConfigItemProperties;
+import com.lowdragmc.mbd2.common.machine.definition.config.MachineState;
+import com.lowdragmc.mbd2.common.machine.definition.config.StateMachine;
+import com.lowdragmc.mbd2.common.machine.definition.config.toggle.ToggleRenderer;
+import com.lowdragmc.mbd2.common.machine.definition.config.toggle.ToggleShape;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class MBDTest {
@@ -10,12 +20,12 @@ public class MBDTest {
 //        var renderer = new IModelRenderer(MBD2.id("block/pedestal"));
 //        event.register(MBDMachineDefinition.builder()
 //                .id(MBD2.id("test_machine"))
-//                .stateMachine(new StateMachine(MachineState.builder()
-//                        .name("base")
-//                        .renderer(new ToggleRenderer(renderer))
-//                        .shape(new ToggleShape(Shapes.block()))
-//                        .lightLevel(new ToggleInteger(0))
-//                        .build()))
+//                        .rootState(MachineState.builder()
+//                                .name("base")
+//                                .renderer(renderer)
+//                                .shape(Shapes.block())
+//                                .lightLevel(0)
+//                                .build())
 //                .blockProperties(ConfigBlockProperties.builder().build())
 //                .itemProperties(ConfigItemProperties.builder().build())
 //                .build());
