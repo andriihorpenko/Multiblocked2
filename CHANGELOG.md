@@ -1,4 +1,4 @@
 # ChangeLog
 
-* fix item candidates randomly output
+* add mekanism heat condition
 

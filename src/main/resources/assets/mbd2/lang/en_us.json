@@ -76,6 +76,8 @@
     "recipe.condition.block.tooltip": "blocks [%s] count in the structure from %d to %d",
     "recipe.condition.create_rpm": "RPM",
     "recipe.condition.create_rpm.tooltip": "RPM range [%d, %d], Stress range [%d, %d]",
+    "recipe.condition.mekanism_heat": "Heat",
+    "recipe.condition.mekanism_heat.tooltip": "Heat range [%d, %d]",
 
     "project.reload": " reloaded!",
     "project.reload.recipe": "§cNOTE:§r You have to execute /reload or re-enter the world to actually reload the built-in recipes.",
@@ -100,6 +102,8 @@
     "config.recipe.condition.rpm.max": "max rpm",
     "config.recipe.condition.stress.min": "min stress",
     "config.recipe.condition.stress.max": "max stress",
+    "config.recipe.condition.heat.min": "min heat",
+    "config.recipe.condition.heat.max": "max heat",
 
     "config.block_properties.render_types": "Render Types",
     "config.block_properties.render_types.tooltip": "The render type of the block.",
@@ -438,6 +442,9 @@
     "config.definition.trait.mek_slurry_container.name": "Mek Slurry Container",
     "config.definition.trait.mek_heat_container.name": "Mek Heat Container",
     "config.definition.trait.mek_heat_container.capacity": "Capacity",
+    "config.definition.trait.mek_heat_container.min_heat_display": "Min Heat Display",
+    "config.definition.trait.mek_heat_container.min_heat_display.tooltip.0": "The minimum heat of the heat bar.",
+    "config.definition.trait.mek_heat_container.min_heat_display.tooltip.1": "It is not actually the minimum heat of the container, but the minimum heat of the UI display.",
     "config.definition.trait.mek_heat_container.inverse_conduction": "Inverse Conduction",
     "config.definition.trait.mek_heat_container.inverse_conduction.tooltip": "Returns the inverse conduction coefficient of a given capacitor. This value defines how much heat is allowed to be dissipated. The larger the number the less heat can dissipate. The trade-off is that it also allows for lower amounts of heat to be inserted.",
     "config.definition.trait.mek_heat_container.ui_container_hover": "Stored: %d / %d heat",

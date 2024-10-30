@@ -24,15 +24,21 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.Capability;
 
+@Setter
+@Getter
 @LDLRegister(name = "mek_heat_container", group = "trait", modID = "mekanism")
 public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IHeatHandler> {
-    @Getter
-    @Setter
+
     @Configurable(name = "config.definition.trait.mek_heat_container.capacity")
     @NumberRange(range = {1, Double.MAX_VALUE})
     private double capacity = 5000d;
-    @Getter
-    @Setter
+    @Configurable(name = "config.definition.trait.mek_heat_container.min_heat_display",
+            tips = {
+                    "config.definition.trait.mek_heat_container.min_heat_display.tooltip.0",
+                    "config.definition.trait.mek_heat_container.min_heat_display.tooltip.1"
+            })
+    @NumberRange(range = {-Double.MAX_VALUE, Double.MAX_VALUE})
+    private double minHeatDisplay = 0;
     @Configurable(name = "config.definition.trait.mek_heat_container.inverse_conduction",
             tips = "config.definition.trait.mek_heat_container.inverse_conduction.tooltip")
     @NumberRange(range = {1d, Double.MAX_VALUE})
@@ -73,14 +79,15 @@ public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefin
     public void initTraitUI(ITrait trait, WidgetGroup group) {
         if (trait instanceof MekHeatCapabilityTrait heatTrait) {
             var prefix = uiPrefixName();
+            var range = capacity - minHeatDisplay;
             WidgetUtils.widgetByIdForEach(group, "^%s$".formatted(prefix), ProgressWidget.class, energyBar -> {
-                energyBar.setProgressSupplier(() -> Math.max(heatTrait.container.getTotalTemperature(), 0) / heatTrait.container.getTotalHeatCapacity());
+                energyBar.setProgressSupplier(() -> Math.max(heatTrait.container.getTotalTemperature() - minHeatDisplay, 0) / range);
                 energyBar.setDynamicHoverTips(value -> LocalizationUtils.format(
                         "config.definition.trait.mek_heat_container.ui_container_hover",
-                        Math.round(heatTrait.container.getTotalHeatCapacity() * value), heatTrait.container.getTotalHeatCapacity()));
+                        Math.round(range * value), range));
             });
             WidgetUtils.widgetByIdForEach(group, "^%s_text$".formatted(prefix), TextTextureWidget.class, energyBarText -> {
-                energyBarText.setText(() -> Component.literal(heatTrait.container.getTotalTemperature() + " pressure"));
+                energyBarText.setText(() -> Component.literal(heatTrait.container.getTotalTemperature() + " heat"));
             });
         }
     }

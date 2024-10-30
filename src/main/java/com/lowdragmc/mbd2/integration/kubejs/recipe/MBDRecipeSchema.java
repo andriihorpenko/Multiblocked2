@@ -21,6 +21,7 @@ import com.lowdragmc.mbd2.integration.create.CreateStressRecipeCapability;
 import com.lowdragmc.mbd2.integration.embers.EmbersEmberRecipeCapability;
 import com.lowdragmc.mbd2.integration.gtm.GTMEnergyRecipeCapability;
 import com.lowdragmc.mbd2.integration.mekanism.MekanismChemicalRecipeCapability;
+import com.lowdragmc.mbd2.integration.mekanism.MekanismHeatCondition;
 import com.lowdragmc.mbd2.integration.mekanism.MekanismHeatRecipeCapability;
 import com.lowdragmc.mbd2.integration.naturesaura.NaturesAuraRecipeCapability;
 import com.lowdragmc.mbd2.integration.pneumaticcraft.PNCPressureAirRecipeCapability;
@@ -457,6 +458,14 @@ public interface MBDRecipeSchema {
                 throw new IllegalStateException("Try to add a rotation condition while the create is not loaded!");
             }
             addCondition(new CreateRotationCondition(minRPM, maxRPM, minStress, maxStress));
+            return this;
+        }
+
+        public MBDRecipeJS heatCondition(double minHeat, double maxHeat) {
+            if (!MBD2.isMekanismLoaded()) {
+                throw new IllegalStateException("Try to add a heat condition while the mekanism is not loaded!");
+            }
+            addCondition(new MekanismHeatCondition(minHeat, maxHeat));
             return this;
         }
 

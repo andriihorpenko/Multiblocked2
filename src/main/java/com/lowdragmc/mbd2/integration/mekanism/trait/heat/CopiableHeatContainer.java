@@ -35,12 +35,12 @@ public class CopiableHeatContainer implements IHeatHandler, ITagSerializable<Tag
 
     @Override
     public double getTemperature(int capacitor) {
-        return capacitor == 0 ? 0 : temperature;
+        return capacitor == 0 ? temperature : 0;
     }
 
     @Override
     public double getInverseConduction(int capacitor) {
-        return capacitor == 0 ? 1 : inverseConduction;
+        return capacitor == 0 ? inverseConduction : 1;
     }
 
     @Override

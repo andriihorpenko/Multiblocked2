@@ -10,6 +10,7 @@ import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.trait.RecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
 import com.lowdragmc.mbd2.integration.mekanism.MekanismHeatRecipeCapability;
+import lombok.Getter;
 import mekanism.api.heat.IHeatHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,6 +23,7 @@ public class MekHeatCapabilityTrait extends SimpleCapabilityTrait<IHeatHandler> 
 
     @Persisted
     @DescSynced
+    @Getter
     public final CopiableHeatContainer container;
     private final HeatRecipeHandler recipeHandler = new HeatRecipeHandler();
 

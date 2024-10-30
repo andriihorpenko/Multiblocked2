@@ -5,6 +5,7 @@ import com.lowdragmc.mbd2.api.registry.MBDRegistries;
 import com.lowdragmc.mbd2.common.event.MBDRegistryEvent;
 import com.lowdragmc.mbd2.common.recipe.*;
 import com.lowdragmc.mbd2.integration.create.CreateRotationCondition;
+import com.lowdragmc.mbd2.integration.mekanism.MekanismHeatCondition;
 import net.minecraftforge.fml.ModLoader;
 
 public final class MBDRecipeConditions {
@@ -23,6 +24,9 @@ public final class MBDRecipeConditions {
         MBDRegistries.RECIPE_CONDITIONS.register(BlockCondition.INSTANCE.getType(), BlockCondition.class);
         if (MBD2.isCreateLoaded()) {
             MBDRegistries.RECIPE_CONDITIONS.register(CreateRotationCondition.INSTANCE.getType(), CreateRotationCondition.class);
+        }
+        if (MBD2.isMekanismLoaded()) {
+            MBDRegistries.RECIPE_CONDITIONS.register(MekanismHeatCondition.INSTANCE.getType(), MekanismHeatCondition.class);
         }
         ModLoader.get().postEvent(new MBDRegistryEvent.RecipeCondition());
         MBDRegistries.RECIPE_CONDITIONS.freeze();
