@@ -50,6 +50,9 @@ public record FluidHandlerList(IFluidHandler[] handlers) implements IFluidHandle
 
     @Override
     public int fill(FluidStack resource, FluidAction action) {
+        if (resource.isEmpty()) {
+            return 0;
+        }
         var copied = resource.copy();
         for (var handler : handlers) {
             var candidate = copied.copy();
@@ -61,6 +64,9 @@ public record FluidHandlerList(IFluidHandler[] handlers) implements IFluidHandle
 
     @Override
     public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        if (resource.isEmpty()) {
+            return FluidStack.EMPTY;
+        }
         var copied = resource.copy();
         for (var handler : handlers) {
             var candidate = copied.copy();
