@@ -81,7 +81,7 @@ public class TraitList extends DraggableScrollableWidgetGroup {
         if (isMouseOverElement(mouseX, mouseY) && button == 1 && editor.getCurrentProject() instanceof MachineProject project) {
             var menu = TreeBuilder.Menu.start()
                     .branch(Icons.ADD_FILE, "editor.machine.machine_traits.add_trait", m -> {
-                        for (var wrapper : MBDRegistries.TRAIT_DEFINITIONS.values()) {
+                        for (var wrapper : MBDRegistries.TRAIT_DEFINITION_TYPES.values()) {
                             m.leaf(wrapper.creator().get().getIcon(), "config.definition.trait.%s.name".formatted(wrapper.annotation().name()), () -> {
                                 var traitDefinition = wrapper.creator().get();
                                 if (!traitDefinition.allowMultiple()) {

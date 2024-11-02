@@ -37,7 +37,7 @@ public class MBDMachineDefinitionTypes {
                 var constructor = clazz.getDeclaredConstructor();
                 constructor.setAccessible(true);
                 MBDRegistries.MACHINE_DEFINITION_TYPES.register(clazz.getAnnotation(LDLRegister.class).name(),
-                        new AnnotationDetector.Wrapper<>(annotation, clazz, {
+                        new AnnotationDetector.Wrapper<>(annotation, clazz, () -> {
                             try {
                                 return constructor.newInstance();
                             } catch (Exception e) {
