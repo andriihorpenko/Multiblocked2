@@ -20,10 +20,10 @@ import com.lowdragmc.mbd2.integration.naturesaura.trait.AuraHandlerTraitDefiniti
 import com.lowdragmc.mbd2.integration.pneumaticcraft.trait.PNCPressureAirHandlerTraitDefinition;
 import net.minecraftforge.fml.ModLoader;
 
-public class MBDTraitDefinitions {
+public class MBDTraitDefinitionTypes {
 
     public static void init() {
-        MBDRegistries.TRAIT_DEFINITIONS.unfreeze();
+        MBDRegistries.TRAIT_DEFINITION_TYPES.unfreeze();
         register(ItemSlotCapabilityTraitDefinition.class);
         register(FluidTankCapabilityTraitDefinition.class);
         register(ForgeEnergyCapabilityTraitDefinition.class);
@@ -51,8 +51,8 @@ public class MBDTraitDefinitions {
         if (MBD2.isEmbersLoaded()) {
             register(EmbersEmberCapabilityTraitDefinition.class);
         }
-        ModLoader.get().postEvent(new MBDRegistryEvent.Trait());
-        MBDRegistries.TRAIT_DEFINITIONS.freeze();
+        ModLoader.get().postEvent(new MBDRegistryEvent.TraitType());
+        MBDRegistries.TRAIT_DEFINITION_TYPES.freeze();
     }
 
     public static void register(Class<? extends TraitDefinition> clazz) {
@@ -65,9 +65,10 @@ public class MBDTraitDefinitions {
                 }
             }
             try {
-                var constructor = clazz.getConstructor();
-                MBDRegistries.TRAIT_DEFINITIONS.register(clazz.getAnnotation(LDLRegister.class).name(),
-                        new AnnotationDetector.Wrapper<>(annotation, clazz, () -> {
+                var constructor = clazz.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                MBDRegistries.TRAIT_DEFINITION_TYPES.register(clazz.getAnnotation(LDLRegister.class).name(),
+                        new AnnotationDetector.Wrapper<>(annotation, clazz, {
                             try {
                                 return constructor.newInstance();
                             } catch (Exception e) {

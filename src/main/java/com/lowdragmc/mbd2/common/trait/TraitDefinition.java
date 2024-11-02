@@ -26,7 +26,7 @@ public abstract class TraitDefinition implements IConfigurable, IAutoPersistedSe
     @Nullable
     public static TraitDefinition deserializeDefinition(CompoundTag tag) {
         var type = tag.getString("_type");
-        var wrapper = MBDRegistries.TRAIT_DEFINITIONS.get(type);
+        var wrapper = MBDRegistries.TRAIT_DEFINITION_TYPES.get(type);
         if (wrapper != null) {
             var definition = wrapper.creator().get();
             definition.deserializeNBT(tag);

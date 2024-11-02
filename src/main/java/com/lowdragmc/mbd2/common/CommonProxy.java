@@ -10,11 +10,11 @@ import com.lowdragmc.mbd2.api.recipe.MBDRecipeSerializer;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipeType;
 import com.lowdragmc.mbd2.api.recipe.ingredient.SizedIngredient;
 import com.lowdragmc.mbd2.api.registry.MBDRegistries;
+import com.lowdragmc.mbd2.common.data.MBDMachineDefinitionTypes;
 import com.lowdragmc.mbd2.common.data.MBDRecipeCapabilities;
 import com.lowdragmc.mbd2.common.data.MBDRecipeConditions;
-import com.lowdragmc.mbd2.common.data.MBDTraitDefinitions;
+import com.lowdragmc.mbd2.common.data.MBDTraitDefinitionTypes;
 import com.lowdragmc.mbd2.common.event.MBDRegistryEvent;
-import com.lowdragmc.mbd2.common.gui.editor.RecipeTypeProject;
 import com.lowdragmc.mbd2.common.gui.factory.MachineUIFactory;
 import com.lowdragmc.mbd2.common.machine.definition.MBDMachineDefinition;
 import com.lowdragmc.mbd2.common.machine.definition.MultiblockMachineDefinition;
@@ -137,7 +137,8 @@ public class CommonProxy {
         e.enqueueWork(() -> {
             MBDRecipeConditions.init();
             MBDRecipeCapabilities.init();
-            MBDTraitDefinitions.init();
+            MBDMachineDefinitionTypes.init();
+            MBDTraitDefinitionTypes.init();
             registerRecipeType();
             registerMachine();
         });
