@@ -29,6 +29,7 @@ public class MBDTest {
 //                .blockProperties(ConfigBlockProperties.builder().build())
 //                .itemProperties(ConfigItemProperties.builder().build())
 //                .build());
+//        event.registerFromResource(this.getClass(), "mbd2/machine/machine_project_file.sm");
     }
 
     @SubscribeEvent
