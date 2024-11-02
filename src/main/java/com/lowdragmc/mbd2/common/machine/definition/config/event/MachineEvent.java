@@ -2,8 +2,11 @@ package com.lowdragmc.mbd2.common.machine.definition.config.event;
 
 import com.lowdragmc.lowdraglib.gui.editor.ILDLRegister;
 import com.lowdragmc.lowdraglib.gui.graphprocessor.data.parameter.ExposedParameter;
+import com.lowdragmc.mbd2.MBD2;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.lowdragmc.mbd2.common.graphprocessor.GraphParameterGet;
+import com.lowdragmc.mbd2.integration.kubejs.events.MBDClientEvents;
+import com.lowdragmc.mbd2.integration.kubejs.events.MBDServerEvents;
 import lombok.Getter;
 import com.lowdragmc.mbd2.common.graphprocessor.GraphParameterSet;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -24,8 +27,19 @@ public class MachineEvent extends Event implements ILDLRegister {
         // post to the graph events
         machine.getDefinition().machineEvents().postGraphEvent(this);
         // post to the KubeJS events
-        // TODO
+        postKubeJSEvent();
         return this;
+    }
+
+    public void postKubeJSEvent() {
+        // post to the KubeJS events
+        if (MBD2.isKubeJSLoaded()) {
+            if (machine.isRemote()) {
+                MBDClientEvents.postMachineEvent(this);
+            } else {
+                MBDServerEvents.postMachineEvent(this);
+            }
+        }
     }
 
     /**

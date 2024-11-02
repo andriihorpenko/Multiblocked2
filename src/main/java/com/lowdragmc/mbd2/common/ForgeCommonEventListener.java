@@ -86,6 +86,10 @@ public class ForgeCommonEventListener {
                                 }).orElse(false)) {
                                     // rollback to the original state
                                     serverLevel.setBlockAndUpdate(pos, originalState);
+                                } else {
+                                    // success
+                                    event.setCanceled(true);
+                                    return;
                                 }
                             }
                         }

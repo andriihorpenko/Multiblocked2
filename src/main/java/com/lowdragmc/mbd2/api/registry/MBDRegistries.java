@@ -45,10 +45,12 @@ public class MBDRegistries {
                 .build();
     }
 
+    public static final MBDRegistry.String<AnnotationDetector.Wrapper<LDLRegister, ? extends MBDMachineDefinition>> MACHINE_DEFINITION_TYPES = new MBDRegistry.String<>(MBD2.id("machine_definition_type"));
+    public static final MBDRegistry.String<AnnotationDetector.Wrapper<LDLRegister, ? extends TraitDefinition>> TRAIT_DEFINITION_TYPES = new MBDRegistry.String<>(MBD2.id("trait_definition_type"));
+
     public static final MBDRegistry.RL<MBDMachineDefinition> MACHINE_DEFINITIONS = new MBDRegistry.RL<>(MBD2.id("machine_definition"));
     public static final MBDRegistry.RL<MBDRecipeType> RECIPE_TYPES = new MBDRegistry.RL<>(MBD2.id("recipe_type"));
     public static final MBDRegistry.String<RecipeCapability<?>> RECIPE_CAPABILITIES = new MBDRegistry.String<>(MBD2.id("recipe_capability"));
-    public static final MBDRegistry.String<AnnotationDetector.Wrapper<LDLRegister, ? extends TraitDefinition>> TRAIT_DEFINITIONS = new MBDRegistry.String<>(MBD2.id("trait_definition"));
     public static final MBDRegistry.String<Class<? extends RecipeCondition>> RECIPE_CONDITIONS = new MBDRegistry.String<>(MBD2.id("recipe_condition"));
 
 }

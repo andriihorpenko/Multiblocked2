@@ -1,3 +1,3 @@
 # ChangeLog
 
-* fix crash that some stupid mods try to drain the `EMPTY` fluid
+* fix multiblock doesn't assembly with candidates in some cases
