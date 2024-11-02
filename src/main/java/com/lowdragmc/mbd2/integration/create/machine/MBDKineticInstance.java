@@ -2,7 +2,6 @@ package com.lowdragmc.mbd2.integration.create.machine;
 
 import com.jozufozu.flywheel.api.InstanceData;
 import com.jozufozu.flywheel.api.MaterialManager;
-import com.jozufozu.flywheel.backend.RenderLayer;
 import com.jozufozu.flywheel.core.PartialModel;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityInstance;
 import com.simibubi.create.content.kinetics.base.flwdata.RotatingData;
@@ -17,13 +16,13 @@ public class MBDKineticInstance extends KineticBlockEntityInstance<MBDKineticMac
 
     protected final List<RotatingData> keys = new ArrayList<>();
 
-    public MBDKineticInstance(MaterialManager modelManager, MBDKineticMachineBlockEntity tile, PartialModel model, RenderLayer layer) {
+    public MBDKineticInstance(MaterialManager modelManager, MBDKineticMachineBlockEntity tile, PartialModel model, ConfigKineticMachineSettings.RenderLayer layer) {
         super(modelManager, tile);
         var speed = tile.getSpeed();
         var rotationFacing = tile.definition.kineticMachineSettings.getRotationFacing(tile.getMetaMachine().getFrontFacing().orElse(Direction.NORTH));
-        var rotatingData = (layer == RenderLayer.SOLID ? modelManager.defaultSolid() :
-                        layer == RenderLayer.CUTOUT ? modelManager.defaultCutout() :
-                        layer == RenderLayer.TRANSPARENT ? modelManager.defaultTransparent() : modelManager.defaultSolid())
+        var rotatingData = (layer == ConfigKineticMachineSettings.RenderLayer.SOLID ? modelManager.defaultSolid() :
+                        layer == ConfigKineticMachineSettings.RenderLayer.CUTOUT ? modelManager.defaultCutout() :
+                        layer == ConfigKineticMachineSettings.RenderLayer.TRANSPARENT ? modelManager.defaultTransparent() : modelManager.defaultSolid())
                 .material(AllMaterialSpecs.ROTATING)
                 .getModel(model, blockState, rotationFacing, CachedBufferer.rotateToFaceVertical(rotationFacing))
                 .createInstance();

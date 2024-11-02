@@ -8,7 +8,6 @@ import lombok.Getter;
 public class MBDMachineEvents {
     public static EventGroup MBD_MACHINE_EVENTS = EventGroup.of("MBDMachineEvents");
 
-
     @Getter
     public static class MachineEventJS<E extends MachineEvent> extends EventJS {
         public final E event;

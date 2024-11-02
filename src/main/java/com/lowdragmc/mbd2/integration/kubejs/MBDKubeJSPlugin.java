@@ -1,10 +1,14 @@
 package com.lowdragmc.mbd2.integration.kubejs;
 
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.mbd2.MBD2;
 import com.lowdragmc.mbd2.api.registry.MBDRegistries;
 import com.lowdragmc.mbd2.common.machine.definition.config.ConfigBlockProperties;
 import com.lowdragmc.mbd2.common.machine.definition.config.MachineState;
 import com.lowdragmc.mbd2.integration.create.machine.CreateMachineState;
+import com.lowdragmc.mbd2.integration.kubejs.events.MBDClientEvents;
+import com.lowdragmc.mbd2.integration.kubejs.events.MBDMachineEvents;
+import com.lowdragmc.mbd2.integration.kubejs.events.MBDServerEvents;
 import com.lowdragmc.mbd2.integration.kubejs.events.MBDStartupEvents;
 import com.lowdragmc.mbd2.integration.kubejs.recipe.MBDRecipeSchema;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -32,7 +36,12 @@ public class MBDKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void registerEvents() {
         super.registerEvents();
+        MBDServerEvents.init();
+        if (LDLib.isClient()) {
+            MBDClientEvents.init();
+        }
         MBDStartupEvents.REGISTRY_EVENTS.register();
+        MBDMachineEvents.MBD_MACHINE_EVENTS.register();
     }
 
     @Override

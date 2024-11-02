@@ -1,6 +1,5 @@
 package com.lowdragmc.mbd2.integration.create.machine;
 
-import com.jozufozu.flywheel.backend.RenderLayer;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.NumberRange;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurable;
@@ -69,6 +68,13 @@ public class ConfigKineticMachineSettings implements IConfigurable, IPersistedSe
     @Configurable(name = "config.kinetic_machine.use_flywheel", tips = "config.kinetic_machine.use_flywheel.tooltip")
     @Builder.Default
     public boolean useFlywheel = true;
+
+    public enum RenderLayer {
+        SOLID,
+        CUTOUT,
+        TRANSPARENT,
+    }
+
     @Configurable(name = "config.kinetic_machine.flywheel_render_layer", tips = "config.kinetic_machine.flywheel_render_layer.tooltip")
     @Builder.Default
     public RenderLayer renderLayer = RenderLayer.SOLID;

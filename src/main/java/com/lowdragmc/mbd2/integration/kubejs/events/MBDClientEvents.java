@@ -26,7 +26,11 @@ public interface MBDClientEvents {
             MBDMachineEvents.MachineCustomDataUpdateEventJS.class,
             MBDMachineEvents.MachineCustomDataUpdateEventJS::new);
 
-    static  <E extends MachineEvent> EventHandler registerMachineEvent(String name, Class<E> eventClass,
+    static void init() {
+        // NO-OP
+    }
+
+    static <E extends MachineEvent> EventHandler registerMachineEvent(String name, Class<E> eventClass,
                                                                       Class<? extends MBDMachineEvents.MachineEventJS<E>> eventJSClass,
                                                                       Function<E, MBDMachineEvents.MachineEventJS<E>> eventJSFactory) {
         var handler = MBD_MACHINE_EVENTS.client(name, () -> eventJSClass).extra(Extra.ID);

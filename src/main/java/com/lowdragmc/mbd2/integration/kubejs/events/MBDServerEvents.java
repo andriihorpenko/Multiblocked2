@@ -104,8 +104,11 @@ public interface MBDServerEvents {
             MBDMachineEvents.MachineUseCatalystEventJS.class,
             MBDMachineEvents.MachineUseCatalystEventJS::new);
 
+    static void init() {
+        // NO-OP
+    }
 
-    static  <E extends MachineEvent> EventHandler registerMachineEvent(String name, Class<E> eventClass,
+    static <E extends MachineEvent> EventHandler registerMachineEvent(String name, Class<E> eventClass,
                                                                       Class<? extends MBDMachineEvents.MachineEventJS<E>> eventJSClass,
                                                                       Function<E, MBDMachineEvents.MachineEventJS<E>> eventJSFactory) {
         var handler = MBDMachineEvents.MBD_MACHINE_EVENTS.server(name, () -> eventJSClass).extra(Extra.ID);
