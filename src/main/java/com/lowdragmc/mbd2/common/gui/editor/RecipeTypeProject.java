@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.gui.editor.data.resource.Resource;
 import com.lowdragmc.lowdraglib.gui.editor.data.resource.TexturesResource;
 import com.lowdragmc.lowdraglib.gui.editor.ui.Editor;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
+import com.lowdragmc.lowdraglib.gui.texture.UIResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.mbd2.MBD2;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipeType;
@@ -91,7 +92,9 @@ public class RecipeTypeProject implements IProject {
         this.ui = new WidgetGroup();
         IConfigurableWidget.deserializeNBT(this.ui, tag.getCompound("ui"), resources, true);
         this.recipeType = createDefaultRecipeType();
+        UIResourceTexture.setCurrentResource((Resource)resources.resources.get(TexturesResource.RESOURCE_NAME), true);
         this.recipeType.deserializeNBT(tag.getCompound("recipe_type"));
+        UIResourceTexture.clearCurrentResource();
     }
 
     @Override

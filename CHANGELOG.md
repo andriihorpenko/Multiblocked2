@@ -1,3 +1,3 @@
 # ChangeLog
 
-* fix item trait with slot size doesnt process recipe
+* fix recipetype project doesn't show up the correct icon
