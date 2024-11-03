@@ -127,7 +127,9 @@ public class RecipeLogic implements IEnhancedManaged {
                 if (progress < duration) {
                     handleRecipeWorking();
                 }
-                if (progress >= duration) {
+                if (isIdle() || duration == 0) {
+                    // interrupt recipe
+                } else if (progress >= duration) {
                     onRecipeFinish();
                 }
             } else if (lastRecipe != null) {

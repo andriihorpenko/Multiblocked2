@@ -511,7 +511,7 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
         var event = new MachineBeforeRecipeWorkingEvent(this, recipe);
         MinecraftForge.EVENT_BUS.post(event.postCustomEvent());
         if (event.isCanceled()) {
-            return false;
+            return true;
         }
         return IMachine.super.beforeWorking(recipe);
     }
