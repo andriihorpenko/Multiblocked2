@@ -11,6 +11,7 @@ import com.lowdragmc.mbd2.api.capability.recipe.IO;
 import com.lowdragmc.mbd2.api.machine.IMachine;
 import com.lowdragmc.mbd2.config.ConfigHolder;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -64,13 +65,13 @@ public class RecipeLogic implements IEnhancedManaged {
     @Nullable @Getter @Persisted
     protected MBDRecipe lastOriginRecipe;
     @Persisted
-    @Getter
+    @Getter @Setter
     protected int progress;
-    @Getter @Persisted
+    @Getter @Persisted @Setter
     protected int duration;
-    @Getter @Persisted
+    @Getter @Persisted @Setter
     protected int fuelTime;
-    @Getter @Persisted
+    @Getter @Persisted @Setter
     protected int fuelMaxTime;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;

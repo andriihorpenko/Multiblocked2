@@ -59,10 +59,15 @@ public interface MBDServerEvents {
             MBDMachineEvents.MachinePlacedEventJS.class,
             MBDMachineEvents.MachinePlacedEventJS::new);
 
-    EventHandler RECIPE_MODIFY = registerMachineEvent("onRecipeModify",
-            MachineRecipeModifyEvent.class,
-            MBDMachineEvents.MachineRecipeModifyEventJS.class,
-            MBDMachineEvents.MachineRecipeModifyEventJS::new);
+    EventHandler BEFORE_RECIPE_MODIFY = registerMachineEvent("onBeforeRecipeModify",
+            MachineRecipeModifyEvent.Before.class,
+            MBDMachineEvents.MachineRecipeModifyEventBeforeJS.class,
+            MBDMachineEvents.MachineRecipeModifyEventBeforeJS::new);
+
+    EventHandler AFTER_RECIPE_MODIFY = registerMachineEvent("onAfterRecipeModify",
+            MachineRecipeModifyEvent.After.class,
+            MBDMachineEvents.MachineRecipeModifyEventAfterJS.class,
+            MBDMachineEvents.MachineRecipeModifyEventAfterJS::new);
 
     EventHandler RECIPE_STATUS_CHANGED = registerMachineEvent("onRecipeStatusChanged",
             MachineRecipeStatusChangedEvent.class,
