@@ -453,6 +453,17 @@ public interface MBDRecipeSchema {
             return this;
         }
 
+        public MBDRecipeJS dayLight(boolean isDay) {
+            addCondition(new DayLightCondition(isDay));
+            return this;
+        }
+
+        public MBDRecipeJS redstoneSignal(int minSignal, int maxSignal) {
+            addCondition(new RedstoneSignalCondition(minSignal, maxSignal));
+            return this;
+        }
+
+        // mod compatibility
         public MBDRecipeJS rotationCondition(float minRPM, float maxRPM, float minStress, float maxStress) {
             if (!MBD2.isCreateLoaded()) {
                 throw new IllegalStateException("Try to add a rotation condition while the create is not loaded!");

@@ -23,6 +23,7 @@ public final class MBDRecipeConditions {
         MBDRegistries.RECIPE_CONDITIONS.register(MachineCustomDataCondition.INSTANCE.getType(), MachineCustomDataCondition.class);
         MBDRegistries.RECIPE_CONDITIONS.register(BlockCondition.INSTANCE.getType(), BlockCondition.class);
         MBDRegistries.RECIPE_CONDITIONS.register(DayLightCondition.INSTANCE.getType(), DayLightCondition.class);
+        MBDRegistries.RECIPE_CONDITIONS.register(RedstoneSignalCondition.INSTANCE.getType(), RedstoneSignalCondition.class);
         if (MBD2.isCreateLoaded()) {
             MBDRegistries.RECIPE_CONDITIONS.register(CreateRotationCondition.INSTANCE.getType(), CreateRotationCondition.class);
         }
