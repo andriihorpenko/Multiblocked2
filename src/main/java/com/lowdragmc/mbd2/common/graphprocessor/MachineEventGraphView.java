@@ -14,5 +14,6 @@ public class MachineEventGraphView extends GraphViewWidget {
     protected void setupNodeGroups(List<String> supportNodeGroups) {
         super.setupNodeGroups(supportNodeGroups);
         supportNodeGroups.add("graph_processor.node.mbd2.machine");
+        supportNodeGroups.add("graph_processor.node.kjs");
     }
 }

@@ -219,24 +219,6 @@ public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendere
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var machine = getMachine(world, pos).orElse(null);
         if (machine == null) return InteractionResult.PASS;
-        // TODO use
-//        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
-//        if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
-//            var result = machine.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
-//            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
-//                ToolHelper.playToolSound(result.getFirst(), serverPlayer);
-//
-//                if (!serverPlayer.isCreative()) {
-//                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
-//                }
-//            }
-//            if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
-//        }
-//
-//        if (machine instanceof IInteractedMachine interactedMachine) {
-//            var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
-//            if (result != InteractionResult.PASS) return result;
-//        }
         var result = machine.onUse(state, world, pos, player, hand, hit);
         if (result != InteractionResult.PASS) return result;
         if (machine.shouldOpenUI(hand, hit)) {
@@ -245,21 +227,34 @@ public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendere
         return InteractionResult.PASS;
     }
 
-    // TODO redstone signal
-//    @Override
-//    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-//        return getMachine(level, pos).getOutputSignal(direction);
-//    }
-//
-//    @Override
-//    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-//        return getMachine(level, pos).getOutputDirectSignal(direction);
-//    }
-//
-//    @Override
-//    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-//        return getMachine(level, pos).getAnalogOutputSignal();
-//    }
+    @Override
+    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
+        var machine = getMachine(level, pos).orElse(null);
+        if (machine == null || direction == null) return super.canConnectRedstone(state, level, pos, direction);
+        return machine.canConnectRedstone(direction);
+    }
+
+    @Override
+    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        var machine = getMachine(level, pos).orElse(null);
+        if (machine == null) return super.getSignal(state, level, pos, direction);
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        return machine.getOutputSignal(direction.getOpposite());
+    }
+
+    @Override
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        var machine = getMachine(level, pos).orElse(null);
+        if (machine == null) return super.getDirectSignal(state, level, pos, direction);
+        return machine.getOutputDirectSignal(direction);
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        var machine = getMachine(level, pos).orElse(null);
+        if (machine == null) return super.getAnalogOutputSignal(state, level, pos);
+        return machine.getAnalogOutputSignal();
+    }
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {

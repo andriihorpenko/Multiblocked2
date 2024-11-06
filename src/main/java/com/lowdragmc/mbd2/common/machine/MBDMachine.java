@@ -41,6 +41,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -107,6 +108,20 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
     private Map<IRenderer, Object> animatableMachine = new HashMap<>(); // it's used for Geckolib
     @Getter
     private Map<String, Object> photonFXs = new HashMap<>(); // it's used for Photon
+    // redstone signal
+    @Getter
+    @Persisted
+    @DescSynced
+    private byte[] outputSignal = new byte[6];
+    @Getter
+    @Persisted
+    @DescSynced
+    private byte[] outputDirectSignal = new byte[6];
+    @Getter
+    @Persisted
+    @DescSynced
+    private byte analogOutputSignal = 0;
+
 
     public MBDMachine(IMachineBlockEntity machineHolder, MBDMachineDefinition definition, Object... args) {
         this.machineHolder = machineHolder;
@@ -585,6 +600,78 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
      */
     public VoxelShape getShape(CollisionContext pContext) {
         return getDefinition().getState(machineState).getShape(getFrontFacing().orElse(Direction.NORTH));
+    }
+
+    /**
+     * Set output signal.
+     */
+    public void setOutputSignal(int signal, Direction side) {
+        if (!isRemote()) {
+            var sig = (byte) Mth.clamp(signal, 0, 15);
+            if (outputSignal[side.ordinal()] != sig) {
+                outputSignal[side.ordinal()] = sig;
+                updateSignal();
+            }
+        }
+    }
+
+    /**
+     * Set output direct signal.
+     */
+    public void setOutputDirectSignal(int signal, Direction side) {
+        if (!isRemote()) {
+            var sig = (byte) Mth.clamp(signal, 0, 15);
+            if (outputDirectSignal[side.ordinal()] != sig) {
+                outputDirectSignal[side.ordinal()] = sig;
+                updateSignal();
+            }
+        }
+    }
+
+    /**
+     * Set output analog signal.
+     */
+    public void setAnalogOutputSignal(int signal) {
+        if (!isRemote()) {
+            var sig = (byte) Mth.clamp(signal, 0, 15);
+            if (analogOutputSignal != sig) {
+                analogOutputSignal = sig;
+                updateSignal();
+            }
+        }
+    }
+
+    /**
+     * Whether the machine can connect to the redstone from given side
+     */
+    public boolean canConnectRedstone(Direction direction) {
+        if (getOutputSignal(direction) > 0) return true;
+        return getDefinition().machineSettings().signalConnection().getConnection(getFrontFacing().orElse(Direction.NORTH), direction);
+    }
+
+    /**
+     * Get the output signal for the given side.
+     */
+    public int getOutputSignal(Direction direction) {
+        return outputSignal[direction.ordinal()];
+    }
+
+    /**
+     * Get the direct signal for the given side.
+     */
+    public int getOutputDirectSignal(Direction direction) {
+        return outputDirectSignal[direction.ordinal()];
+    }
+
+    /**
+     * Call to update output signal.
+     * also see {@link #getOutputSignal(Direction)} and
+     * {@link #getOutputDirectSignal(Direction)}
+     */
+     public void updateSignal() {
+        if (!getLevel().isClientSide) {
+            notifyBlockUpdate();
+        }
     }
 
     /**

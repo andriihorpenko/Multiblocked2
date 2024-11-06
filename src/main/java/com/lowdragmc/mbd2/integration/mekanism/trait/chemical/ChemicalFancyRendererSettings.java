@@ -24,14 +24,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 
 public class ChemicalFancyRendererSettings extends FancyRendererSettings {
-    private final ChemicalTankCapabilityTraitDefinition<?, ?, ?> definition;
+    private final ChemicalTankCapabilityTraitDefinition<?, ?> definition;
 
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.fancy_renderer.percent_height", tips = "config.definition.trait.fancy_renderer.percent_height.tooltip")
     private boolean percentHeight = false;
 
-    public ChemicalFancyRendererSettings(ChemicalTankCapabilityTraitDefinition<?, ?, ?> definition) {
+    public ChemicalFancyRendererSettings(ChemicalTankCapabilityTraitDefinition<?, ?> definition) {
         this.definition = definition;
     }
 
