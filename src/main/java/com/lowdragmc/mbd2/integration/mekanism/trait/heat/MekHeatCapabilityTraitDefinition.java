@@ -18,16 +18,13 @@ import com.lowdragmc.mbd2.integration.mekanism.MekanismHeatRecipeCapability;
 import com.lowdragmc.mbd2.utils.WidgetUtils;
 import lombok.Getter;
 import lombok.Setter;
-import mekanism.api.heat.IHeatHandler;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.capabilities.Capability;
 
 @Setter
 @Getter
 @LDLRegister(name = "mek_heat_container", group = "trait", modID = "mekanism")
-public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IHeatHandler> {
+public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition {
 
     @Configurable(name = "config.definition.trait.mek_heat_container.capacity")
     @NumberRange(range = {1, Double.MAX_VALUE})
@@ -45,18 +42,13 @@ public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefin
     private double inverseConduction = 1d;
 
     @Override
-    public SimpleCapabilityTrait<IHeatHandler> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait createTrait(MBDMachine machine) {
         return new MekHeatCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(MekanismBlocks.RESISTIVE_HEATER.getItemStack());
-    }
-
-    @Override
-    public Capability<IHeatHandler> getCapability() {
-        return Capabilities.HEAT_HANDLER;
     }
 
     @Override

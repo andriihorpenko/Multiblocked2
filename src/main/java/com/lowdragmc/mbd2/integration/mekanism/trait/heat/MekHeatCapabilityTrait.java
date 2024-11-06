@@ -7,25 +7,30 @@ import com.lowdragmc.mbd2.api.capability.recipe.IO;
 import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
 import com.lowdragmc.mbd2.integration.mekanism.MekanismHeatRecipeCapability;
 import lombok.Getter;
 import mekanism.api.heat.IHeatHandler;
+import mekanism.common.capabilities.Capabilities;
+import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MekHeatCapabilityTrait extends SimpleCapabilityTrait<IHeatHandler> {
+@Getter
+public class MekHeatCapabilityTrait extends SimpleCapabilityTrait {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MekHeatCapabilityTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
 
     @Persisted
     @DescSynced
-    @Getter
     public final CopiableHeatContainer container;
     private final HeatRecipeHandler recipeHandler = new HeatRecipeHandler();
+    private final HeatHandlerCap heatHandlerCap = new HeatHandlerCap();
 
     public MekHeatCapabilityTrait(MBDMachine machine, MekHeatCapabilityTraitDefinition definition) {
         super(machine, definition);
@@ -48,18 +53,13 @@ public class MekHeatCapabilityTrait extends SimpleCapabilityTrait<IHeatHandler> 
     }
 
     @Override
-    public IHeatHandler getCapContent(IO capbilityIO) {
-        return new HeatContainerWrapper(this.container, capbilityIO);
-    }
-
-    @Override
-    public IHeatHandler mergeContents(List<IHeatHandler> contents) {
-        return new HeatContainerList(contents.toArray(new IHeatHandler[0]));
-    }
-
-    @Override
     public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
         return List.of(recipeHandler);
+    }
+
+    @Override
+    public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
+        return List.of(heatHandlerCap);
     }
 
     public class HeatRecipeHandler extends RecipeHandlerTrait<Double> {
@@ -78,6 +78,28 @@ public class MekHeatCapabilityTrait extends SimpleCapabilityTrait<IHeatHandler> 
                 capability.handleHeat(required);
             }
             return null;
+        }
+    }
+
+    public class HeatHandlerCap implements ICapabilityProviderTrait<IHeatHandler> {
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return MekHeatCapabilityTrait.this.getCapabilityIO(side);
+        }
+
+        @Override
+        public Capability<IHeatHandler> getCapability() {
+            return Capabilities.HEAT_HANDLER;
+        }
+
+        @Override
+        public IHeatHandler getCapContent(IO capbilityIO) {
+            return new HeatContainerWrapper(container, capbilityIO);
+        }
+
+        @Override
+        public IHeatHandler mergeContents(List<IHeatHandler> contents) {
+            return new HeatContainerList(contents.toArray(new IHeatHandler[0]));
         }
     }
 }

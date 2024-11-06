@@ -223,10 +223,12 @@ public class MBDPartMachine extends MBDMachine implements IMultiPart {
                 for (var proxyControllerCapability : getDefinition().partSettings().proxyControllerCapabilities()) {
                     var io = proxyControllerCapability.capabilityIO().getIO(front, side);
                     for (var trait : proxyController.getAdditionalTraits()) {
-                        if (trait instanceof ICapabilityProviderTrait capabilityProviderTrait &&
-                                capabilityProviderTrait.getCapability() == cap &&
-                                trait.getDefinition().getName().contains(proxyControllerCapability.traitNameFilter())) {
-                            results.add((T) capabilityProviderTrait.getCapContent(io));
+                        if (trait.getDefinition().getName().contains(proxyControllerCapability.traitNameFilter())) {
+                            for (var capabilityProviderTrait : trait.getCapabilityProviderTraits()) {
+                                if (capabilityProviderTrait.getCapability() == cap) {
+                                    results.add((T) capabilityProviderTrait.getCapContent(io));
+                                }
+                            }
                         }
                     }
                 }
@@ -234,9 +236,10 @@ public class MBDPartMachine extends MBDMachine implements IMultiPart {
                     return LazyOptional.of(() -> results.get(0));
                 } else if (results.size() > 1) {
                     for (var trait : proxyController.getAdditionalTraits()) {
-                        if (trait instanceof ICapabilityProviderTrait capabilityProviderTrait &&
-                                capabilityProviderTrait.getCapability() == cap) {
-                            return LazyOptional.of(() -> (T) capabilityProviderTrait.mergeContents(results));
+                        for (var capabilityProviderTrait : trait.getCapabilityProviderTraits()) {
+                            if (capabilityProviderTrait.getCapability() == cap) {
+                                return LazyOptional.of(() -> (T) ((ICapabilityProviderTrait)capabilityProviderTrait).mergeContents(results));
+                            }
                         }
                     }
                     return LazyOptional.of(() -> results.get(0));

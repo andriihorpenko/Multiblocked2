@@ -405,6 +405,8 @@
 
     "config.definition.trait.botania_mana_storage.name": "Botania Mana Storage",
     "config.definition.trait.botania_mana_storage.capacity": "Capacity",
+    "config.definition.trait.botania_mana_storage.can_attach_spark": "Can Attach Spark",
+    "config.definition.trait.botania_mana_storage.can_attach_spark.tooltip": "Only the first trait will be able to attach a spark.",
     "config.definition.trait.botania_mana_storage.ui_container_hover": "Stored: %d / %d Mana",
     "config.definition.trait.botania_mana_storage.fancy_renderer": "Fancy Botania Mana Renderer",
     "config.definition.trait.botania_mana_storage.fancy_renderer.tooltip": "Allow you render stored mana in the world. (e.g. Mana Storage).",

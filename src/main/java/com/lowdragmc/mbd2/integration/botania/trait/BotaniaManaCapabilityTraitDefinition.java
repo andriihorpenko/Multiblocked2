@@ -20,36 +20,32 @@ import com.lowdragmc.mbd2.utils.WidgetUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.capabilities.Capability;
-import vazkii.botania.api.BotaniaForgeCapabilities;
-import vazkii.botania.api.mana.ManaPool;
-import vazkii.botania.api.mana.ManaReceiver;
 import vazkii.botania.common.block.BotaniaBlocks;
 
 @LDLRegister(name = "botania_mana_storage", group = "trait", modID = "botania")
-public class BotaniaManaCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<ManaPool> {
+public class BotaniaManaCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.botania_mana_storage.capacity")
     @NumberRange(range = {1, Integer.MAX_VALUE})
     private int capacity = 5000;
+    @Getter
+    @Setter
+    @Configurable(name = "config.definition.trait.botania_mana_storage.can_attach_spark",
+            tips = "config.definition.trait.botania_mana_storage.can_attach_spark.tooltip")
+    private boolean canAttachSpark = true;
     @Configurable(name = "config.definition.trait.botania_mana_storage.fancy_renderer", subConfigurable = true,
             tips = "config.definition.trait.botania_mana_storage.fancy_renderer.tooltip")
     private final BotaniaManaFancyRendererSettings fancyRendererSettings = new BotaniaManaFancyRendererSettings(this);
 
     @Override
-    public SimpleCapabilityTrait<ManaPool> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait createTrait(MBDMachine machine) {
         return new BotaniaManaCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(BotaniaBlocks.manaPool.asItem());
-    }
-
-    @Override
-    public Capability<ManaReceiver> getCapability() {
-        return BotaniaForgeCapabilities.MANA_RECEIVER;
     }
 
     @Override

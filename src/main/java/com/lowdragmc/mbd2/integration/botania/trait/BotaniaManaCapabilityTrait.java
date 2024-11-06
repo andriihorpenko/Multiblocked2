@@ -7,15 +7,24 @@ import com.lowdragmc.mbd2.api.capability.recipe.IO;
 import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
 import com.lowdragmc.mbd2.integration.botania.BotaniaManaRecipeCapability;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.Nullable;
+import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.mana.ManaPool;
+import vazkii.botania.api.mana.ManaReceiver;
+import vazkii.botania.api.mana.spark.ManaSpark;
+import vazkii.botania.api.mana.spark.SparkAttachable;
+import vazkii.botania.common.block.BotaniaBlocks;
 
 import java.util.List;
 
-public class BotaniaManaCapabilityTrait extends SimpleCapabilityTrait<ManaPool> {
+public class BotaniaManaCapabilityTrait extends SimpleCapabilityTrait {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BotaniaManaCapabilityTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -24,6 +33,8 @@ public class BotaniaManaCapabilityTrait extends SimpleCapabilityTrait<ManaPool> 
     @DescSynced
     public final CopiableManaPool storage;
     private final ManaRecipeHandler recipeHandler = new ManaRecipeHandler();
+    private final ManaReceiverCap manaReceiverCap = new ManaReceiverCap();
+    private final SparkAttachableCap sparkAttachableCap = new SparkAttachableCap();
 
     public BotaniaManaCapabilityTrait(MBDMachine machine, BotaniaManaCapabilityTraitDefinition definition) {
         super(machine, definition);
@@ -42,22 +53,17 @@ public class BotaniaManaCapabilityTrait extends SimpleCapabilityTrait<ManaPool> 
     }
 
     protected CopiableManaPool createStorages(MBDMachine machine) {
-        return new CopiableManaPool(machine, getDefinition().getCapacity());
-    }
-
-    @Override
-    public ManaPool getCapContent(IO capbilityIO) {
-        return new ManaPoolWrapper(this.storage, capbilityIO);
-    }
-
-    @Override
-    public ManaPool mergeContents(List<ManaPool> contents) {
-        return new ManaPoolList(contents.toArray(new ManaPool[0]));
+        return new CopiableManaPool(machine, getDefinition().getCapacity(), getDefinition().isCanAttachSpark());
     }
 
     @Override
     public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
         return List.of(recipeHandler);
+    }
+
+    @Override
+    public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
+        return List.of(manaReceiverCap, sparkAttachableCap);
     }
 
     public class ManaRecipeHandler extends RecipeHandlerTrait<Integer> {
@@ -87,5 +93,52 @@ public class BotaniaManaCapabilityTrait extends SimpleCapabilityTrait<ManaPool> 
             }
             return required > 0 ? List.of(required) : null;
         }
+    }
+
+    public class ManaReceiverCap implements ICapabilityProviderTrait<ManaPool> {
+
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return BotaniaManaCapabilityTrait.this.getCapabilityIO(side);
+        }
+
+        @Override
+        public Capability<ManaReceiver> getCapability() {
+            return BotaniaForgeCapabilities.MANA_RECEIVER;
+        }
+
+        @Override
+        public ManaPool getCapContent(IO capbilityIO) {
+            return new ManaPoolWrapper(storage, capbilityIO);
+        }
+
+        @Override
+        public ManaPool mergeContents(List<ManaPool> contents) {
+            return new ManaPoolList(contents.toArray(new ManaPool[0]));
+        }
+    }
+
+    public class SparkAttachableCap implements ICapabilityProviderTrait<SparkAttachable> {
+
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return BotaniaManaCapabilityTrait.this.getCapabilityIO(side);
+        }
+
+        @Override
+        public Capability<SparkAttachable> getCapability() {
+            return BotaniaForgeCapabilities.SPARK_ATTACHABLE;
+        }
+
+        @Override
+        public SparkAttachable getCapContent(IO capbilityIO) {
+            return storage;
+        }
+
+        @Override
+        public SparkAttachable mergeContents(List<SparkAttachable> contents) {
+            return contents.get(0);
+        }
+
     }
 }

@@ -11,10 +11,14 @@ import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.mbd2.common.capability.recipe.FluidRecipeCapability;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
 import lombok.Setter;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +26,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class FluidTankCapabilityTrait extends SimpleCapabilityTrait<IFluidHandler> {
+public class FluidTankCapabilityTrait extends SimpleCapabilityTrait {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidTankCapabilityTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -34,6 +38,7 @@ public class FluidTankCapabilityTrait extends SimpleCapabilityTrait<IFluidHandle
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined while creating tanks.
     private Boolean isEmpty;
     private final FluidRecipeHandler recipeHandler = new FluidRecipeHandler();
+    private final FluidHandlerCap fluidHandlerCap = new FluidHandlerCap();
 
     public FluidTankCapabilityTrait(MBDMachine machine, FluidTankCapabilityTraitDefinition definition) {
         super(machine, definition);
@@ -83,18 +88,13 @@ public class FluidTankCapabilityTrait extends SimpleCapabilityTrait<IFluidHandle
     }
 
     @Override
-    public IFluidHandler getCapContent(IO capbilityIO) {
-        return new FluidHandlerWrapper(this.storages, capbilityIO, getDefinition().isAllowSameFluids());
-    }
-
-    @Override
-    public IFluidHandler mergeContents(List<IFluidHandler> contents) {
-        return new FluidHandlerList(contents.toArray(new IFluidHandler[0]));
-    }
-
-    @Override
     public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
         return List.of(recipeHandler);
+    }
+
+    @Override
+    public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
+        return List.of(fluidHandlerCap);
     }
 
     public class FluidRecipeHandler extends RecipeHandlerTrait<FluidIngredient> {
@@ -158,6 +158,28 @@ public class FluidTankCapabilityTrait extends SimpleCapabilityTrait<IFluidHandle
                 if (left.isEmpty()) break;
             }
             return left.isEmpty() ? null : left;
+        }
+    }
+
+    public class FluidHandlerCap implements ICapabilityProviderTrait<IFluidHandler> {
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return FluidTankCapabilityTrait.this.getCapabilityIO(side);
+        }
+
+        @Override
+        public Capability<IFluidHandler> getCapability() {
+            return ForgeCapabilities.FLUID_HANDLER;
+        }
+
+        @Override
+        public IFluidHandler getCapContent(IO capbilityIO) {
+            return new FluidHandlerWrapper(storages, capbilityIO, getDefinition().isAllowSameFluids());
+        }
+
+        @Override
+        public IFluidHandler mergeContents(List<IFluidHandler> contents) {
+            return new FluidHandlerList(contents.toArray(new IFluidHandler[0]));
         }
     }
 }

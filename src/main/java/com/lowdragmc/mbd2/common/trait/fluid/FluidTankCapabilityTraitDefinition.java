@@ -22,12 +22,9 @@ import com.lowdragmc.mbd2.utils.WidgetUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 @LDLRegister(name = "fluid_tank", group = "trait", priority = -100)
-public class FluidTankCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IFluidHandler> {
+public class FluidTankCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition {
 
     @Getter
     @Setter
@@ -51,18 +48,13 @@ public class FluidTankCapabilityTraitDefinition extends SimpleCapabilityTraitDef
     private final FluidFancyRendererSettings fancyRendererSettings = new FluidFancyRendererSettings(this);
 
     @Override
-    public SimpleCapabilityTrait<IFluidHandler> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait createTrait(MBDMachine machine) {
         return new FluidTankCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(Items.WATER_BUCKET);
-    }
-
-    @Override
-    public Capability<IFluidHandler> getCapability() {
-        return ForgeCapabilities.FLUID_HANDLER;
     }
 
     @Override

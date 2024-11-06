@@ -101,6 +101,11 @@ public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements
     }
 
     @Override
+    public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
+        return List.of(this);
+    }
+
+    @Override
     public IO getCapabilityIO(@Nullable Direction side) {
         return IO.BOTH;
     }

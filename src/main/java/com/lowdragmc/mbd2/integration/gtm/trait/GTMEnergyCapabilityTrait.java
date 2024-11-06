@@ -1,6 +1,7 @@
 package com.lowdragmc.mbd2.integration.gtm.trait;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -9,14 +10,19 @@ import com.lowdragmc.mbd2.api.capability.recipe.IO;
 import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
 import com.lowdragmc.mbd2.integration.gtm.GTMEnergyRecipeCapability;
+import lombok.Getter;
+import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyContainer> {
+@Getter
+public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GTMEnergyCapabilityTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -25,6 +31,7 @@ public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyConta
     @DescSynced
     public final CopiableEnergyContainer container;
     private final EnergyRecipeHandler recipeHandler = new EnergyRecipeHandler();
+    private final EnergyContainerCap energyContainerCap = new EnergyContainerCap();
 
     public GTMEnergyCapabilityTrait(MBDMachine machine, GTMEnergyCapabilityTraitDefinition definition) {
         super(machine, definition);
@@ -48,19 +55,15 @@ public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyConta
                 getDefinition().getOutputAmperage(), getDefinition().getOutputVoltage());
     }
 
-    @Override
-    public IEnergyContainer getCapContent(IO capbilityIO) {
-        return new EnergyContainerWrapper(this.container, capbilityIO);
-    }
-
-    @Override
-    public IEnergyContainer mergeContents(List<IEnergyContainer> contents) {
-        return new EnergyContainerList(contents);
-    }
 
     @Override
     public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
         return List.of(recipeHandler);
+    }
+
+    @Override
+    public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
+        return List.of(energyContainerCap);
     }
 
     public class EnergyRecipeHandler extends RecipeHandlerTrait<Long> {
@@ -88,5 +91,28 @@ public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait<IEnergyConta
             }
             return required > 0 ? List.of(required) : null;
         }
+    }
+
+    public class EnergyContainerCap implements ICapabilityProviderTrait<IEnergyContainer> {
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return GTMEnergyCapabilityTrait.this.getCapabilityIO(side);
+        }
+
+        @Override
+        public Capability<IEnergyContainer> getCapability() {
+            return GTCapability.CAPABILITY_ENERGY_CONTAINER;
+        }
+
+        @Override
+        public IEnergyContainer getCapContent(IO capbilityIO) {
+            return new EnergyContainerWrapper(container, capbilityIO);
+        }
+
+        @Override
+        public IEnergyContainer mergeContents(List<IEnergyContainer> contents) {
+            return new EnergyContainerList(contents);
+        }
+
     }
 }

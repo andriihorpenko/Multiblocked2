@@ -8,7 +8,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public interface ICapabilityProviderTrait<T> extends ITrait {
+public interface ICapabilityProviderTrait<T> {
 
     /**
      * Get capability IO direction of the specific side.

@@ -8,6 +8,7 @@ import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
 import com.lowdragmc.mbd2.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
 import lombok.Setter;
 import mekanism.api.Action;
@@ -23,13 +24,15 @@ import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.common.capabilities.Capabilities;
+import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> extends SimpleCapabilityTrait<HANDLER> implements IRecipeHandlerTrait<STACK> {
+public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> extends SimpleCapabilityTrait implements IRecipeHandlerTrait<STACK>, ICapabilityProviderTrait<HANDLER> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChemicalTankCapabilityTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -41,14 +44,14 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined while creating tanks.
     private Boolean isEmpty;
 
-    public ChemicalTankCapabilityTrait(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<CHEMICAL, STACK, HANDLER> definition) {
+    public ChemicalTankCapabilityTrait(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<CHEMICAL, STACK> definition) {
         super(machine, definition);
         storages = createStorages();
     }
 
     @Override
-    public ChemicalTankCapabilityTraitDefinition<CHEMICAL, STACK, HANDLER> getDefinition() {
-        return (ChemicalTankCapabilityTraitDefinition<CHEMICAL, STACK, HANDLER>) super.getDefinition();
+    public ChemicalTankCapabilityTraitDefinition<CHEMICAL, STACK> getDefinition() {
+        return (ChemicalTankCapabilityTraitDefinition<CHEMICAL, STACK>) super.getDefinition();
     }
 
     @Override
@@ -62,6 +65,11 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
 
     @Override
     public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
+        return List.of(this);
+    }
+
+    @Override
+    public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
         return List.of(this);
     }
 
@@ -154,13 +162,18 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
     public abstract ChemicalStorage<CHEMICAL,STACK> createStorage();
 
     public static class Gas extends ChemicalTankCapabilityTrait<mekanism.api.chemical.gas.Gas, GasStack, IGasHandler> {
-        public Gas(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<mekanism.api.chemical.gas.Gas, GasStack, IGasHandler> definition) {
+        public Gas(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<mekanism.api.chemical.gas.Gas, GasStack> definition) {
             super(machine, definition);
         }
 
         @Override
         public ChemicalStorage<mekanism.api.chemical.gas.Gas, GasStack> createStorage() {
             return new ChemicalStorage.Gas(getDefinition().getCapacity(), chemical -> getDefinition().getChemicalFilterSettings().test(chemical), null);
+        }
+
+        @Override
+        public Capability<IGasHandler> getCapability() {
+            return Capabilities.GAS_HANDLER;
         }
 
         @Override
@@ -175,13 +188,18 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
     }
 
     public static class Infuse extends ChemicalTankCapabilityTrait<InfuseType, InfusionStack, IInfusionHandler> {
-        public Infuse(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<InfuseType, InfusionStack, IInfusionHandler> definition) {
+        public Infuse(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<InfuseType, InfusionStack> definition) {
             super(machine, definition);
         }
 
         @Override
         public ChemicalStorage<InfuseType, InfusionStack> createStorage() {
             return new ChemicalStorage.Infuse(getDefinition().getCapacity(), chemical -> getDefinition().getChemicalFilterSettings().test(chemical), null);
+        }
+
+        @Override
+        public Capability<IInfusionHandler> getCapability() {
+            return Capabilities.INFUSION_HANDLER;
         }
 
         @Override
@@ -196,13 +214,18 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
     }
 
     public static class Pigment extends ChemicalTankCapabilityTrait<mekanism.api.chemical.pigment.Pigment, PigmentStack, IPigmentHandler> {
-        public Pigment(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<mekanism.api.chemical.pigment.Pigment, PigmentStack, IPigmentHandler> definition) {
+        public Pigment(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<mekanism.api.chemical.pigment.Pigment, PigmentStack> definition) {
             super(machine, definition);
         }
 
         @Override
         public ChemicalStorage<mekanism.api.chemical.pigment.Pigment, PigmentStack> createStorage() {
             return new ChemicalStorage.Pigment(getDefinition().getCapacity(), chemical -> getDefinition().getChemicalFilterSettings().test(chemical), null);
+        }
+
+        @Override
+        public Capability<IPigmentHandler> getCapability() {
+            return Capabilities.PIGMENT_HANDLER;
         }
 
         @Override
@@ -217,13 +240,18 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
     }
 
     public static class Slurry extends ChemicalTankCapabilityTrait<mekanism.api.chemical.slurry.Slurry, SlurryStack, ISlurryHandler> {
-        public Slurry(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<mekanism.api.chemical.slurry.Slurry, SlurryStack, ISlurryHandler> definition) {
+        public Slurry(MBDMachine machine, ChemicalTankCapabilityTraitDefinition<mekanism.api.chemical.slurry.Slurry, SlurryStack> definition) {
             super(machine, definition);
         }
 
         @Override
         public ChemicalStorage<mekanism.api.chemical.slurry.Slurry, SlurryStack> createStorage() {
             return new ChemicalStorage.Slurry(getDefinition().getCapacity(), chemical -> getDefinition().getChemicalFilterSettings().test(chemical), null);
+        }
+
+        @Override
+        public Capability<ISlurryHandler> getCapability() {
+            return Capabilities.SLURRY_HANDLER;
         }
 
         @Override

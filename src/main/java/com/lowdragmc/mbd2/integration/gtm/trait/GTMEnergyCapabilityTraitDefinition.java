@@ -1,7 +1,5 @@
 package com.lowdragmc.mbd2.integration.gtm.trait;
 
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
@@ -22,10 +20,9 @@ import com.lowdragmc.mbd2.utils.WidgetUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.capabilities.Capability;
 
 @LDLRegister(name = "gtm_energy_container", group = "trait", modID = "gtceu")
-public class GTMEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEnergyContainer> {
+public class GTMEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.gtm_energy_container.capacity")
@@ -61,18 +58,13 @@ public class GTMEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDef
     private final GTMEnergyFancyRendererSettings fancyRendererSettings = new GTMEnergyFancyRendererSettings(this);
 
     @Override
-    public SimpleCapabilityTrait<IEnergyContainer> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait createTrait(MBDMachine machine) {
         return new GTMEnergyCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(GTItems.BATTERY_HV_SODIUM.asItem());
-    }
-
-    @Override
-    public Capability<IEnergyContainer> getCapability() {
-        return GTCapability.CAPABILITY_ENERGY_CONTAINER;
     }
 
     @Override

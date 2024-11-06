@@ -7,15 +7,21 @@ import com.lowdragmc.mbd2.api.capability.recipe.IO;
 import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
 import com.lowdragmc.mbd2.integration.embers.EmbersEmberRecipeCapability;
+import com.rekindled.embers.api.capabilities.EmbersCapabilities;
 import com.rekindled.embers.api.power.IEmberCapability;
+import lombok.Getter;
+import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class EmbersEmberCapabilityTrait extends SimpleCapabilityTrait<IEmberCapability> {
+@Getter
+public class EmbersEmberCapabilityTrait extends SimpleCapabilityTrait {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EmbersEmberCapabilityTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -24,6 +30,7 @@ public class EmbersEmberCapabilityTrait extends SimpleCapabilityTrait<IEmberCapa
     @DescSynced
     public final CopiableEmberCapability storage;
     private final EmberRecipeHandler recipeHandler = new EmberRecipeHandler();
+    private final EmberCap emberCap = new EmberCap();
 
     public EmbersEmberCapabilityTrait(MBDMachine machine, EmbersEmberCapabilityTraitDefinition definition) {
         super(machine, definition);
@@ -46,18 +53,13 @@ public class EmbersEmberCapabilityTrait extends SimpleCapabilityTrait<IEmberCapa
     }
 
     @Override
-    public IEmberCapability getCapContent(IO capbilityIO) {
-        return new EmberCapabilityWrapper(this.storage, capbilityIO);
-    }
-
-    @Override
-    public IEmberCapability mergeContents(List<IEmberCapability> contents) {
-        return contents.get(0);
-    }
-
-    @Override
     public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
         return List.of(recipeHandler);
+    }
+
+    @Override
+    public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
+        return List.of(emberCap);
     }
 
     public class EmberRecipeHandler extends RecipeHandlerTrait<Double> {
@@ -78,6 +80,28 @@ public class EmbersEmberCapabilityTrait extends SimpleCapabilityTrait<IEmberCapa
                 required -= received;
             }
             return required > 0 ? List.of(required) : null;
+        }
+    }
+
+    public class EmberCap implements ICapabilityProviderTrait<IEmberCapability> {
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return EmbersEmberCapabilityTrait.this.getCapabilityIO(side);
+        }
+
+        @Override
+        public Capability<IEmberCapability> getCapability() {
+            return EmbersCapabilities.EMBER_CAPABILITY;
+        }
+
+        @Override
+        public IEmberCapability getCapContent(IO capbilityIO) {
+            return new EmberCapabilityWrapper(storage, capbilityIO);
+        }
+
+        @Override
+        public IEmberCapability mergeContents(List<IEmberCapability> contents) {
+            return contents.get(0);
         }
     }
 }

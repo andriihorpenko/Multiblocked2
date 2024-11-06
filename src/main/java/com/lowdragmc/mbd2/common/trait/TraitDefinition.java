@@ -18,6 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+@Getter @Setter
 public abstract class TraitDefinition implements IConfigurable, IAutoPersistedSerializable {
     public static CompoundTag serializeDefinition(TraitDefinition definition) {
         return definition.serializeNBT();
@@ -35,11 +36,9 @@ public abstract class TraitDefinition implements IConfigurable, IAutoPersistedSe
         return null;
     }
 
-    @Getter @Setter
     @Configurable(name = "config.definition.trait.name")
     private String name = name();
 
-    @Getter @Setter
     @Configurable(name = "config.definition.trait.priority", tips = "config.definition.trait.priority.tooltip")
     @NumberRange(range = {Integer.MIN_VALUE, Integer.MAX_VALUE})
     private int priority;

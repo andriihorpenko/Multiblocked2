@@ -9,18 +9,16 @@ import lombok.Setter;
 /**
  * A trait definition that have recipe handling capability.
  */
+@Getter @Setter
 public abstract class RecipeCapabilityTraitDefinition extends TraitDefinition {
-    @Getter
-    @Setter
+
     @Configurable(name = "config.definition.trait.recipe_handler", tips = "config.definition.trait.recipe_handler.tooltip")
     @ConfigSelector(candidate = {"IN", "OUT", "NONE"})
     private IO recipeHandlerIO = IO.IN;
 
-    @Getter @Setter
     @Configurable(name = "config.definition.trait.distinct", tips = {"config.definition.trait.distinct.tooltip.0", "config.definition.trait.distinct.tooltip.1"})
     private boolean isDistinct;
 
-    @Getter @Setter
     @Configurable(name = "config.definition.trait.slot_names", tips = "config.definition.trait.slot_names.tooltip")
     private String[] slotNames = new String[0];
 }

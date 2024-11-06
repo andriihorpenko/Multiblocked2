@@ -10,6 +10,7 @@ import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.common.capability.recipe.ItemDurabilityRecipeCapability;
 import com.lowdragmc.mbd2.common.capability.recipe.ItemRecipeCapability;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTrait;
 import net.minecraft.core.Direction;
@@ -20,12 +21,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler> {
+public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemSlotCapabilityTrait.class);
     private final Random random = new Random();
     @Override
@@ -37,6 +40,7 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler>
     private Boolean isEmpty;
     private final ItemRecipeHandler itemRecipeHandler = new ItemRecipeHandler();
     private final ItemDurabilityRecipeHandler durabilityRecipeHandler = new ItemDurabilityRecipeHandler();
+    private final ItemHandlerCap itemHandlerCap = new ItemHandlerCap();
 
     public ItemSlotCapabilityTrait(MBDMachine machine, ItemSlotCapabilityTraitDefinition definition) {
         super(machine, definition);
@@ -106,18 +110,13 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler>
     }
 
     @Override
-    public IItemHandler getCapContent(IO capbilityIO) {
-        return new ItemHandlerWrapper(this.storage, capbilityIO);
-    }
-
-    @Override
-    public IItemHandler mergeContents(List<IItemHandler> contents) {
-        return new ItemHandlerList(contents.toArray(new IItemHandler[0]));
-    }
-
-    @Override
     public List<IRecipeHandlerTrait<?>> getRecipeHandlerTraits() {
         return List.of(itemRecipeHandler, durabilityRecipeHandler);
+    }
+
+    @Override
+    public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
+        return List.of(itemHandlerCap);
     }
 
     //////////////////////////////////////
@@ -341,6 +340,29 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait<IItemHandler>
                 }
             }
             return left.isEmpty() ? null : left;
+        }
+    }
+
+    public class ItemHandlerCap implements ICapabilityProviderTrait<IItemHandler> {
+
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return ItemSlotCapabilityTrait.this.getCapabilityIO(side);
+        }
+
+        @Override
+        public Capability<IItemHandler> getCapability() {
+            return ForgeCapabilities.ITEM_HANDLER;
+        }
+
+        @Override
+        public IItemHandler getCapContent(IO capbilityIO) {
+            return new ItemHandlerWrapper(storage, capbilityIO);
+        }
+
+        @Override
+        public IItemHandler mergeContents(List<IItemHandler> contents) {
+            return new ItemHandlerList(contents.toArray(new IItemHandler[0]));
         }
     }
 

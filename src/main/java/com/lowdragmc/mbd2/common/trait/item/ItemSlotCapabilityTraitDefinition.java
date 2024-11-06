@@ -36,30 +36,24 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.opengl.GL11;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 @LDLRegister(name = "item_slot", group = "trait", priority = -100)
-public class ItemSlotCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IItemHandler> {
+@Getter @Setter
+public class ItemSlotCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition {
 
-    @Getter @Setter
     @Configurable(name = "config.definition.trait.item_slot.slot_size", tips = "config.definition.trait.item_slot.slot_size.tooltip")
     @NumberRange(range = {1, Integer.MAX_VALUE})
     private int slotSize = 1;
-    @Getter @Setter
     @Configurable(name = "config.definition.trait.item_slot.slot_limit", tips = "config.definition.trait.item_slot.slot_limit.tooltip")
     @NumberRange(range = {1, 64})
     private int slotLimit = 64;
-    @Getter
     @Configurable(name = "config.definition.trait.item_slot.filter", subConfigurable = true, tips = "config.definition.trait.item_slot.filter.tooltip")
     private final ItemFilterSettings itemFilterSettings = new ItemFilterSettings();
-    @Setter
-    @Getter
+    @Setter @Getter
     public static class AutoIO implements IToggleConfigurable {
         @Persisted
         public boolean enable;
@@ -80,13 +74,10 @@ public class ItemSlotCapabilityTraitDefinition extends SimpleCapabilityTraitDefi
             return (direction == Direction.NORTH || direction == null) ? range : this.rangeCache.computeIfAbsent(direction, dir -> ShapeUtils.rotate(range, dir));
         }
     }
-    @Getter
     @Configurable(name = "config.definition.trait.item_slot.auto_io.input", subConfigurable = true, tips = "config.definition.trait.item_slot.auto_io.input.tooltip")
     private final AutoIO autoInput = new AutoIO();
-    @Getter
     @Configurable(name = "config.definition.trait.item_slot.auto_io.output", subConfigurable = true, tips = "config.definition.trait.item_slot.auto_io.output.tooltip")
     private final AutoIO autoOutput = new AutoIO();
-    @Getter
     @Configurable(name = "config.definition.trait.item_slot.fancy_renderer", subConfigurable = true, tips = "config.definition.trait.item_slot.fancy_renderer.tooltip")
     private final ItemFancyRendererSettings itemRendererSettings = new ItemFancyRendererSettings(this);
 
@@ -98,11 +89,6 @@ public class ItemSlotCapabilityTraitDefinition extends SimpleCapabilityTraitDefi
     @Override
     public IGuiTexture getIcon() {
         return new ItemStackTexture(Items.CHEST);
-    }
-
-    @Override
-    public Capability<IItemHandler> getCapability() {
-        return ForgeCapabilities.ITEM_HANDLER;
     }
 
     @Override

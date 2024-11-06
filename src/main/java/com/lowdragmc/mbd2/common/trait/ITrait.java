@@ -4,6 +4,8 @@ package com.lowdragmc.mbd2.common.trait;
 import com.lowdragmc.mbd2.api.capability.recipe.IRecipeHandlerTrait;
 import com.lowdragmc.mbd2.common.gui.editor.machine.MachineTraitPanel;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import net.minecraft.core.Direction;
+import net.minecraftforge.common.capabilities.Capability;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,4 +70,10 @@ public interface ITrait {
         return Collections.emptyList();
     }
 
+    /**
+     * Get all available capability provider traits for this trait which will be used for {@link net.minecraft.world.level.block.entity.BlockEntity#getCapability(Capability, Direction)}.
+     */
+    default List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
+        return Collections.emptyList();
+    }
 }

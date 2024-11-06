@@ -48,7 +48,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -380,10 +379,12 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         List<T> results = new ArrayList<>();
         for (var trait : additionalTraits) {
-            if (trait instanceof ICapabilityProviderTrait<?> capabilityProviderTrait && capabilityProviderTrait.getCapability() == cap) {
-                var io = capabilityProviderTrait.getCapabilityIO(side);
-                if (io != IO.NONE) {
-                    results.add((T) capabilityProviderTrait.getCapContent(io));
+            for (var capabilityProviderTrait : trait.getCapabilityProviderTraits()) {
+                if (capabilityProviderTrait.getCapability() == cap) {
+                    var io = capabilityProviderTrait.getCapabilityIO(side);
+                    if (io != IO.NONE) {
+                        results.add((T) capabilityProviderTrait.getCapContent(io));
+                    }
                 }
             }
         }
@@ -394,8 +395,10 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
                 return LazyOptional.of(() -> results.get(0));
             } else {
                 for (var trait : additionalTraits) {
-                    if (trait instanceof ICapabilityProviderTrait capabilityProviderTrait && capabilityProviderTrait.getCapability() == cap) {
-                        return LazyOptional.of(() -> (T) capabilityProviderTrait.mergeContents(results));
+                    for (var capabilityProviderTrait : trait.getCapabilityProviderTraits()) {
+                        if (capabilityProviderTrait.getCapability() == cap) {
+                            return LazyOptional.of(() -> (T) ((ICapabilityProviderTrait)capabilityProviderTrait).mergeContents(results));
+                        }
                     }
                 }
             }

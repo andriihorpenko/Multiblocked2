@@ -20,12 +20,9 @@ import com.lowdragmc.mbd2.utils.WidgetUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
 
 @LDLRegister(name = "forge_energy_storage", group = "trait", priority = -100)
-public class ForgeEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEnergyStorage> {
+public class ForgeEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.forge_energy_storage.capacity")
@@ -46,18 +43,13 @@ public class ForgeEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitD
     private final ForgeEnergyFancyRendererSettings fancyRendererSettings = new ForgeEnergyFancyRendererSettings(this);
 
     @Override
-    public SimpleCapabilityTrait<IEnergyStorage> createTrait(MBDMachine machine) {
+    public SimpleCapabilityTrait createTrait(MBDMachine machine) {
         return new ForgeEnergyCapabilityTrait(machine, this);
     }
 
     @Override
     public IGuiTexture getIcon() {
         return new ResourceTexture("mbd2:textures/gui/forge_energy.png");
-    }
-
-    @Override
-    public Capability<IEnergyStorage> getCapability() {
-        return ForgeCapabilities.ENERGY;
     }
 
     @Override

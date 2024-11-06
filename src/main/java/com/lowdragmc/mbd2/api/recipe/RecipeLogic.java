@@ -53,11 +53,12 @@ public class RecipeLogic implements IEnhancedManaged {
 
     @Nullable
     @Persisted @DescSynced
+    @Getter
     private Component waitingReason = null;
     /**
      * unsafe, it may not be found from {@link RecipeManager}. Do not index it.
      */
-    @Nullable @Getter @Persisted
+    @Nullable @Getter @Persisted @Setter
     protected MBDRecipe lastRecipe;
     /**
      * safe, it is the origin recipe before {@link IMachine#doModifyRecipe(MBDRecipe)}' which can be found from {@link RecipeManager}.
@@ -76,7 +77,7 @@ public class RecipeLogic implements IEnhancedManaged {
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
     @Persisted
-    @Getter
+    @Getter @Setter
     protected long totalContinuousRunningTime;
     @Nullable
     protected CompletableFuture<List<MBDRecipe>> completableFuture = null;

@@ -18,15 +18,12 @@ import com.lowdragmc.mbd2.common.trait.SimpleCapabilityTraitDefinition;
 import com.lowdragmc.mbd2.integration.embers.EmbersEmberRecipeCapability;
 import com.lowdragmc.mbd2.utils.WidgetUtils;
 import com.rekindled.embers.RegistryManager;
-import com.rekindled.embers.api.capabilities.EmbersCapabilities;
-import com.rekindled.embers.api.power.IEmberCapability;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.capabilities.Capability;
 
 @LDLRegister(name = "embers_ember_capability", group = "trait", modID = "embers")
-public class EmbersEmberCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition<IEmberCapability> {
+public class EmbersEmberCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition {
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.embers_ember_capability.capacity")
@@ -47,10 +44,6 @@ public class EmbersEmberCapabilityTraitDefinition extends SimpleCapabilityTraitD
         return new ItemStackTexture(RegistryManager.EMBER_CRYSTAL.get());
     }
 
-    @Override
-    public Capability<IEmberCapability> getCapability() {
-        return EmbersCapabilities.EMBER_CAPABILITY;
-    }
 
     @Override
     public boolean allowMultiple() {
