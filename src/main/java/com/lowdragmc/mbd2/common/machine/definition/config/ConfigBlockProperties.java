@@ -1,12 +1,10 @@
 package com.lowdragmc.mbd2.common.machine.definition.config;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.accessors.EnumAccessor;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.NumberRange;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.*;
 import com.lowdragmc.lowdraglib.gui.editor.ui.Editor;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.syncdata.IPersistedSerializable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.mbd2.api.block.RotationState;
@@ -135,6 +133,22 @@ public class ConfigBlockProperties implements IPersistedSerializable, IConfigura
     @Builder.Default
     private boolean transparent = false;
 
+    @Configurable(name = "config.block_properties.force_solid", tips = {"config.block_properties.force_solid.tooltip", "config.require_restart"})
+    @Builder.Default
+    private boolean forceSolid = false;
+
+    @Configurable(name = "config.block_properties.replaceable", tips = {"config.block_properties.replaceable.tooltip", "config.require_restart"})
+    @Builder.Default
+    private boolean replaceable = false;
+
+    @Configurable(name = "config.block_properties.no_particle_on_break", tips = {"config.block_properties.no_particle_on_break.tooltip", "config.require_restart"})
+    @Builder.Default
+    private boolean noParticleOnBreak = false;
+
+    @Configurable(name = "config.block_properties.can_be_waterlogged", tips = "config.block_properties.can_be_waterlogged.tooltip")
+    @Builder.Default
+    private boolean canBeWaterlogged = false;
+
     @Override
     public void buildConfigurator(ConfiguratorGroup father) {
         IConfigurable.super.buildConfigurator(father);
@@ -161,6 +175,15 @@ public class ConfigBlockProperties implements IPersistedSerializable, IConfigura
     }
 
     public BlockBehaviour.Properties apply(StateMachine<?> stateMachine, BlockBehaviour.Properties properties) {
+        if (forceSolid) {
+            properties = properties.forceSolidOn();
+        }
+        if (replaceable) {
+            properties = properties.replaceable();
+        }
+        if (noParticleOnBreak) {
+            properties = properties.noParticlesOnBreak();
+        }
         if (hasCollision) {
             properties = properties.noOcclusion();
         }

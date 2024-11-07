@@ -23,19 +23,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -55,7 +56,7 @@ import java.util.Optional;
 @Getter
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendererProvider {
+public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendererProvider, SimpleWaterloggedBlock {
 
     private final MBDMachineDefinition definition;
     private final RotationState rotationState;
@@ -65,6 +66,9 @@ public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendere
         this.definition = definition;
         this.rotationState = definition.blockProperties().rotationState();
         rotationState.property.ifPresent(property -> registerDefaultState(defaultBlockState().setValue(property, rotationState.defaultDirection)));
+        if (definition.blockProperties().canBeWaterlogged()) {
+            registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
+        }
     }
 
     public Optional<Direction> getFrontFacing(BlockState state) {
@@ -97,6 +101,9 @@ public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendere
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         var rotationState = MBDMachineDefinition.get().blockProperties().rotationState();
         rotationState.property.ifPresent(builder::add);
+        if (MBDMachineDefinition.get().blockProperties().canBeWaterlogged()) {
+            builder.add(BlockStateProperties.WATERLOGGED);
+        }
     }
 
     @Nullable
@@ -144,7 +151,12 @@ public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendere
         RotationState rotationState = getRotationState();
         var player = context.getPlayer();
         var blockPos = context.getClickedPos();
-        var state = defaultBlockState();
+        BlockState state;
+        if (getDefinition().blockProperties().canBeWaterlogged()) {
+            state = defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
+        } else {
+            state = defaultBlockState();
+        }
         return player == null ? state : rotationState.property.map(property -> {
             Vec3 pos = player.position();
             if (Math.abs(pos.x - (double) ((float) blockPos.getX() + 0.5F)) < 2.0D && Math.abs(pos.z - (double) ((float) blockPos.getZ() + 0.5F)) < 2.0D) {
@@ -162,6 +174,29 @@ public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendere
                 return state.setValue(property, player.getDirection().getOpposite());
             }
         }).orElse(state);
+    }
+
+    @Override
+    public boolean canPlaceLiquid(BlockGetter pLevel, BlockPos pPos, BlockState pState, Fluid pFluid) {
+        if (getDefinition().blockProperties().canBeWaterlogged()) {
+            return SimpleWaterloggedBlock.super.canPlaceLiquid(pLevel, pPos, pState, pFluid);
+        }
+        return false;
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.getOptionalValue(BlockStateProperties.WATERLOGGED).orElse(false) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    @Deprecated
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos pos, BlockPos facingPos) {
+        if (state.getOptionalValue(BlockStateProperties.WATERLOGGED).orElse(false)) {
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+        }
+
+        return state;
     }
 
     @Override
