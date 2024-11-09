@@ -9,6 +9,7 @@ import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.api.recipe.RecipeCondition;
 import com.lowdragmc.mbd2.api.recipe.RecipeLogic;
 import com.lowdragmc.mbd2.common.machine.MBDMachine;
+import com.mojang.realmsclient.util.JsonUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minecraft.nbt.CompoundTag;
@@ -20,13 +21,17 @@ import javax.annotation.Nonnull;
 
 @Getter
 @NoArgsConstructor
-public class MachineCustomDataCondition extends RecipeCondition {
+public class MachineNBTCondition extends RecipeCondition {
 
-    public final static MachineCustomDataCondition INSTANCE = new MachineCustomDataCondition();
+    public final static MachineNBTCondition INSTANCE = new MachineNBTCondition();
     @Configurable(name = "config.recipe.condition.machine_custom_data.data", tips="config.recipe.condition.machine_custom_data.data.tips")
     private CompoundTag data = new CompoundTag();
+    @Configurable(name = "config.recipe.condition.machine_custom_data.only_check_custom_data",
+            tips = {"config.recipe.condition.machine_custom_data.only_check_custom_data.tips.0",
+                    "config.recipe.condition.machine_custom_data.only_check_custom_data.tips.1"})
+    private boolean onlyCheckCustomData = true;
 
-    public MachineCustomDataCondition(CompoundTag data) {
+    public MachineNBTCondition(CompoundTag data) {
         this.data = data;
     }
 
@@ -47,8 +52,9 @@ public class MachineCustomDataCondition extends RecipeCondition {
 
     @Override
     public boolean test(@Nonnull MBDRecipe recipe, @Nonnull RecipeLogic recipeLogic) {
+        // check if the machine has the same custom data
         if (!data.isEmpty() && recipeLogic.getMachine() instanceof MBDMachine mbdMachine) {
-            var machineData = mbdMachine.getCustomData();
+            var machineData = onlyCheckCustomData ? mbdMachine.getCustomData() : mbdMachine.getHolder().saveWithId();
             var copied = machineData.copy();
             copied.merge(this.data);
             return copied.equals(machineData);
@@ -61,6 +67,7 @@ public class MachineCustomDataCondition extends RecipeCondition {
     public JsonObject serialize() {
         JsonObject config = super.serialize();
         config.add("data", NBTToJsonConverter.getObject(this.data));
+        config.addProperty("onlyCheckCustomData", this.onlyCheckCustomData);
         return config;
     }
 
@@ -68,6 +75,7 @@ public class MachineCustomDataCondition extends RecipeCondition {
     public RecipeCondition deserialize(@Nonnull JsonObject config) {
         super.deserialize(config);
         this.data = CraftingHelper.getNBT(config.getAsJsonObject("data"));
+        this.onlyCheckCustomData = JsonUtils.getBooleanOr("onlyCheckCustomData", config, true);
         return this;
     }
 
@@ -75,6 +83,7 @@ public class MachineCustomDataCondition extends RecipeCondition {
     public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
         super.fromNetwork(buf);
         data = buf.readNbt();
+        onlyCheckCustomData = buf.readBoolean();
         return this;
     }
 
@@ -82,12 +91,14 @@ public class MachineCustomDataCondition extends RecipeCondition {
     public void toNetwork(FriendlyByteBuf buf) {
         super.toNetwork(buf);
         buf.writeNbt(data);
+        buf.writeBoolean(onlyCheckCustomData);
     }
 
     @Override
     public CompoundTag toNBT() {
         var tag = super.toNBT();
         tag.put("data", data);
+        tag.putBoolean("onlyCheckCustomData", onlyCheckCustomData);
         return tag;
     }
 
@@ -95,6 +106,7 @@ public class MachineCustomDataCondition extends RecipeCondition {
     public RecipeCondition fromNBT(CompoundTag tag) {
         super.fromNBT(tag);
         data = tag.getCompound("data");
+        onlyCheckCustomData = !tag.contains("onlyCheckCustomData") || tag.getBoolean("onlyCheckCustomData");
         return this;
     }
 

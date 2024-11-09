@@ -449,7 +449,7 @@ public interface MBDRecipeSchema {
         }
 
         public MBDRecipeJS machineData(CompoundTag data) {
-            addCondition(new MachineCustomDataCondition(data));
+            addCondition(new MachineNBTCondition(data));
             return this;
         }
 

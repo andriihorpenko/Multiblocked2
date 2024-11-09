@@ -1,7 +1,4 @@
 # ChangeLog
 
-* add waterlogged supports
-* add more block properties
-  * forceSolid
-  * no particle
-  * replaceable
+* fix waterlogged crash previous projects while clicking with a bucket
+* make previous custom data to check the machine nbt instead. 

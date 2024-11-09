@@ -14,6 +14,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -182,6 +183,31 @@ public class MBDMachineBlock extends Block implements EntityBlock, IBlockRendere
             return SimpleWaterloggedBlock.super.canPlaceLiquid(pLevel, pPos, pState, pFluid);
         }
         return false;
+    }
+
+    @Override
+    public boolean placeLiquid(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState, FluidState fluidState) {
+        if (getDefinition().blockProperties().canBeWaterlogged()) {
+            return SimpleWaterloggedBlock.super.placeLiquid(levelAccessor, blockPos, blockState, fluidState);
+        }
+        return false;
+    }
+
+    @Override
+    public ItemStack pickupBlock(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
+        if (getDefinition().blockProperties().canBeWaterlogged()) {
+            return SimpleWaterloggedBlock.super.pickupBlock(levelAccessor, blockPos, blockState);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public Optional<SoundEvent> getPickupSound() {
+        if (getDefinition().blockProperties().canBeWaterlogged()) {
+            return SimpleWaterloggedBlock.super.getPickupSound();
+        }
+
+        return Optional.empty();
     }
 
     @Override

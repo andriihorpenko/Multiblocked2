@@ -20,7 +20,7 @@ public final class MBDRecipeConditions {
         MBDRegistries.RECIPE_CONDITIONS.register(RainingCondition.INSTANCE.getType(), RainingCondition.class);
         MBDRegistries.RECIPE_CONDITIONS.register(ThunderCondition.INSTANCE.getType(), ThunderCondition.class);
         MBDRegistries.RECIPE_CONDITIONS.register(MachineLevelCondition.INSTANCE.getType(), MachineLevelCondition.class);
-        MBDRegistries.RECIPE_CONDITIONS.register(MachineCustomDataCondition.INSTANCE.getType(), MachineCustomDataCondition.class);
+        MBDRegistries.RECIPE_CONDITIONS.register(MachineNBTCondition.INSTANCE.getType(), MachineNBTCondition.class);
         MBDRegistries.RECIPE_CONDITIONS.register(BlockCondition.INSTANCE.getType(), BlockCondition.class);
         MBDRegistries.RECIPE_CONDITIONS.register(DayLightCondition.INSTANCE.getType(), DayLightCondition.class);
         MBDRegistries.RECIPE_CONDITIONS.register(RedstoneSignalCondition.INSTANCE.getType(), RedstoneSignalCondition.class);
