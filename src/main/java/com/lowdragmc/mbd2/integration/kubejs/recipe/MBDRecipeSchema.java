@@ -448,8 +448,8 @@ public interface MBDRecipeSchema {
             return this;
         }
 
-        public MBDRecipeJS machineData(CompoundTag data) {
-            addCondition(new MachineNBTCondition(data));
+        public MBDRecipeJS machineData(CompoundTag data, boolean onlyCheckCustomData) {
+            addCondition(new MachineNBTCondition(data, onlyCheckCustomData));
             return this;
         }
 

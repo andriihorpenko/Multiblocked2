@@ -9,6 +9,7 @@ import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
 import com.lowdragmc.mbd2.api.recipe.RecipeCondition;
 import com.lowdragmc.mbd2.api.recipe.RecipeLogic;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -26,6 +27,7 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 
 @Getter
+@Setter
 public class BlockCondition extends RecipeCondition {
 
     public final static BlockCondition INSTANCE = new BlockCondition();

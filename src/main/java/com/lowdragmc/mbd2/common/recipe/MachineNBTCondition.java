@@ -12,6 +12,7 @@ import com.lowdragmc.mbd2.common.machine.MBDMachine;
 import com.mojang.realmsclient.util.JsonUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import javax.annotation.Nonnull;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class MachineNBTCondition extends RecipeCondition {
 
@@ -31,7 +33,7 @@ public class MachineNBTCondition extends RecipeCondition {
                     "config.recipe.condition.machine_custom_data.only_check_custom_data.tips.1"})
     private boolean onlyCheckCustomData = true;
 
-    public MachineNBTCondition(CompoundTag data) {
+    public MachineNBTCondition(CompoundTag data, boolean onlyCheckCustomData) {
         this.data = data;
     }
 

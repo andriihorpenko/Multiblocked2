@@ -8,6 +8,7 @@ import com.lowdragmc.mbd2.api.recipe.RecipeCondition;
 import com.lowdragmc.mbd2.api.recipe.RecipeLogic;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -22,6 +23,7 @@ import javax.annotation.Nonnull;
  * @implNote WhetherCondition, specific whether
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class RainingCondition extends RecipeCondition {
 

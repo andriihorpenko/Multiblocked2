@@ -8,6 +8,7 @@ import com.lowdragmc.mbd2.api.recipe.RecipeCondition;
 import com.lowdragmc.mbd2.api.recipe.RecipeLogic;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +26,7 @@ import javax.annotation.Nonnull;
  * @implNote DimensionCondition, specific dimension
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class DimensionCondition extends RecipeCondition {
 
