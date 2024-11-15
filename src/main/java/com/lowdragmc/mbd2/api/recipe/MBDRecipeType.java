@@ -303,9 +303,15 @@ public class MBDRecipeType implements RecipeType<MBDRecipe>, ITagSerializable<Co
         IConfigurable.super.buildConfigurator(father);
         var proxyGroup = new ArrayConfiguratorGroup<>("recipe_type.proxy_recipes", true,
                 () -> proxyRecipeTypes,
-                (getter, setter) -> new SelectorConfigurator<>("editor.machine.recipe_type", getter, setter,
-                        RecipeType.SMELTING, true, ForgeRegistries.RECIPE_TYPES.getValues().stream().toList(),
-                        recipeType -> Optional.ofNullable(ForgeRegistries.RECIPE_TYPES.getKey(recipeType)).map(Object::toString).orElse("missing")), false);
+                (getter, setter) -> new SearchComponentConfigurator<>("editor.machine.recipe_type", getter, setter,
+                        RecipeType.SMELTING, true, (word, find) -> {
+                    for (var recipeType : ForgeRegistries.RECIPE_TYPES) {
+                        if (Thread.currentThread().isInterrupted()) return;
+                        var id = ForgeRegistries.RECIPE_TYPES.getKey(recipeType);
+                        if (id != null && id.toString().contains(word.toLowerCase())) {
+                            find.accept(recipeType);
+                        }
+                    }}, recipeType -> Optional.ofNullable(ForgeRegistries.RECIPE_TYPES.getKey(recipeType)).map(Object::toString).orElse("missing")), false);
         proxyGroup.setAddDefault(() -> RecipeType.SMELTING);
         proxyGroup.setOnAdd(proxyRecipeTypes::add);
         proxyGroup.setOnRemove(proxyRecipeTypes::remove);
