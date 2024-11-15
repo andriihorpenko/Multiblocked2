@@ -69,7 +69,7 @@ public class EmbersEmberCapabilityTrait extends SimpleCapabilityTrait {
 
         @Override
         public List<Double> handleRecipeInner(IO io, MBDRecipe recipe, List<Double> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             var required = left.stream().mapToDouble(Double::doubleValue).reduce(0, Double::sum);
             var capability = simulate ? storage.copy() : storage;
             if (io == IO.IN) {

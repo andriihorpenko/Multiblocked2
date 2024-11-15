@@ -30,7 +30,7 @@ public class AuraHandlerTrait extends RecipeCapabilityTrait implements IRecipeHa
 
     @Override
     public List<Integer> handleRecipeInner(IO io, MBDRecipe recipe, List<Integer> left, @Nullable String slotName, boolean simulate) {
-        if (io != getHandlerIO()) return left;
+        if (!compatibleWith(io)) return left;
         if (simulate) return null;
         var world = getMachine().getLevel();
         var pos = getMachine().getPos();

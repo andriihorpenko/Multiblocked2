@@ -74,7 +74,7 @@ public class EntityHandlerTrait extends RecipeCapabilityTrait {
 
         @Override
         public List<EntityIngredient> handleRecipeInner(IO io, MBDRecipe recipe, List<EntityIngredient> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             if (io == IO.OUT) {
                 if (!simulate && getMachine().getLevel() instanceof ServerLevel serverLevel) {
                     // spawn entities

@@ -69,7 +69,7 @@ public class ForgeEnergyCapabilityTrait extends SimpleCapabilityTrait {
 
         @Override
         public List<Integer> handleRecipeInner(IO io, MBDRecipe recipe, List<Integer> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             int required = left.stream().reduce(0, Integer::sum);
             var capability = simulate ? storage.copy() : storage;
             if (io == IO.IN) {

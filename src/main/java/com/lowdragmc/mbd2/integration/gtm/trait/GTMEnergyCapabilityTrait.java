@@ -73,7 +73,7 @@ public class GTMEnergyCapabilityTrait extends SimpleCapabilityTrait {
 
         @Override
         public List<Long> handleRecipeInner(IO io, MBDRecipe recipe, List<Long> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             long required = left.stream().reduce(0L, Long::sum);
             var capability = simulate ? container.copy() : container;
             if (io == IO.IN) {

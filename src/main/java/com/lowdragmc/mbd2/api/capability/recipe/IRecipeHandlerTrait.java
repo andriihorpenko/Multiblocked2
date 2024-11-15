@@ -19,6 +19,14 @@ public interface IRecipeHandlerTrait<K> extends IRecipeHandler<K> {
     IO getHandlerIO();
 
     /**
+     * Whether the trait can handle the recipe.
+     * @param recipeIO can only be either {@link  IO#IN} or {@link IO#OUT}.
+     */
+    default boolean compatibleWith(IO recipeIO) {
+        return getHandlerIO().support(recipeIO);
+    }
+
+    /**
      * Add listener for notification when its internal content changed.
      */
     ISubscription addChangedListener(Runnable listener);

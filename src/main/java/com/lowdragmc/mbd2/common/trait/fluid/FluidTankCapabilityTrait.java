@@ -104,7 +104,7 @@ public class FluidTankCapabilityTrait extends SimpleCapabilityTrait {
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, MBDRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             var capabilities = simulate ? Arrays.stream(storages).map(FluidStorage::copy).toArray(FluidStorage[]::new) : storages;
             for (FluidStorage capability : capabilities) {
                 Iterator<FluidIngredient> iterator = left.iterator();

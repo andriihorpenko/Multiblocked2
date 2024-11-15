@@ -51,7 +51,7 @@ public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements
 
     @Override
     public List<PressureAir> handleRecipeInner(IO io, MBDRecipe recipe, List<PressureAir> left, @Nullable String slotName, boolean simulate) {
-        if (io != getHandlerIO()) return left;
+        if (!compatibleWith(io)) return left;
         var handler = simulate ? this.handler.copy() : this.handler;
         if (io == IO.IN) {
             var iterator = left.iterator();

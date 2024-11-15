@@ -15,6 +15,9 @@ public class MBDEMIPlugin implements EmiPlugin {
         for (var recipeType : MBDRegistries.RECIPE_TYPES) {
             if (recipeType.isXEIVisible()) {
                 registry.addCategory(MBDRecipeTypeEmiCategory.CATEGORIES.apply(recipeType));
+                if (recipeType.isRequireFuelForWorking()) {
+                    registry.addCategory(MBDRecipeTypeFuelEmiCategory.CATEGORIES.apply(recipeType));
+                }
             }
         }
         // recipes
@@ -23,8 +26,10 @@ public class MBDEMIPlugin implements EmiPlugin {
         } catch (NullPointerException ignored){
         }
         MBDRecipeTypeEmiCategory.registerDisplays(registry);
+        MBDRecipeTypeFuelEmiCategory.registerDisplays(registry);
         // workstations
         MultiblockInfoEmiCategory.registerWorkStations(registry);
         MBDRecipeTypeEmiCategory.registerWorkStations(registry);
+        MBDRecipeTypeFuelEmiCategory.registerWorkStations(registry);
     }
 }

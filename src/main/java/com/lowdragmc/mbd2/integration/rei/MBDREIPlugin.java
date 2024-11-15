@@ -21,9 +21,13 @@ public class MBDREIPlugin implements REIClientPlugin {
         for (var recipeType : MBDRegistries.RECIPE_TYPES) {
             if (recipeType.isXEIVisible()) {
                 registry.add(new MBDRecipeTypeDisplayCategory(recipeType));
+                if (recipeType.isRequireFuelForWorking()) {
+                    registry.add(new MBDRecipeTypeFuelDisplayCategory(recipeType));
+                }
             }
         }
         MBDRecipeTypeDisplayCategory.registerWorkStations(registry);
+        MBDRecipeTypeFuelDisplayCategory.registerWorkStations(registry);
         MultiblockInfoDisplayCategory.registerWorkStations(registry);
     }
 
@@ -31,6 +35,7 @@ public class MBDREIPlugin implements REIClientPlugin {
     public void registerDisplays(DisplayRegistry registry) {
         MBD2.LOGGER.info("REI register displays");
         MBDRecipeTypeDisplayCategory.registerDisplays(registry);
+        MBDRecipeTypeFuelDisplayCategory.registerDisplays(registry);
         MultiblockInfoDisplayCategory.registerDisplays(registry);
     }
 

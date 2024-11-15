@@ -94,7 +94,7 @@ public abstract class ChemicalTankCapabilityTrait<CHEMICAL extends Chemical<CHEM
 
     @Override
     public List<STACK> handleRecipeInner(IO io, MBDRecipe recipe, List<STACK> left, @Nullable String slotName, boolean simulate) {
-        if (io != getHandlerIO()) return left;
+        if (!compatibleWith(io)) return left;
         var capabilities = simulate ? Arrays.stream(storages).map(ChemicalStorage::copy).toArray(ChemicalStorage[]::new) : storages;
         for (var capability : capabilities) {
             Iterator<STACK> iterator = left.iterator();

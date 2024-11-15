@@ -187,7 +187,7 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait {
 
         @Override
         public List<Ingredient> handleRecipeInner(IO io, MBDRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             var capability = simulate ? storage.copy() : storage;
             Iterator<Ingredient> iterator = left.iterator();
             if (io == IO.IN) {
@@ -278,7 +278,7 @@ public class ItemSlotCapabilityTrait extends SimpleCapabilityTrait {
 
         @Override
         public List<Ingredient> handleRecipeInner(IO io, MBDRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             var capability = simulate ? storage.copy() : storage;
             Iterator<Ingredient> iterator = left.iterator();
             if (io == IO.IN) {

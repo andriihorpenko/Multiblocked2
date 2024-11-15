@@ -59,6 +59,16 @@ public interface MBDServerEvents {
             MBDMachineEvents.MachinePlacedEventJS.class,
             MBDMachineEvents.MachinePlacedEventJS::new);
 
+    EventHandler FUEL_RECIPE_MODIFY = registerMachineEvent("onFuelRecipeModify",
+            MachineFuelRecipeModifyEvent.class,
+            MBDMachineEvents.MachineFuelRecipeModifyEventJS.class,
+            MBDMachineEvents.MachineFuelRecipeModifyEventJS::new);
+
+    EventHandler FUEL_BURNING_FINISH = registerMachineEvent("onFuelBurningFinish",
+            MachineFuelBurningFinishEvent.class,
+            MBDMachineEvents.MachineFuelBurningFinishEventJS.class,
+            MBDMachineEvents.MachineFuelBurningFinishEventJS::new);
+
     EventHandler BEFORE_RECIPE_MODIFY = registerMachineEvent("onBeforeRecipeModify",
             MachineRecipeModifyEvent.Before.class,
             MBDMachineEvents.MachineRecipeModifyEventBeforeJS.class,

@@ -121,7 +121,7 @@ public class CreateRotationTrait implements ITrait {
 
         @Override
         public List<Float> handleRecipeInner(IO io, MBDRecipe recipe, List<Float> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             if (machine.getHolder() instanceof MBDKineticMachineBlockEntity holder) {
                 float sum = left.stream().reduce(0f, Float::sum);
                 if (io == IO.IN && !isGenerator) {
@@ -171,7 +171,7 @@ public class CreateRotationTrait implements ITrait {
 
         @Override
         public List<Float> handleRecipeInner(IO io, MBDRecipe recipe, List<Float> left, @Nullable String slotName, boolean simulate) {
-            if (io != getHandlerIO()) return left;
+            if (!compatibleWith(io)) return left;
             if (machine.getHolder() instanceof MBDKineticMachineBlockEntity holder) {
                 float sum = left.stream().reduce(0f, Float::max);
                 if (io == IO.IN && !isGenerator) {

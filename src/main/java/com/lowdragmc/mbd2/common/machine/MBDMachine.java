@@ -464,6 +464,19 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
         return getDefinition().recipeLogicSettings().isEnable() && getRecipeType() != MBDRecipeType.DUMMY;
     }
 
+    @Override
+    public @Nullable MBDRecipe modifyFuelRecipe(MBDRecipe recipe) {
+        var event = new MachineFuelRecipeModifyEvent(this, recipe);
+        MinecraftForge.EVENT_BUS.post(event.postCustomEvent());
+        if (event.isCanceled()) return null;
+        return event.getRecipe();
+    }
+
+    @Override
+    public void onFuelBurningFinish(@Nullable MBDRecipe recipe) {
+        MinecraftForge.EVENT_BUS.post(new MachineFuelBurningFinishEvent(this, recipe));
+    }
+
     @Nullable
     @Override
     public MBDRecipe doModifyRecipe(@NotNull MBDRecipe recipe) {

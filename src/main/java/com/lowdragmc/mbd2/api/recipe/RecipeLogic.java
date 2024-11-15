@@ -9,6 +9,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.mbd2.api.capability.recipe.IO;
 import com.lowdragmc.mbd2.api.machine.IMachine;
+import com.lowdragmc.mbd2.common.machine.definition.config.event.MachineFuelRecipeModifyEvent;
 import com.lowdragmc.mbd2.config.ConfigHolder;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,6 +73,8 @@ public class RecipeLogic implements IEnhancedManaged {
     protected int duration;
     @Getter @Persisted @Setter
     protected int fuelTime;
+    @Nullable @Getter @Persisted @Setter
+    protected MBDRecipe lastFuelRecipe;
     @Getter @Persisted @Setter
     protected int fuelMaxTime;
     @Getter(onMethod_ = @VisibleForTesting)
@@ -147,6 +150,9 @@ public class RecipeLogic implements IEnhancedManaged {
         }
         if (fuelTime > 0) {
             fuelTime--;
+            if (fuelTime == 0) {
+                getMachine().onFuelBurningFinish(lastFuelRecipe);
+            }
         } else {
             if (isSuspend()) {
                 if (completableFuture != null) {
@@ -279,10 +285,13 @@ public class RecipeLogic implements IEnhancedManaged {
 
     public boolean handleFuelRecipe() {
         if (!needFuel() || fuelTime > 0) return true;
+        lastFuelRecipe = null;
         for (MBDRecipe recipe : machine.getRecipeType().searchFuelRecipe(getRecipeManager(), machine)) {
+            recipe = getMachine().modifyFuelRecipe(recipe);
             if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
                 fuelMaxTime = recipe.duration;
                 fuelTime = fuelMaxTime;
+                lastFuelRecipe = recipe;
             }
             if (fuelTime > 0) return true;
         }

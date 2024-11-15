@@ -63,11 +63,13 @@ import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.cache.texture.AnimatableTexture;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayersContainer;
 import software.bernie.geckolib.util.RenderUtils;
 
 import javax.annotation.Nullable;
@@ -85,13 +87,13 @@ public class GeckolibRenderer implements ISerializableRenderer, GeoRenderer<GeoA
     public static final ResourceLocation DEFAULT_ITEM_TRANSFORM_MODEL = MBD2.id("item/model");
     @Setter
     @Persisted
-    protected ResourceLocation modelPath = DEFAULT_MODEL_PATH;
+    protected ResourceLocation modelPath;
     @Setter
     @Persisted
-    protected ResourceLocation texturePath = DEFAULT_TEXTURE_PATH;
+    protected ResourceLocation texturePath;
     @Setter
     @Persisted
-    protected ResourceLocation animationPath = DEFAULT_ANIMATION_PATH;
+    protected ResourceLocation animationPath;
     @Persisted
     protected ResourceLocation itemTransformModel = DEFAULT_ITEM_TRANSFORM_MODEL;
     @Configurable(name = "geckolib_renderer.scale_width")
@@ -100,6 +102,11 @@ public class GeckolibRenderer implements ISerializableRenderer, GeoRenderer<GeoA
     @Configurable(name = "geckolib_renderer.scale_height")
     @NumberRange(range = {0, 10000}, wheel = 0.1f)
     protected float scaleHeight = 1;
+    @Configurable(name = "geckolib_renderer.use_glowing_layer", tips={
+            "geckolib_renderer.use_glowing_layer.tips.0",
+            "geckolib_renderer.use_glowing_layer.tips.1",
+    })
+    protected boolean useGlowingLayer = false;
     @Configurable(name = "geckolib_renderer.use_translucent", tips="geckolib_renderer.use_translucent.tips")
     protected boolean useTranslucent = false;
     @Configurable(name = "geckolib_renderer.use_entity_gui_lighting", tips="geckolib_renderer.use_entity_gui_lighting.tips")
@@ -113,6 +120,7 @@ public class GeckolibRenderer implements ISerializableRenderer, GeoRenderer<GeoA
     protected List<Animation> animations = new ArrayList<>();
 
     // runtime
+    protected final GeoRenderLayersContainer<GeoAnimatable> renderLayers = new GeoRenderLayersContainer<>(this);
     @Nullable
     private ResourceLocation particleTexture;
     private final StaticAnimatable staticAnimatable = new StaticAnimatable();
@@ -126,9 +134,11 @@ public class GeckolibRenderer implements ISerializableRenderer, GeoRenderer<GeoA
     protected Map<String, RawAnimation> animationCache = new HashMap<>();
 
     public GeckolibRenderer() {
+        this(DEFAULT_MODEL_PATH, DEFAULT_TEXTURE_PATH, DEFAULT_ANIMATION_PATH);
     }
 
     public GeckolibRenderer(ResourceLocation modelPath, ResourceLocation texturePath, ResourceLocation animationPath) {
+        this.renderLayers.addLayer(new AutoGlowingGeoLayer<>(this));
         this.modelPath = modelPath;
         this.texturePath = texturePath;
         this.animationPath = animationPath;
@@ -461,6 +471,14 @@ public class GeckolibRenderer implements ISerializableRenderer, GeoRenderer<GeoA
         this.animatable = null;
         this.currentItemStack = null;
         this.renderPerspective = null;
+    }
+
+    @Override
+    public List<GeoRenderLayer<GeoAnimatable>> getRenderLayers() {
+        if (useGlowingLayer) {
+            return renderLayers.getRenderLayers();
+        }
+        return List.of();
     }
 
     @Override

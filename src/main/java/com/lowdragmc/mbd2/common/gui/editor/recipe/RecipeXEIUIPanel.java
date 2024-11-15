@@ -13,8 +13,8 @@ public class RecipeXEIUIPanel extends MainPanel {
     @Getter
     private final RecipeTypeUIFloatView floatView = new RecipeTypeUIFloatView();
 
-    public RecipeXEIUIPanel(MachineEditor editor) {
-        super(editor, editor.getCurrentProject() instanceof RecipeTypeProject recipeTypeProject ? recipeTypeProject.getUi() : new WidgetGroup());
+    public RecipeXEIUIPanel(MachineEditor editor, WidgetGroup root) {
+        super(editor, root);
     }
 
     public MachineEditor getEditor() {

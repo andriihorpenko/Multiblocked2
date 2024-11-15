@@ -1,6 +1,5 @@
 package com.lowdragmc.mbd2.common.gui.editor.recipe.widget;
 
-import com.google.gson.JsonElement;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
@@ -8,8 +7,6 @@ import com.lowdragmc.lowdraglib.gui.editor.ui.view.FloatViewWidget;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.WidgetTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Size;
 import com.lowdragmc.mbd2.api.recipe.MBDRecipe;
@@ -47,6 +44,7 @@ public class RecipeXEIPreviewFloatView extends FloatViewWidget {
         return (MachineEditor) editor;
     }
 
+    private boolean isFuel;
     private MBDRecipe recipe;
     private CompoundTag lastData;
 
@@ -54,13 +52,14 @@ public class RecipeXEIPreviewFloatView extends FloatViewWidget {
         content.clearAllWidgets();
     }
 
-    public void loadRecipe(MBDRecipe recipe) {
+    public void loadRecipe(boolean isFuel, MBDRecipe recipe) {
         clearRecipe();
+        this.isFuel = isFuel;
         if (recipe == null) return;
         if (editor.getCurrentProject() instanceof RecipeTypeProject project) {
             this.recipe = recipe;;
             lastData = MBDRecipeSerializer.SERIALIZER.toNBT(recipe);
-            var tag = IConfigurableWidget.serializeNBT(project.getUi(), project.getResources(), true);
+            var tag = IConfigurableWidget.serializeNBT(isFuel ? project.getFuelUI() : project.getUi(), project.getResources(), true);
             var ui = new WidgetGroup();
             ui.setClientSideWidget();
             IConfigurableWidget.deserializeNBT(ui, tag, project.getResources(), true);
@@ -94,7 +93,7 @@ public class RecipeXEIPreviewFloatView extends FloatViewWidget {
         if (recipe != null) {
             var data = MBDRecipeSerializer.SERIALIZER.toNBT(recipe);
             if (!data.equals(lastData)) {
-                loadRecipe(recipe);
+                loadRecipe(isFuel, recipe);
             }
         }
     }

@@ -31,6 +31,9 @@ public class MBDJEIPlugin implements IModPlugin {
         for (var recipeType : MBDRegistries.RECIPE_TYPES) {
             if (recipeType.isXEIVisible()) {
                 registry.addRecipeCategories(new MBDRecipeTypeCategory(jeiHelpers, recipeType));
+                if (recipeType.isRequireFuelForWorking()) {
+                    registry.addRecipeCategories(new MBDRecipeTypeFuelCategory(jeiHelpers, recipeType));
+                }
             }
         }
     }
@@ -41,6 +44,7 @@ public class MBDJEIPlugin implements IModPlugin {
         MBD2.LOGGER.info("JEI register catalysts");
         MultiblockInfoCategory.registerRecipeCatalysts(registration);
         MBDRecipeTypeCategory.registerRecipeCatalysts(registration);
+        MBDRecipeTypeFuelCategory.registerRecipeCatalysts(registration);
     }
 
     @Override
@@ -49,8 +53,6 @@ public class MBDJEIPlugin implements IModPlugin {
         MBD2.LOGGER.info("JEI register recipes");
         MultiblockInfoCategory.registerRecipes(registration);
         MBDRecipeTypeCategory.registerRecipes(registration);
-//        GTOreProcessingInfoCategory.registerRecipes(registration);
-//        GTOreVeinInfoCategory.registerRecipes(registration);
-//        GTBedrockFluidInfoCategory.registerRecipes(registration);
+        MBDRecipeTypeFuelCategory.registerRecipes(registration);
     }
 }

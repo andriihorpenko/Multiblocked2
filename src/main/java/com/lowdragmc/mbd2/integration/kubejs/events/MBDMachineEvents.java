@@ -83,6 +83,18 @@ public class MBDMachineEvents {
         }
     }
 
+    public static class MachineFuelRecipeModifyEventJS extends MachineEventJS<MachineFuelRecipeModifyEvent> {
+        public MachineFuelRecipeModifyEventJS(MachineFuelRecipeModifyEvent event) {
+            super(event);
+        }
+    }
+
+    public static class MachineFuelBurningFinishEventJS extends MachineEventJS<MachineFuelBurningFinishEvent> {
+        public MachineFuelBurningFinishEventJS(MachineFuelBurningFinishEvent event) {
+            super(event);
+        }
+    }
+
     public static class MachineRecipeModifyEventBeforeJS extends MachineEventJS<MachineRecipeModifyEvent.Before> {
         public MachineRecipeModifyEventBeforeJS(MachineRecipeModifyEvent.Before event) {
             super(event);

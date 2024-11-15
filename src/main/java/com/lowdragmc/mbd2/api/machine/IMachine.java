@@ -199,6 +199,20 @@ public interface IMachine extends IRecipeCapabilityHolder {
     RecipeLogic getRecipeLogic();
 
     /**
+     * Modify fuel recipe for actual handling.
+     * @return return null to skip this recipe/
+     */
+    @Nullable
+    default MBDRecipe modifyFuelRecipe(MBDRecipe recipe) {
+        return recipe;
+    }
+
+    /**
+     * It will be called when the current fuel burning is finished, before searching next fuel.
+     */
+    default void onFuelBurningFinish(@Nullable MBDRecipe recipe) {}
+
+    /**
      * do not override it.
      * <br> implement {@link #getModifiedRecipe(MBDRecipe)} for recipe modification.
      * <br> implement {@link #getMaxParallel(MBDRecipe)} for parallel recipe.

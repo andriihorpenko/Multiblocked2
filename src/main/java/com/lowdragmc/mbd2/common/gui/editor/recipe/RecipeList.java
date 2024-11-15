@@ -109,9 +109,10 @@ public class RecipeList extends DraggableScrollableWidgetGroup {
                         }));
                 inputsContainer.setOnSelected(outputsContainer::clearSelected);
                 outputsContainer.setOnSelected(inputsContainer::clearSelected);
-                // update recipe preview
-                recipeTypePanel.getFloatView().loadRecipe(selected);
             }
+            // update recipe preview
+            recipeTypePanel.getFloatView().loadRecipe(isFuel, selected);
+
             tabContainer.addTab(createTabButton(0, "editor.machine.recipe_list.contents"), container);
 
             // add condition tab

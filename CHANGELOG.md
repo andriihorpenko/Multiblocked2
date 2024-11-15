@@ -1,4 +1,10 @@
 # ChangeLog
 
-* fix waterlogged crash previous projects while clicking with a bucket
-* make previous custom data to check the machine nbt instead. 
+* Add the geckolib glowing layer for emissive rendering.
+* Add proxy supports for mbd2 recipetypes.
+* Add XEI supports for fuel recipes.
+* Add more events related to the fuel handling.
+  * MachineFuelBurningFinishEvent
+  * MachineFuelRecipeModifyEvent
+* Trait recipe handling io can be BOTH now.
+* Bump up ldlib

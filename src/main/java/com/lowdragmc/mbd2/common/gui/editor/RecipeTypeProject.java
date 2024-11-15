@@ -34,11 +34,13 @@ public class RecipeTypeProject implements IProject {
     protected Resources resources;
     protected MBDRecipeType recipeType;
     protected WidgetGroup ui;
+    protected WidgetGroup fuelUI;
 
-    public RecipeTypeProject(Resources resources, MBDRecipeType recipeType, WidgetGroup ui) {
+    public RecipeTypeProject(Resources resources, MBDRecipeType recipeType, WidgetGroup ui, WidgetGroup fuelUI) {
         this.resources = resources;
         this.recipeType = recipeType;
         this.ui = ui;
+        this.fuelUI = fuelUI;
     }
 
     protected Map<String, Resource<?>> createResources() {
@@ -69,13 +71,14 @@ public class RecipeTypeProject implements IProject {
 
     @Override
     public RecipeTypeProject newEmptyProject() {
-        return new RecipeTypeProject(new Resources(createResources()), createDefaultRecipeType(), createDefaultUI());
+        return new RecipeTypeProject(new Resources(createResources()), createDefaultRecipeType(), createDefaultUI(), createDefaultUI());
     }
 
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.put("resources", resources.serializeNBT());
         tag.put("ui", IConfigurableWidget.serializeNBT(this.ui, resources, true));
+        tag.put("fuelUI", IConfigurableWidget.serializeNBT(this.fuelUI, resources, true));
         tag.put("recipe_type", recipeType.serializeNBT());
         return tag;
     }
@@ -91,6 +94,8 @@ public class RecipeTypeProject implements IProject {
         this.resources = loadResources(tag.getCompound("resources"));
         this.ui = new WidgetGroup();
         IConfigurableWidget.deserializeNBT(this.ui, tag.getCompound("ui"), resources, true);
+        this.fuelUI = new WidgetGroup();
+        IConfigurableWidget.deserializeNBT(this.fuelUI, tag.getCompound("fuelUI"), resources, true);
         this.recipeType = createDefaultRecipeType();
         UIResourceTexture.setCurrentResource((Resource)resources.resources.get(TexturesResource.RESOURCE_NAME), true);
         this.recipeType.deserializeNBT(tag.getCompound("recipe_type"));
@@ -129,9 +134,11 @@ public class RecipeTypeProject implements IProject {
             IProject.super.onLoad(editor);
             var tabContainer = machineEditor.getTabPages();
             var recipeTypePanel = new RecipeTypePanel(recipeType, machineEditor);
-            var recipeXEIUIPanel = new RecipeXEIUIPanel(machineEditor);
+            var recipeXEIUIPanel = new RecipeXEIUIPanel(machineEditor, getUi());
+            var fuelRecipeXEIUIPanel = new RecipeXEIUIPanel(machineEditor, getFuelUI());
             tabContainer.addTab("editor.machine.recipe_type", recipeTypePanel, recipeTypePanel::onPanelSelected, recipeTypePanel::onPanelDeselected);
             tabContainer.addTab("editor.machine.recipe_xei_ui", recipeXEIUIPanel, recipeXEIUIPanel::onPanelSelected, recipeXEIUIPanel::onPanelDeselected);
+            tabContainer.addTab("editor.machine.recipe_xei_fuel_ui", fuelRecipeXEIUIPanel, fuelRecipeXEIUIPanel::onPanelSelected, fuelRecipeXEIUIPanel::onPanelDeselected);
         }
     }
 }

@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib.gui.editor.configurator.*;
 import com.lowdragmc.lowdraglib.gui.editor.data.resource.TexturesResource;
 import com.lowdragmc.lowdraglib.gui.editor.runtime.PersistedParser;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.texture.UIResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -73,6 +74,10 @@ public class MBDRecipeType implements RecipeType<MBDRecipe>, ITagSerializable<Co
     private IGuiTexture icon = new ResourceTexture();
     @Setter
     @Getter
+    @Configurable(name = "recipe_type.fuel_icon", tips = "recipe_type.fuel_icon.tooltip")
+    private IGuiTexture fuelIcon = new ProgressTexture();
+    @Setter
+    @Getter
     @Configurable(name = "recipe_type.require_fuel", tips = "recipe_type.require_fuel.tooltip")
     protected boolean requireFuelForWorking;
     @Setter
@@ -88,6 +93,12 @@ public class MBDRecipeType implements RecipeType<MBDRecipe>, ITagSerializable<Co
     @Setter
     @Getter
     protected Size uiSize = new Size(176, 166);
+    @Setter
+    @Getter
+    protected UICreator fuelUICreator = UICreator.DEFAULT;
+    @Setter
+    @Getter
+    protected Size fuelUISize = new Size(176, 166);
 
     // run-time
     @Nullable
@@ -137,6 +148,21 @@ public class MBDRecipeType implements RecipeType<MBDRecipe>, ITagSerializable<Co
                 recipeUI.setBackground(IGuiTexture.EMPTY);
                 return recipeUI;
             });
+            if (requireFuelForWorking && tag.contains("fuelUI")) {
+                var fuelUITag = tag.getCompound("fuelUI");
+                var fuelSize= fuelUITag.getCompound("size");
+                setFuelUISize(new Size(fuelSize.getInt("width"), fuelSize.getInt("height")));
+                setFuelUICreator(recipe -> {
+                    var recipeUI = new WidgetGroup();
+                    recipeUI.setClientSideWidget();
+                    IConfigurableWidget.deserializeNBT(recipeUI, fuelUITag, texturesResource, false);
+                    bindXEIRecipeUI(recipeUI, recipe);
+                    recipeUI.setSelfPosition(0, 0);
+                    recipeUI.setBackground(IGuiTexture.EMPTY);
+                    return recipeUI;
+                });
+            }
+
         });
         return this;
     }
@@ -167,6 +193,10 @@ public class MBDRecipeType implements RecipeType<MBDRecipe>, ITagSerializable<Co
     @Override
     public String toString() {
         return registryName.toString();
+    }
+
+    public ResourceLocation getFuelRegistryName() {
+        return new ResourceLocation(registryName.getNamespace(), registryName.getPath() + ".fuel");
     }
 
     private void loadProxyRecipes(RecipeManager recipeManager) {
@@ -251,6 +281,11 @@ public class MBDRecipeType implements RecipeType<MBDRecipe>, ITagSerializable<Co
 
     @Nullable
     public MBDRecipe toMBDrecipe(ResourceLocation id, Recipe<?> recipe) {
+        if (recipe instanceof MBDRecipe mbdRecipe) {
+            var copied = mbdRecipe.copy();
+            copied.recipeType = this;
+            return copied;
+        }
         if (recipe.getIngredients().isEmpty()) return null;
         var builder = recipeBuilder(id).recipeType(this);
         for (var ingredient : recipe.getIngredients()) {
