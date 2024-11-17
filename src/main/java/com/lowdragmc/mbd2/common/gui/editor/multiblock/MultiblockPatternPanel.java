@@ -53,6 +53,7 @@ public class MultiblockPatternPanel extends WidgetGroup {
     protected final SceneWidget scene;
     protected final WidgetGroup buttonGroup;
     // runtime
+    private long lastClickTime;
     private BlockPosFace clickedPosFace;
     private boolean isSelected;
     @Getter
@@ -267,6 +268,12 @@ public class MultiblockPatternPanel extends WidgetGroup {
         reloadPredicateConfigurator();
     }
 
+    public void addSelectedBlocks(Collection<Vector3i> positions, boolean clear) {
+        if (clear) selectedBlocks.clear();
+        selectedBlocks.addAll(positions);
+        reloadPredicateConfigurator();
+    }
+
     public void removeSelectedBlock(Vector3i pos) {
         selectedBlocks.remove(pos);
         if (selectedBlocks.isEmpty()) {
@@ -398,7 +405,7 @@ public class MultiblockPatternPanel extends WidgetGroup {
             var hoverPosFace = scene.getHoverPosFace();
             var clickPosFace = scene.getClickPosFace();
             if (hoverPosFace != null && hoverPosFace.equals(clickPosFace)) {
-                if (button == 0) {
+                if (button == 0 && gui != null) {
                     // select blocks by click
                     var pos = new Vector3i(hoverPosFace.pos.getX(), hoverPosFace.pos.getY(), hoverPosFace.pos.getZ());
                     if (isCtrlDown() || isShiftDown()) {
@@ -408,7 +415,28 @@ public class MultiblockPatternPanel extends WidgetGroup {
                             addSelectedBlock(pos);
                         }
                     } else {
-                        addSelectedBlock(pos, true);
+                        var clickTime = gui.getTickCount();
+                        if (clickTime - lastClickTime < 10) {
+                            // select all blocks with same predicates
+                            var blocks = new ArrayList<Vector3i>();
+                            blocks.add(pos);
+                            var holder = project.getBlockPlaceholders()[pos.x()][pos.y()][pos.z()];
+                            var predicates = holder.getPredicates();
+                            for (int x = 0; x < project.getBlockPlaceholders().length; x++) {
+                                for (int y = 0; y < project.getBlockPlaceholders()[x].length; y++) {
+                                    for (int z = 0; z < project.getBlockPlaceholders()[x][y].length; z++) {
+                                        var holder2 = project.getBlockPlaceholders()[x][y][z];
+                                        if (holder2.getPredicates().equals(predicates)) {
+                                            blocks.add(new Vector3i(x, y, z));
+                                        }
+                                    }
+                                }
+                            }
+                            addSelectedBlocks(blocks, true);
+                        } else {
+                            addSelectedBlock(pos, true);
+                        }
+                        lastClickTime = gui.getTickCount();
                     }
                 }
             }
