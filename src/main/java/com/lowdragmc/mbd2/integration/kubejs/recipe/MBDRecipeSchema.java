@@ -24,6 +24,7 @@ import com.lowdragmc.mbd2.integration.mekanism.MekanismChemicalRecipeCapability;
 import com.lowdragmc.mbd2.integration.mekanism.MekanismHeatCondition;
 import com.lowdragmc.mbd2.integration.mekanism.MekanismHeatRecipeCapability;
 import com.lowdragmc.mbd2.integration.naturesaura.NaturesAuraRecipeCapability;
+import com.lowdragmc.mbd2.integration.pneumaticcraft.PNCHeatRecipeCapability;
 import com.lowdragmc.mbd2.integration.pneumaticcraft.PNCPressureAirRecipeCapability;
 import com.lowdragmc.mbd2.integration.pneumaticcraft.PressureAir;
 import dev.latvian.mods.kubejs.fluid.FluidLike;
@@ -292,6 +293,20 @@ public interface MBDRecipeSchema {
                 throw new IllegalStateException("Try to add a air ingredient while the pneumatic craft is not loaded!");
             }
             return outputs(PNCPressureAirRecipeCapability.CAP, new PressureAir(true, air));
+        }
+
+        public MBDRecipeJS inputPNCHeat(double heat) {
+            if (!MBD2.isPneumaticCraftLoaded()) {
+                throw new IllegalStateException("Try to add a heat ingredient while the pneumatic craft is not loaded!");
+            }
+            return inputs(PNCHeatRecipeCapability.CAP, heat);
+        }
+
+        public MBDRecipeJS outputPNCHeat(double heat) {
+            if (!MBD2.isPneumaticCraftLoaded()) {
+                throw new IllegalStateException("Try to add a heat ingredient while the pneumatic craft is not loaded!");
+            }
+            return outputs(PNCHeatRecipeCapability.CAP, heat);
         }
 
         public MBDRecipeJS inputHeat(double heat) {

@@ -451,6 +451,14 @@
     "config.definition.trait.pneumatic_pressure_air_handler.critical_pressure.tips.0": "Get the \"critical\" pressure level, which is the hard maximum pressure for this handler.  If air is added and the pressure is at or above this level, an explosion is inevitable!",
     "config.definition.trait.pneumatic_pressure_air_handler.critical_pressure.tips.1": "If the value is 0, the critical pressure level is the same as the danger level.",
 
+    "config.definition.trait.pneumatic_heat_exchanger.name": "Pressure Heat Exchanger",
+    "config.definition.trait.pneumatic_heat_exchanger.thermal_capacity": "Thermal Capacity",
+    "config.definition.trait.pneumatic_heat_exchanger.thermal_capacity.tips.0": "The higher the capacity, the more heat can be 'stored'.",
+    "config.definition.trait.pneumatic_heat_exchanger.thermal_capacity.tips.1": "E.g. an object with a heat capacity of double the heat * capacity of another object will require twice as much heat gain or loss to adjust the temperature by the same * amount.",
+    "config.definition.trait.pneumatic_heat_exchanger.thermal_resistance": "Thermal Resistance",
+    "config.definition.trait.pneumatic_heat_exchanger.thermal_resistance.tips": "the thermal resistance, higher resistance means slower heat transfer",
+    "config.definition.trait.pneumatic_heat_exchanger.ui_container_hover": "Stored: %d / %d temperature",
+
     "config.definition.trait.embers_ember_capability.name": "Embers ember capability",
     "config.definition.trait.embers_ember_capability.capacity": "Capacity",
     "config.definition.trait.embers_ember_capability.ui_container_hover": "Stored: %d / %d ember",
@@ -655,7 +663,6 @@
     "recipe.capability.entity.ingredient.values.tag": "entity tag",
     "ldlib.gui.editor.register.widget.container.entity_preview": "Entity Preview Slot",
 
-
     "recipe.capability.forge_energy.name": "Forge Energy Capability",
     "recipe.capability.forge_energy.energy": "Energy",
 
@@ -671,6 +678,9 @@
     "recipe.capability.pneumatic_pressure_air.type.pressure": "pressure",
     "recipe.capability.pneumatic_pressure_air.type.tooltip": "pressure = air * volume",
     "recipe.capability.pneumatic_pressure_air.value": "Value",
+
+    "recipe.capability.pneumatic_heat.name": "Pneumatic Heat Capability",
+    "recipe.capability.pneumatic_heat.heat": "Heat",
 
     "recipe.capability.embers_ember.name": "Embers Ember Capability",
     "recipe.capability.embers_ember.ember": "Ember",
@@ -692,6 +702,7 @@
 
     "recipe.capability.mek_heat.name": "Mek Heat Capability",
     "recipe.capability.mek_heat.heat": "Heat",
+
     "ldlib.gui.editor.register.widget.container.chemical_gas_slot": "Chemical Gas Slot",
     "ldlib.gui.editor.register.widget.container.chemical_infuse_slot": "Chemical Infusion Slot",
     "ldlib.gui.editor.register.widget.container.chemical_pigment_slot": "Chemical Pigment Slot",

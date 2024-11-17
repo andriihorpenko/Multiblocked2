@@ -5,16 +5,16 @@ import com.lowdragmc.lowdraglib.gui.editor.ui.MainPanel;
 import com.lowdragmc.lowdraglib.gui.editor.ui.tool.WidgetToolBox;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.mbd2.common.gui.editor.MachineEditor;
-import com.lowdragmc.mbd2.common.gui.editor.RecipeTypeProject;
 import com.lowdragmc.mbd2.common.gui.editor.recipe.widget.RecipeTypeUIFloatView;
 import lombok.Getter;
 
 public class RecipeXEIUIPanel extends MainPanel {
     @Getter
-    private final RecipeTypeUIFloatView floatView = new RecipeTypeUIFloatView();
+    private final RecipeTypeUIFloatView floatView;
 
-    public RecipeXEIUIPanel(MachineEditor editor, WidgetGroup root) {
+    public RecipeXEIUIPanel(MachineEditor editor, WidgetGroup root, boolean isFuel) {
         super(editor, root);
+        floatView = new RecipeTypeUIFloatView(isFuel);
     }
 
     public MachineEditor getEditor() {

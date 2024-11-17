@@ -1,4 +1,4 @@
-package com.lowdragmc.mbd2.integration.pneumaticcraft.trait;
+package com.lowdragmc.mbd2.integration.pneumaticcraft.trait.heat;
 
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;

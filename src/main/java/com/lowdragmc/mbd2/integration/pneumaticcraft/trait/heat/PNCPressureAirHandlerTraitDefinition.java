@@ -1,4 +1,4 @@
-package com.lowdragmc.mbd2.integration.pneumaticcraft.trait;
+package com.lowdragmc.mbd2.integration.pneumaticcraft.trait.heat;
 
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -91,12 +91,12 @@ public class PNCPressureAirHandlerTraitDefinition extends RecipeCapabilityTraitD
     @Override
     public void createTraitUITemplate(WidgetGroup ui) {
         var prefix = uiPrefixName();
-        var pressureBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 100, 15, new ProgressTexture(
+        var pressureBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 100, 10, new ProgressTexture(
                 IGuiTexture.EMPTY, PNCPressureAirRecipeCapability.HUD_BAR
         ));
         pressureBar.setBackground(PNCPressureAirRecipeCapability.HUD_BACKGROUND);
         pressureBar.setId(prefix);
-        var energyBarText = new TextTextureWidget(5, 3, 90, 10)
+        var energyBarText = new TextTextureWidget(5, 0, 90, 10)
                 .setText("0 pressure")
                 .textureStyle(texture -> texture.setDropShadow(true));
         energyBarText.setId(prefix + "_text");

@@ -12,6 +12,7 @@ import com.lowdragmc.mbd2.common.gui.editor.MachineEditor;
 import com.lowdragmc.mbd2.common.gui.editor.RecipeTypeProject;
 import com.lowdragmc.mbd2.common.recipe.DimensionCondition;
 import com.lowdragmc.mbd2.utils.WidgetUtils;
+import lombok.Getter;
 import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
@@ -19,12 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@Getter
 public class RecipeTypeUIFloatView extends FloatViewWidget {
 
     protected final DraggableScrollableWidgetGroup uiList;
+    private final boolean isFuel;
 
-    public RecipeTypeUIFloatView() {
+    public RecipeTypeUIFloatView(boolean isFuel) {
         super(200, 200, 206, 120, false);
+        this.isFuel = isFuel;
         uiList = new DraggableScrollableWidgetGroup(5, 5, 196, 110);
         uiList.setYScrollBarWidth(2).setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1).transform(-0.5f, 0));
     }
@@ -62,38 +66,39 @@ public class RecipeTypeUIFloatView extends FloatViewWidget {
     public void reloadList() {
         uiList.clearAllWidgets();
         if (getEditor().getCurrentProject() instanceof RecipeTypeProject project) {
+            var ui = isFuel ? project.getFuelUI() : project.getUi();
             // create progress bar
             addButton(new ImageWidget(0, 0, 18, 18, new ProgressTexture(
                     new ResourceTexture("mbd2:textures/gui/arrow_bar.png").getSubTexture(0, 0, 1, 0.5),
                     new ResourceTexture("mbd2:textures/gui/arrow_bar.png").getSubTexture(0, 0.5, 1, 0.5)
             )), () -> "editor.machine.recipe_type_ui_view.progress", () -> {
-                if (WidgetUtils.getFirstWidgetById(project.getUi(), "@progress_bar") == null) {
+                if (WidgetUtils.getFirstWidgetById(ui, "@progress_bar") == null) {
                     var progress = new ProgressWidget(ProgressWidget.JEIProgress, 5, 5, 18, 18, new ProgressTexture(
                             new ResourceTexture("mbd2:textures/gui/arrow_bar.png").getSubTexture(0, 0, 1, 0.5),
                             new ResourceTexture("mbd2:textures/gui/arrow_bar.png").getSubTexture(0, 0.5, 1, 0.5)
                     ));
                     progress.setId("@progress_bar");
-                    project.getUi().addWidget(progress);
+                    ui.addWidget(progress);
                 }
             });
 
             // create duration label
             addButton(new ImageWidget(0, 0, 18, 18, Icons.FILE), () -> "editor.machine.recipe_type_ui_view.duration", () -> {
-                if (WidgetUtils.getFirstWidgetById(project.getUi(), "@duration") == null) {
+                if (WidgetUtils.getFirstWidgetById(ui, "@duration") == null) {
                     var duration = new LabelWidget(5, 5, Component.translatable("recipe.duration.value", 100));
                     duration.setId("@duration");
-                    project.getUi().addWidget(duration);
+                    ui.addWidget(duration);
                 }
             });
 
             // create conditions
             addButton(new ImageWidget(0, 0, 18, 18, DimensionCondition.INSTANCE.getIcon()), () -> "editor.machine.recipe_type_ui_view.condition", () -> {
-                if (WidgetUtils.getFirstWidgetById(project.getUi(), "@condition") == null) {
-                    var duration = new TextBoxWidget(5, 5, project.getUi().getSizeWidth() - 10, List.of(DimensionCondition.INSTANCE.getTooltips().getString()));
+                if (WidgetUtils.getFirstWidgetById(ui, "@condition") == null) {
+                    var duration = new TextBoxWidget(5, 5, ui.getSizeWidth() - 10, List.of(DimensionCondition.INSTANCE.getTooltips().getString()));
                     duration.isShadow = true;
                     duration.fontColor = -1;
                     duration.setId("@condition");
-                    project.getUi().addWidget(duration);
+                    ui.addWidget(duration);
                 }
             });
 
@@ -101,6 +106,7 @@ public class RecipeTypeUIFloatView extends FloatViewWidget {
             Map<RecipeCapability<?>, Integer> maxInputs = new HashMap<>();
             Map<RecipeCapability<?>, Integer> maxOutputs = new HashMap<>();
             for (var recipe : project.getRecipeType().getBuiltinRecipes().values()) {
+                if (recipe.isFuel != isFuel) continue;
                 for (var entry : recipe.inputs.entrySet()) {
                     if (!entry.getValue().isEmpty()) {
                         var cap = maxInputs.getOrDefault(entry.getKey(), 0);
@@ -138,11 +144,12 @@ public class RecipeTypeUIFloatView extends FloatViewWidget {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void addCap(RecipeCapability cap, int maxSize, IO io) {
         if (getEditor().getCurrentProject() instanceof RecipeTypeProject project) {
+            var ui = isFuel ? project.getFuelUI() : project.getUi();
             addButton(cap.createPreviewWidget(cap.createDefaultContent()), () -> {
                 var found = 0;
                 for (int i = 0; i < maxSize; i++) {
                     var id = "@%s_%s_%d".formatted(cap.name, io.name, i);
-                    if (WidgetUtils.getFirstWidgetById(project.getUi(), id) != null) {
+                    if (WidgetUtils.getFirstWidgetById(ui, id) != null) {
                         found++;
                     }
                 }
@@ -158,7 +165,6 @@ public class RecipeTypeUIFloatView extends FloatViewWidget {
                             maxSize);
                 }
             }, () -> {
-                var ui = project.getUi();
                 var x = 5;
                 for (int i = 0; i < maxSize; i++) {
                     var id = "@%s_%s_%d".formatted(cap.name, io.name, i);

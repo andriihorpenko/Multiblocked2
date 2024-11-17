@@ -134,8 +134,8 @@ public class RecipeTypeProject implements IProject {
             IProject.super.onLoad(editor);
             var tabContainer = machineEditor.getTabPages();
             var recipeTypePanel = new RecipeTypePanel(recipeType, machineEditor);
-            var recipeXEIUIPanel = new RecipeXEIUIPanel(machineEditor, getUi());
-            var fuelRecipeXEIUIPanel = new RecipeXEIUIPanel(machineEditor, getFuelUI());
+            var recipeXEIUIPanel = new RecipeXEIUIPanel(machineEditor, getUi(), false);
+            var fuelRecipeXEIUIPanel = new RecipeXEIUIPanel(machineEditor, getFuelUI(), true);
             tabContainer.addTab("editor.machine.recipe_type", recipeTypePanel, recipeTypePanel::onPanelSelected, recipeTypePanel::onPanelDeselected);
             tabContainer.addTab("editor.machine.recipe_xei_ui", recipeXEIUIPanel, recipeXEIUIPanel::onPanelSelected, recipeXEIUIPanel::onPanelDeselected);
             tabContainer.addTab("editor.machine.recipe_xei_fuel_ui", fuelRecipeXEIUIPanel, fuelRecipeXEIUIPanel::onPanelSelected, fuelRecipeXEIUIPanel::onPanelDeselected);
