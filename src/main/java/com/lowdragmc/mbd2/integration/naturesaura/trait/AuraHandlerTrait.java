@@ -37,11 +37,11 @@ public class AuraHandlerTrait extends RecipeCapabilityTrait implements IRecipeHa
         int sum = left.stream().reduce(0, Integer::sum);
         if (io == IO.IN) {
             var spot = IAuraChunk.getHighestSpot(world, pos, getDefinition().getRadius(), pos);
-            var drained = IAuraChunk.getAuraChunk(world, spot).drainAura(pos, sum);
+            var drained = IAuraChunk.getAuraChunk(world, spot).drainAura(spot, sum);
             sum -= drained;
         } else if (io == IO.OUT) {
             BlockPos spot = IAuraChunk.getLowestSpot(world, pos, getDefinition().getRadius(), pos);
-            var stored = IAuraChunk.getAuraChunk(world, spot).storeAura(pos, sum);
+            var stored = IAuraChunk.getAuraChunk(world, spot).storeAura(spot, sum);
             sum -= stored;
         }
         return sum > 0 ? List.of(sum) : null;
