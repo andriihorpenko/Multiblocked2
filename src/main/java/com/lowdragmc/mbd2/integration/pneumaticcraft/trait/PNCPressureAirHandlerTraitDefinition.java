@@ -16,6 +16,7 @@ import com.lowdragmc.mbd2.integration.pneumaticcraft.PNCPressureAirRecipeCapabil
 import com.lowdragmc.mbd2.utils.WidgetUtils;
 import lombok.Getter;
 import lombok.Setter;
+import me.desht.pneumaticcraft.api.pressure.PressureTier;
 import me.desht.pneumaticcraft.common.core.ModItems;
 import net.minecraft.network.chat.Component;
 
@@ -29,9 +30,26 @@ public class PNCPressureAirHandlerTraitDefinition extends RecipeCapabilityTraitD
 
     @Getter
     @Setter
-    @Configurable(name = "config.definition.trait.pneumatic_pressure_air_handler.max_pressure")
+    @Configurable(name = "config.definition.trait.pneumatic_pressure_air_handler.max_pressure",
+            tips = "config.definition.trait.pneumatic_pressure_air_handler.max_pressure.tips")
     @NumberRange(range = {1, Double.MAX_VALUE})
     private float maxPressure = 20f;
+
+    @Getter
+    @Setter
+    @Configurable(name = "config.definition.trait.pneumatic_pressure_air_handler.danger_pressure",
+            tips = {"config.definition.trait.pneumatic_pressure_air_handler.danger_pressure.tips.0",
+                    "config.definition.trait.pneumatic_pressure_air_handler.danger_pressure.tips.1"})
+    @NumberRange(range = {0, Double.MAX_VALUE})
+    private float dangerPressure = 0;
+
+    @Getter
+    @Setter
+    @Configurable(name = "config.definition.trait.pneumatic_pressure_air_handler.critical_pressure",
+            tips = {"config.definition.trait.pneumatic_pressure_air_handler.critical_pressure.tips.0",
+                    "config.definition.trait.pneumatic_pressure_air_handler.critical_pressure.tips.1"})
+    @NumberRange(range = {0, Double.MAX_VALUE})
+    private float criticalPressure = 0;
 
     @Override
     public PNCPressureAirHandlerTrait createTrait(MBDMachine machine) {
@@ -46,6 +64,28 @@ public class PNCPressureAirHandlerTraitDefinition extends RecipeCapabilityTraitD
     @Override
     public boolean allowMultiple() {
         return false;
+    }
+
+    public float getRealDangerPressure() {
+        return dangerPressure == 0 ? maxPressure : dangerPressure;
+    }
+
+    public float getRealCriticalPressure() {
+        return criticalPressure == 0 ? getRealDangerPressure() : criticalPressure;
+    }
+
+    public PressureTier getPressureTier() {
+        return new PressureTier() {
+            @Override
+            public float getDangerPressure() {
+                return getRealDangerPressure();
+            }
+
+            @Override
+            public float getCriticalPressure() {
+                return getRealCriticalPressure();
+            }
+        };
     }
 
     @Override
@@ -71,7 +111,7 @@ public class PNCPressureAirHandlerTraitDefinition extends RecipeCapabilityTraitD
             WidgetUtils.widgetByIdForEach(group, "^%s$".formatted(prefix), ProgressWidget.class, energyBar -> {
                 energyBar.setProgressSupplier(() -> Math.max(pressureAirHandlerTrait.handler.getPressure(), 0) / pressureAirHandlerTrait.handler.maxPressure());
                 energyBar.setDynamicHoverTips(value -> LocalizationUtils.format(
-                        "config.definition.trait.gtm_energy_container.ui_container_hover",
+                        "config.definition.trait.pneumatic_pressure_air_handler.ui_container_hover",
                         Math.round(pressureAirHandlerTrait.handler.maxPressure() * value), pressureAirHandlerTrait.handler.maxPressure()));
             });
             WidgetUtils.widgetByIdForEach(group, "^%s_text$".formatted(prefix), TextTextureWidget.class, energyBarText -> {

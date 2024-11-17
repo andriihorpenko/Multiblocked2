@@ -12,15 +12,18 @@ import com.lowdragmc.mbd2.common.trait.ICapabilityProviderTrait;
 import com.lowdragmc.mbd2.common.trait.RecipeCapabilityTrait;
 import com.lowdragmc.mbd2.integration.pneumaticcraft.PNCPressureAirRecipeCapability;
 import com.lowdragmc.mbd2.integration.pneumaticcraft.PressureAir;
+import lombok.Getter;
 import me.desht.pneumaticcraft.api.PNCCapabilities;
 import me.desht.pneumaticcraft.api.tileentity.IAirHandler;
+import me.desht.pneumaticcraft.api.tileentity.IAirHandlerMachine;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements ICapabilityProviderTrait<IAirHandler>, IRecipeHandlerTrait<PressureAir> {
+@Getter
+public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements IRecipeHandlerTrait<PressureAir> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PNCPressureAirHandlerTrait.class);
     @Override
     public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
@@ -28,6 +31,8 @@ public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements
     @Persisted
     @DescSynced
     public final CopiableAirHandler handler;
+    private final AirHandlerMachineCap airHandlerMachineCap = new AirHandlerMachineCap();
+    private final AirHandlerCap airHandlerCap = new AirHandlerCap();
 
     public PNCPressureAirHandlerTrait(MBDMachine machine, PNCPressureAirHandlerTraitDefinition definition) {
         super(machine, definition);
@@ -42,11 +47,23 @@ public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements
 
     @Override
     public void onLoadingTraitInPreview() {
-        handler.addAir((int) (handler.maxPressure() / 2  * handler.getBaseVolume()));
+        handler.addAir((int) (handler.maxPressure() / 2  * handler.getVolume()));
     }
 
     protected CopiableAirHandler createHandler() {
-        return new CopiableAirHandler(getDefinition().getVolume(), getDefinition().getMaxPressure());
+        return new CopiableAirHandler(getDefinition().getPressureTier(), getDefinition().getVolume(), getDefinition().getMaxPressure());
+    }
+
+    @Override
+    public void serverTick() {
+        super.serverTick();
+        handler.tick(getMachine().getHolder());
+    }
+
+    @Override
+    public void clientTick() {
+        super.clientTick();
+        handler.tick(getMachine().getHolder());
     }
 
     @Override
@@ -59,7 +76,7 @@ public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements
                 var pressureAir = iterator.next();
                 var air = pressureAir.value();
                 if (!pressureAir.isAir()) {
-                    air = handler.baseVolume * air;
+                    air = handler.getVolume() * air;
                 }
                 var leftAir = handler.getAir();
                 if (air > leftAir) {
@@ -75,14 +92,14 @@ public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements
                 var pressureAir = iterator.next();
                 var pressure = pressureAir.value();
                 if (pressureAir.isAir()) {
-                    pressure = pressure / handler.getBaseVolume();
+                    pressure = pressure / handler.getVolume();
                 }
                 var leftPressure = handler.maxPressure() - handler.getPressure();
                 if (pressure > leftPressure) {
                     // can't fit all the air in
                     continue;
                 }
-                var air = (int) (pressure * handler.getBaseVolume());
+                var air = (int) (pressure * handler.getVolume());
                 handler.addAir(air);
                 iterator.remove();
             }
@@ -102,26 +119,53 @@ public class PNCPressureAirHandlerTrait extends RecipeCapabilityTrait implements
 
     @Override
     public List<ICapabilityProviderTrait<?>> getCapabilityProviderTraits() {
-        return List.of(this);
+        return List.of(airHandlerMachineCap, airHandlerCap);
     }
 
-    @Override
-    public IO getCapabilityIO(@Nullable Direction side) {
-        return IO.BOTH;
+    public class AirHandlerMachineCap implements ICapabilityProviderTrait<IAirHandlerMachine>{
+
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return IO.BOTH;
+        }
+
+        @Override
+        public Capability<? super IAirHandlerMachine> getCapability() {
+            return PNCCapabilities.AIR_HANDLER_MACHINE_CAPABILITY;
+        }
+
+        @Override
+        public IAirHandlerMachine getCapContent(IO capbilityIO) {
+            return handler;
+        }
+
+        @Override
+        public IAirHandlerMachine mergeContents(List<IAirHandlerMachine> contents) {
+            return handler;
+        }
     }
 
-    @Override
-    public Capability<? super IAirHandler> getCapability() {
-        return PNCCapabilities.AIR_HANDLER_CAPABILITY;
+    public class AirHandlerCap implements ICapabilityProviderTrait<IAirHandler>{
+
+        @Override
+        public IO getCapabilityIO(@Nullable Direction side) {
+            return IO.BOTH;
+        }
+
+        @Override
+        public Capability<? super IAirHandler> getCapability() {
+            return PNCCapabilities.AIR_HANDLER_CAPABILITY;
+        }
+
+        @Override
+        public IAirHandler getCapContent(IO capbilityIO) {
+            return handler;
+        }
+
+        @Override
+        public IAirHandler mergeContents(List<IAirHandler> contents) {
+            return handler;
+        }
     }
 
-    @Override
-    public IAirHandler getCapContent(IO capbilityIO) {
-        return handler;
-    }
-
-    @Override
-    public IAirHandler mergeContents(List<IAirHandler> contents) {
-        return contents.get(0);
-    }
 }

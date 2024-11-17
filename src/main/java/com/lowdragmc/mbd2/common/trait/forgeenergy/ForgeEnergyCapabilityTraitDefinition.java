@@ -21,6 +21,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
 
+import static com.lowdragmc.mbd2.common.capability.recipe.ForgeEnergyRecipeCapability.ENERGY_BAR;
+import static com.lowdragmc.mbd2.common.capability.recipe.ForgeEnergyRecipeCapability.ENERGY_BASE;
+
 @LDLRegister(name = "forge_energy_storage", group = "trait", priority = -100)
 public class ForgeEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitDefinition {
     @Getter
@@ -60,12 +63,12 @@ public class ForgeEnergyCapabilityTraitDefinition extends SimpleCapabilityTraitD
     @Override
     public void createTraitUITemplate(WidgetGroup ui) {
         var prefix = uiPrefixName();
-        var energyBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 100, 28, new ProgressTexture(
-                IGuiTexture.EMPTY, new ResourceTexture("mbd2:textures/gui/energy_bar_base.png")
+        var energyBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 100, 14, new ProgressTexture(
+                IGuiTexture.EMPTY, ENERGY_BAR
         ));
-        energyBar.setBackground(new ResourceTexture("mbd2:textures/gui/energy_bar_background.png"));
+        energyBar.setBackground(ENERGY_BASE);
         energyBar.setId(prefix);
-        var energyBarText = new TextTextureWidget(5, 9, 90, 10)
+        var energyBarText = new TextTextureWidget(5, 2, 90, 10)
                 .setText("0/0 FE")
                 .textureStyle(textTexture -> textTexture.setDropShadow(true));
         energyBarText.setId(prefix + "_text");

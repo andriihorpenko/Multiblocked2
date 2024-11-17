@@ -2,10 +2,7 @@ package com.lowdragmc.mbd2.common.capability.recipe;
 
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ConfiguratorGroup;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.NumberConfigurator;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -22,6 +19,8 @@ import java.util.function.Supplier;
 
 public class ForgeEnergyRecipeCapability extends RecipeCapability<Integer> {
     public final static ForgeEnergyRecipeCapability CAP = new ForgeEnergyRecipeCapability();
+    public final static ResourceTexture ENERGY_BAR = new ResourceTexture("mbd2:textures/gui/energy_bar_base.png");
+    public final static ResourceBorderTexture ENERGY_BASE = new ResourceBorderTexture("mbd2:textures/gui/energy_bar_background.png", 42, 14, 1, 1);
 
     protected ForgeEnergyRecipeCapability() {
         super("forge_energy", SerializerInteger.INSTANCE);
@@ -43,10 +42,10 @@ public class ForgeEnergyRecipeCapability extends RecipeCapability<Integer> {
 
     @Override
     public Widget createXEITemplate() {
-        var energyBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 100, 28, new ProgressTexture(
-               IGuiTexture.EMPTY, new ResourceTexture("mbd2:textures/gui/energy_bar_base.png")
+        var energyBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 50, 14, new ProgressTexture(
+                IGuiTexture.EMPTY, ENERGY_BAR
         ));
-        energyBar.setBackground(new ResourceTexture("mbd2:textures/gui/energy_bar_background.png"));
+        energyBar.setBackground(ENERGY_BASE);
         energyBar.setOverlay(new TextTexture("0 FE"));
         return energyBar;
     }
