@@ -1,4 +1,4 @@
-package com.lowdragmc.mbd2.integration.pneumaticcraft.trait.pressureair;
+package com.lowdragmc.mbd2.integration.pneumaticcraft.trait.heat;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -14,7 +14,9 @@ import com.lowdragmc.mbd2.integration.pneumaticcraft.PNCHeatRecipeCapability;
 import lombok.Getter;
 import me.desht.pneumaticcraft.api.PNCCapabilities;
 import me.desht.pneumaticcraft.api.heat.IHeatExchangerLogic;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +33,8 @@ public class PNCHeatExchangerTrait extends RecipeCapabilityTrait {
     public final HeatExchanger handler;
     private final HeatRecipeHandler heatRecipeHandler = new HeatRecipeHandler();
     private final HeatExchangerCap heatExchangerCap = new HeatExchangerCap();
+    // runtime
+    private boolean isFirstTick = true;
 
     public PNCHeatExchangerTrait(MBDMachine machine, PNCHeatExchangerTraitDefinition definition) {
         super(machine, definition);
@@ -57,7 +61,16 @@ public class PNCHeatExchangerTrait extends RecipeCapabilityTrait {
     @Override
     public void serverTick() {
         super.serverTick();
+        if (isFirstTick) {
+            handler.initializeAsHull(getMachine().getLevel(), getMachine().getPos(), IHeatExchangerLogic.ALL_BLOCKS, Direction.values());
+            isFirstTick = false;
+        }
         handler.tick();
+    }
+
+    @Override
+    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
+        handler.initializeAsHull(getMachine().getLevel(), getMachine().getPos(), IHeatExchangerLogic.ALL_BLOCKS, Direction.values());
     }
 
     public class HeatRecipeHandler extends RecipeHandlerTrait<Double> {

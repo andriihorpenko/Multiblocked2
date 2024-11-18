@@ -591,6 +591,9 @@ public class MBDMachine implements IMachine, IEnhancedManaged, ICapabilityProvid
      */
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         MinecraftForge.EVENT_BUS.post(new MachineNeighborChangedEvent(this, block, fromPos).postCustomEvent());
+        for (ITrait trait : additionalTraits) {
+            trait.onNeighborChanged(block, fromPos, isMoving);
+        }
     }
 
     /**

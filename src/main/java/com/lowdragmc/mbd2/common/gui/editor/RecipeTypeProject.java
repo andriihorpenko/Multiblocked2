@@ -94,8 +94,15 @@ public class RecipeTypeProject implements IProject {
         this.resources = loadResources(tag.getCompound("resources"));
         this.ui = new WidgetGroup();
         IConfigurableWidget.deserializeNBT(this.ui, tag.getCompound("ui"), resources, true);
-        this.fuelUI = new WidgetGroup();
-        IConfigurableWidget.deserializeNBT(this.fuelUI, tag.getCompound("fuelUI"), resources, true);
+        if (tag.contains("fuelUI")) {
+            this.fuelUI = new WidgetGroup();
+            IConfigurableWidget.deserializeNBT(this.fuelUI, tag.getCompound("fuelUI"), resources, true);
+            if (this.fuelUI.getBackgroundTexture() == null) {
+                this.fuelUI.setBackground(ResourceBorderTexture.BORDERED_BACKGROUND);
+            }
+        } else {
+            this.fuelUI = createDefaultUI();
+        }
         this.recipeType = createDefaultRecipeType();
         UIResourceTexture.setCurrentResource((Resource)resources.resources.get(TexturesResource.RESOURCE_NAME), true);
         this.recipeType.deserializeNBT(tag.getCompound("recipe_type"));

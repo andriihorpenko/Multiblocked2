@@ -82,7 +82,7 @@ public class EmbersEmberCapabilityTraitDefinition extends SimpleCapabilityTraitD
                         Math.round(emberTrait.storage.getEmberCapacity() * value), emberTrait.storage.getEmberCapacity()));
             });
             WidgetUtils.widgetByIdForEach(group, "^%s_text$".formatted(prefix), TextTextureWidget.class, energyBarText -> {
-                energyBarText.setText(() -> Component.literal(emberTrait.storage.getEmber() + "/" + emberTrait.storage.getEmberCapacity() + " ember"));
+                energyBarText.setText(() -> Component.literal(Math.round(emberTrait.storage.getEmber()) + "/" + emberTrait.storage.getEmberCapacity() + " ember"));
             });
         }
     }

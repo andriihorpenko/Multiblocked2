@@ -1,4 +1,4 @@
-package com.lowdragmc.mbd2.integration.pneumaticcraft.trait.pressureair;
+package com.lowdragmc.mbd2.integration.pneumaticcraft.trait.heat;
 
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -29,14 +29,14 @@ public class PNCHeatExchangerTraitDefinition extends RecipeCapabilityTraitDefini
             tips = {"config.definition.trait.pneumatic_heat_exchanger.thermal_capacity.tips.0",
                     "config.definition.trait.pneumatic_heat_exchanger.thermal_capacity.tips.1"})
     @NumberRange(range = {0, Double.MAX_VALUE})
-    private float thermalCapacity = 100;
+    private float thermalCapacity = 1;
 
     @Getter
     @Setter
     @Configurable(name = "config.definition.trait.pneumatic_heat_exchanger.thermal_resistance",
             tips = "config.definition.trait.pneumatic_heat_exchanger.thermal_resistance.tips")
     @NumberRange(range = {0, Double.MAX_VALUE})
-    private float thermalResistance= 10;
+    private float thermalResistance= 1;
 
     @Override
     public PNCHeatExchangerTrait createTrait(MBDMachine machine) {
@@ -56,12 +56,12 @@ public class PNCHeatExchangerTraitDefinition extends RecipeCapabilityTraitDefini
     @Override
     public void createTraitUITemplate(WidgetGroup ui) {
         var prefix = uiPrefixName();
-        var energyBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 100, 15, new ProgressTexture(
+        var energyBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 100, 10, new ProgressTexture(
                 IGuiTexture.EMPTY, PNCHeatRecipeCapability.HUD_BAR
         ));
         energyBar.setBackground(PNCHeatRecipeCapability.HUD_BACKGROUND);
         energyBar.setId(prefix);
-        var energyBarText = new TextTextureWidget(5, 3, 90, 10)
+        var energyBarText = new TextTextureWidget(5, 0, 90, 10)
                 .setText("0 temperature")
                 .textureStyle(texture -> texture.setDropShadow(true));
         energyBarText.setId(prefix + "_text");
@@ -77,10 +77,10 @@ public class PNCHeatExchangerTraitDefinition extends RecipeCapabilityTraitDefini
                 energyBar.setProgressSupplier(() -> heatTrait.getHandler().getTemperature() / 2273);
                 energyBar.setDynamicHoverTips(value -> LocalizationUtils.format(
                         "config.definition.trait.pneumatic_heat_exchanger.ui_container_hover",
-                        Math.round(2273 * value), 2273));
+                        Math.round(2273 * value) - 273));
             });
             WidgetUtils.widgetByIdForEach(group, "^%s_text$".formatted(prefix), TextTextureWidget.class, energyBarText -> {
-                energyBarText.setText(() -> Component.literal(heatTrait.getHandler().getTemperature() + " temperature"));
+                energyBarText.setText(() -> Component.literal(Math.round(heatTrait.getHandler().getTemperature()) - 273 + "°C"));
             });
         }
     }

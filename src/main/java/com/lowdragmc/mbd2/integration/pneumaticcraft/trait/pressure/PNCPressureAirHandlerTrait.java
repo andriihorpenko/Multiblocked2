@@ -1,4 +1,4 @@
-package com.lowdragmc.mbd2.integration.pneumaticcraft.trait.heat;
+package com.lowdragmc.mbd2.integration.pneumaticcraft.trait.pressure;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;

@@ -79,7 +79,7 @@ public class MekHeatCapabilityTraitDefinition extends SimpleCapabilityTraitDefin
                         Math.round(range * value), range));
             });
             WidgetUtils.widgetByIdForEach(group, "^%s_text$".formatted(prefix), TextTextureWidget.class, energyBarText -> {
-                energyBarText.setText(() -> Component.literal(heatTrait.container.getTotalTemperature() + " heat"));
+                energyBarText.setText(() -> Component.literal(Math.round(heatTrait.container.getTotalTemperature()) + " heat"));
             });
         }
     }

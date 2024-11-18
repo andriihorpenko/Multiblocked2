@@ -457,7 +457,7 @@
     "config.definition.trait.pneumatic_heat_exchanger.thermal_capacity.tips.1": "E.g. an object with a heat capacity of double the heat * capacity of another object will require twice as much heat gain or loss to adjust the temperature by the same * amount.",
     "config.definition.trait.pneumatic_heat_exchanger.thermal_resistance": "Thermal Resistance",
     "config.definition.trait.pneumatic_heat_exchanger.thermal_resistance.tips": "the thermal resistance, higher resistance means slower heat transfer",
-    "config.definition.trait.pneumatic_heat_exchanger.ui_container_hover": "Stored: %d / %d temperature",
+    "config.definition.trait.pneumatic_heat_exchanger.ui_container_hover": "Stored: %d°C",
 
     "config.definition.trait.embers_ember_capability.name": "Embers ember capability",
     "config.definition.trait.embers_ember_capability.capacity": "Capacity",

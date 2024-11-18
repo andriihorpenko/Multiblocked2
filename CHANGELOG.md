@@ -1,8 +1,5 @@
 # ChangeLog
 
-* double-click to select all blocks with the same predicates.
-* fix aura trait crash in some cases.
-* fix pnc pressure trait wont accept air.
-* improve forge energy bar.
-* add pnc heat trait.
-* complete fuel recipe ui panel..
+* fix pnc heat trait won't transfer heat
+* better text display
+* fix existing recipetype project can't set fuel recipe view
