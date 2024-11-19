@@ -10,6 +10,7 @@ import lombok.Setter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.Map;
@@ -21,6 +22,8 @@ public class MachineRightClickEvent extends MachineEvent {
     @GraphParameterGet
     public final Player player;
     @GraphParameterGet
+    public final ItemStack heldItem;
+    @GraphParameterGet
     public final InteractionHand hand;
     @GraphParameterGet
     public final BlockHitResult hit;
@@ -31,6 +34,7 @@ public class MachineRightClickEvent extends MachineEvent {
     public MachineRightClickEvent(MBDMachine machine, Player player, InteractionHand hand, BlockHitResult hit) {
         super(machine);
         this.player = player;
+        this.heldItem = player.getItemInHand(hand);
         this.hand = hand;
         this.hit = hit;
     }
