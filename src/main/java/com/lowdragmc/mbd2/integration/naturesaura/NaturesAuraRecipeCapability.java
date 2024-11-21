@@ -57,7 +57,7 @@ public class NaturesAuraRecipeCapability extends RecipeCapability<Integer> {
 
     @Override
     public void createContentConfigurator(ConfiguratorGroup father, Supplier<Integer> supplier, Consumer<Integer> onUpdate) {
-        father.addConfigurators(new NumberConfigurator("recipe.capability.botania_mana.mana", supplier::get,
+        father.addConfigurators(new NumberConfigurator("recipe.capability.natures_aura.aura", supplier::get,
                 number -> onUpdate.accept(number.intValue()), 1, true).setRange(1, Integer.MAX_VALUE));
     }
 
