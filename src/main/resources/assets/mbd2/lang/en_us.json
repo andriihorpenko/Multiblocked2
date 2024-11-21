@@ -224,7 +224,6 @@
     "config.machine_sound.loop": "Loop",
     "config.machine_sound.loop.tooltip": "Whether the sound loops.",
 
-
     "config.machine_settings.machine_level": "Machine Level",
     "config.machine_settings.machine_level.tooltip": "The machine level. It can be used for recipe conditions.",
     "config.machine_settings.has_ui": "Has UI",
@@ -300,7 +299,6 @@
     "config.machine_event.graph.add": "add graph",
     "config.machine_event.graph.remove": "remove graph",
     "config.machine_event.graph.editing": "editing",
-
 
     "config.definition.multiblock_settings": "Multiblock Controller Settings",
     "config.definition.multiblock_settings.tooltip": "Multiblock Controller Behaviour",
@@ -480,7 +478,7 @@
     "config.definition.trait.gtm_energy_container.output_voltage": "Output Voltage",
     "config.definition.trait.gtm_energy_container.output_voltage.tooltip": "The output voltage of the energy container.",
     "config.definition.trait.gtm_energy_container.output_amperage": "Output amperage",
-    "config.definition.trait.gtm_energy_container.output_amperage.tooltip": "If its capability io is IN or BOTH, Max output (voltage * amp) per tick.",
+    "config.definition.trait.gtm_energy_container.output_amperage.tooltip": "If its capability io is IN or BOTH, Max output eu (voltage * amp) per tick.",
     "config.definition.trait.gtm_energy_container.ui_container_hover": "Stored: %d / %d eu",
     "config.definition.trait.gtm_energy_container.fancy_renderer": "Fancy GTM Energy Container Renderer",
     "config.definition.trait.gtm_energy_container.fancy_renderer.tooltip": "Allow you render stored energy in the world. (e.g. Energy Container).",
@@ -497,7 +495,6 @@
     "config.definition.trait.mek_heat_container.inverse_conduction": "Inverse Conduction",
     "config.definition.trait.mek_heat_container.inverse_conduction.tooltip": "Returns the inverse conduction coefficient of a given capacitor. This value defines how much heat is allowed to be dissipated. The larger the number the less heat can dissipate. The trade-off is that it also allows for lower amounts of heat to be inserted.",
     "config.definition.trait.mek_heat_container.ui_container_hover": "Stored: %d / %d heat",
-
 
     "config.definition.trait.fancy_renderer.filters": "State Filters",
     "config.definition.trait.fancy_renderer.filters.tooltip": "The fancy renderer only work with specific machine states",
@@ -744,7 +741,6 @@
     "editor.machine.multiblock.area_panel.generatePattern.button.1.info": "Successful! Please check the Shape Info Tab.",
     "editor.machine.multiblock.area_panel.generatePattern.tips": "Generate the pattern / shape info based on the area.",
 
-
     "editor.machine.multiblock.multiblock_pattern.layer": "Pattern Layer",
     "editor.machine.multiblock.multiblock_pattern.layer_direction": "Layer Direction",
     "editor.machine.multiblock.multiblock_pattern.set_as_controller": "set as controller",
@@ -761,7 +757,7 @@
     "geckolib_renderer.scale_height": "Scale Height",
     "geckolib_renderer.use_glowing_layer": "Use GLowing Layer",
     "geckolib_renderer.use_glowing_layer.tips.0": "Enable it to enable glowing layer for emissive texture.",
-    "geckolib_renderer.use_glowing_layer.tips.1": "Check KubeJS wiki for more details.",
+    "geckolib_renderer.use_glowing_layer.tips.1": "Check Geckolib wiki for more details.",
     "geckolib_renderer.use_translucent": "Use Translucent",
     "geckolib_renderer.use_translucent.tips": "use the translucent renderType to support transparent textures",
     "geckolib_renderer.use_entity_gui_lighting": "Use Entity GUI Lighting",
@@ -805,9 +801,9 @@
     "MachineEvent.MachineNeighborChangedEvent": "Neighbor Changed Event",
     "MachineEvent.MachineNeighborChangedEvent.tips": "The event will be triggered when the neighbor block changed.",
     "MachineEvent.MachineOnRecipeWaitingEvent": "On Recipe Waiting Event",
-    "MachineEvent.MachineOnRecipeWaitingEvent.tips": "The event will be triggered when the recipe process is waiting every tich.",
+    "MachineEvent.MachineOnRecipeWaitingEvent.tips": "The event will be triggered when the recipe process is waiting every tick.",
     "MachineEvent.MachineOnRecipeWorkingEvent": "On Recipe Working Event",
-    "MachineEvent.MachineOnRecipeWorkingEvent.tips": "The event will be triggered when the recipe process is working every tich. Cancel the event will stop the recipe process.",
+    "MachineEvent.MachineOnRecipeWorkingEvent.tips": "The event will be triggered when the recipe process is working every tick. Cancel the event will stop the recipe process.",
     "MachineEvent.MachineOpenUIEvent": "Open UI Event",
     "MachineEvent.MachineOpenUIEvent.tips": "The event will be triggered when the machine UI is opened. Cancel the event will stop the UI opening.",
     "MachineEvent.MachinePlacedEvent": "Placed Event",
@@ -826,10 +822,10 @@
     "MachineEvent.Multiblock.MachineStructureInvalidEvent.tips": "The event will be triggered when the multiblock structure is invalid.",
     "MachineEvent.MachineOnLoadEvent": "On Load Event",
     "MachineEvent.MachineOnLoadEvent.tips": "The event will be triggered when the machine is loaded.",
-    "MachineEvent.MachineFuelRecipeModifyEvent" : "Fuel Recipe Modify Event",
-    "MachineEvent.MachineFuelRecipeModifyEvent.tips" : "Cancel the event will skip trying of this fuel recipe.",
-    "MachineEvent.MachineFuelBurningFinishEvent" : "Fuel Burning Finish Event",
-    "MachineEvent.MachineFuelBurningFinishEvent.tips" : "The event will be triggered when a fuel recipe is finish burning, and before search next fuel recipe.",
+    "MachineEvent.MachineFuelRecipeModifyEvent": "Fuel Recipe Modify Event",
+    "MachineEvent.MachineFuelRecipeModifyEvent.tips": "Cancel the event will skip trying of this fuel recipe.",
+    "MachineEvent.MachineFuelBurningFinishEvent": "Fuel Burning Finish Event",
+    "MachineEvent.MachineFuelBurningFinishEvent.tips": "The event will be triggered when a fuel recipe is finish burning, and before search next fuel recipe.",
     "MachineEvent.MachineRecipeModifyEvent.Before": "Before Recipe Modify Event",
     "MachineEvent.MachineRecipeModifyEvent.Before.tips": "The event will be triggered before the recipe is modified by the recipe modifiers. Cancel the event will stop the modification.",
     "MachineEvent.MachineRecipeModifyEvent.After": "After Recipe Modify Event",
@@ -854,5 +850,4 @@
     "pattern_preview.page": "switch pages",
     "pattern_preview.layer": "switch layers",
     "pattern_preview.formed": "switch structure formed"
-
 }
