@@ -25,7 +25,7 @@ public class AuraHandlerTraitDefinition extends RecipeCapabilityTraitDefinition 
 
     @Getter
     @Setter
-    @Configurable(name = "config.definition.trait.aura_handler.radius", tips = "config.definition.trait.aura_handler.radius.tips")
+    @Configurable(name = "config.definition.trait.aura_handler.radius", tips = "config.definition.trait.aura_handler.radius.tooltip")
     @NumberRange(range = {1, 64})
     private int radius = 20;
 
