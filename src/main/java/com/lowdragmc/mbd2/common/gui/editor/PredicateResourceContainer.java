@@ -68,13 +68,14 @@ public class PredicateResourceContainer extends ResourceContainer<SimplePredicat
                 if (s == null || selected.equals(s)) return;
                 var stored =  resource.removeResource(selected);
                 resource.addResource(s, stored);
+                var prevName = selected; // selected is set to null on rebuild
                 reBuild();
                 if (Editor.INSTANCE.getCurrentProject() instanceof MultiblockMachineProject project) {
                     boolean changed = false;
                     for (var x : project.getBlockPlaceholders()) {
                         for (var y : x) {
                             for (var z : y) {
-                                if (z.getPredicates().remove(selected)) {
+                                if (z.getPredicates().remove(prevName)) {
                                     z.getPredicates().add(s);
                                     changed = true;
                                 }
