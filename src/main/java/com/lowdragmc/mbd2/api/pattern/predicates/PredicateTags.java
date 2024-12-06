@@ -5,6 +5,7 @@ import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ArrayConfiguratorGroup;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.ConfiguratorGroup;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.SearchComponentConfigurator;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import lombok.NoArgsConstructor;
 import net.minecraft.core.Holder;
@@ -23,6 +24,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class PredicateTags extends SimplePredicate {
 
+    @Persisted
     protected ResourceLocation[] tags = new ResourceLocation[] {};
 
     public PredicateTags(ResourceLocation... tags) {
