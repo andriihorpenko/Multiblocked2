@@ -672,6 +672,7 @@
 
     "recipe.capability.natures_aura.name": "自然灵气 - 灵气",
     "recipe.capability.natures_aura.aura": "灵气：%s",
+    "recipe.capability.natures_aura.aura_name": "灵气",
 
     "recipe.capability.pneumatic_pressure_air.name": "气动工艺 - 压力",
     "recipe.capability.pneumatic_pressure_air.type": "类型",

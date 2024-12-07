@@ -672,6 +672,7 @@
 
     "recipe.capability.natures_aura.name": "Nature's Aura Capability",
     "recipe.capability.natures_aura.aura": "Nature's Aura: %s",
+    "recipe.capability.natures_aura.aura_name": "Nature's Aura",
 
     "recipe.capability.pneumatic_pressure_air.name": "Pneumatic Pressure Air Capability",
     "recipe.capability.pneumatic_pressure_air.type": "Type",
