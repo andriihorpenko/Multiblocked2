@@ -58,15 +58,17 @@ public class MekanismHeatCondition extends RecipeCondition {
     public boolean test(@Nonnull MBDRecipe recipe, @Nonnull RecipeLogic recipeLogic) {
         var proxy = recipeLogic.machine.getRecipeCapabilitiesProxy();
         var toCheck = new ArrayList<IRecipeHandler<?>>();
-        if (recipe.inputs.containsKey(MekanismHeatRecipeCapability.CAP)) {
+        if (recipe.inputs.containsKey(MekanismHeatRecipeCapability.CAP) && proxy.contains(IO.IN, MekanismHeatRecipeCapability.CAP)) {
             var inputs = proxy.get(IO.IN, MekanismHeatRecipeCapability.CAP);
             toCheck.addAll(inputs);
         }
-        if (recipe.outputs.containsKey(MekanismHeatRecipeCapability.CAP)) {
+        if (recipe.outputs.containsKey(MekanismHeatRecipeCapability.CAP) && proxy.contains(IO.OUT, MekanismHeatRecipeCapability.CAP)) {
             var outputs = proxy.get(IO.OUT, MekanismHeatRecipeCapability.CAP);
             toCheck.addAll(outputs);
         }
-        toCheck.addAll(proxy.get(IO.BOTH, MekanismHeatRecipeCapability.CAP));
+        if (proxy.contains(IO.BOTH, MekanismHeatRecipeCapability.CAP)) {
+            toCheck.addAll(proxy.get(IO.BOTH, MekanismHeatRecipeCapability.CAP));
+        }
         for (IRecipeHandler<?> handler : toCheck) {
             if (handler instanceof MekHeatCapabilityTrait.HeatRecipeHandler heatRecipeHandler) {
                 var heat = ((MekHeatCapabilityTrait)heatRecipeHandler.trait).getContainer().getTemperature(0);

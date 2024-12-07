@@ -1,20 +1,14 @@
 package com.lowdragmc.mbd2.api.blockentity;
 
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,30 +21,10 @@ import javax.annotation.Nullable;
  * @implNote It is used to replace the non mbd blocks that do not need to be rendered after forming in the multiblock structure,
  * and to restore the original blocks when the structure invalid.
  */
-public class ProxyPartBlockEntity extends BlockEntity implements IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IManaged {
-    @Getter
-    private final FieldManagedStorage rootStorage = new FieldManagedStorage(this);
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ProxyPartBlockEntity.class);
-
+public class ProxyPartBlockEntity extends BlockEntity {
     @Getter
     @Setter
     private boolean isAsyncSyncing = false;
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public IManagedStorage getSyncStorage() {
-        return rootStorage;
-    }
-
-    @Override
-    public void onChanged() {
-        setChanged();
-    }
 
     public static RegistryObject<BlockEntityType<ProxyPartBlockEntity>> TYPE;
     public static BlockEntityType<?> TYPE() {
@@ -58,16 +32,12 @@ public class ProxyPartBlockEntity extends BlockEntity implements IAsyncAutoSyncB
     }
 
     @Nullable
-    @Persisted
     @Getter
     private BlockState originalState;
     @Nullable
-    @Persisted
     @Getter
     private CompoundTag originalData;
     @Nullable
-    @DescSynced
-    @Persisted
     @Getter
     private BlockPos controllerPos;
 
@@ -76,24 +46,18 @@ public class ProxyPartBlockEntity extends BlockEntity implements IAsyncAutoSyncB
     }
 
     public void setControllerData(BlockPos controllerPos) {
-        if (level instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, () -> {
-                this.controllerPos = controllerPos;
-            }));
+        if (this.controllerPos != controllerPos) {
+            this.controllerPos = controllerPos;
+            sync();
         }
     }
 
     public void setOriginalData(BlockState originalState, CompoundTag originalData, BlockPos controllerPos) {
-        if (level instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, () -> {
-                this.originalState = originalState;
-                this.originalData = originalData;
-                this.controllerPos = controllerPos;
-            }));
-        } else if (level instanceof DummyWorld) {
+        if (this.originalState != originalState || this.originalData != originalData || this.controllerPos != controllerPos) {
             this.originalState = originalState;
             this.originalData = originalData;
             this.controllerPos = controllerPos;
+            sync();
         }
     }
 
@@ -109,6 +73,70 @@ public class ProxyPartBlockEntity extends BlockEntity implements IAsyncAutoSyncB
                     blockEntity.load(originalData);
                 }
             }
+        }
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (originalState != null) {
+            tag.put("originalState", NbtUtils.writeBlockState(originalState));
+        }
+
+        if (originalData != null) {
+            tag.put("originalData", originalData);
+        }
+
+        if (controllerPos != null) {
+            tag.put("controllerPos", NbtUtils.writeBlockPos(controllerPos));
+        }
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+
+        if (tag.contains("originalState")) {
+            originalState = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("originalState"));
+        }
+
+        if (tag.contains("originalData")) {
+            originalData = tag.getCompound("originalData");
+        }
+
+        if (tag.contains("controllerPos")) {
+            controllerPos = NbtUtils.readBlockPos(tag.getCompound("controllerPos"));
+        }
+
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        var tag = new CompoundTag();
+
+        if (originalState != null) {
+            tag.put("originalState", NbtUtils.writeBlockState(originalState));
+        }
+
+        if (originalData != null) {
+            tag.put("originalData", originalData);
+        }
+
+        if (controllerPos != null) {
+            tag.put("controllerPos", NbtUtils.writeBlockPos(controllerPos));
+        }
+
+        return tag;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    public void sync() {
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 11);
         }
     }
 

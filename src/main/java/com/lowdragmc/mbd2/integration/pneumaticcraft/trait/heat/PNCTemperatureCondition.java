@@ -57,18 +57,20 @@ public class PNCTemperatureCondition extends RecipeCondition {
     public boolean test(@Nonnull MBDRecipe recipe, @Nonnull RecipeLogic recipeLogic) {
         var proxy = recipeLogic.machine.getRecipeCapabilitiesProxy();
         var toCheck = new ArrayList<IRecipeHandler<?>>();
-        if (recipe.inputs.containsKey(PNCHeatRecipeCapability.CAP)) {
+        if (recipe.inputs.containsKey(PNCHeatRecipeCapability.CAP) && proxy.contains(IO.IN, PNCHeatRecipeCapability.CAP)) {
             var inputs = proxy.get(IO.IN, PNCHeatRecipeCapability.CAP);
             toCheck.addAll(inputs);
         }
-        if (recipe.outputs.containsKey(PNCHeatRecipeCapability.CAP)) {
+        if (recipe.outputs.containsKey(PNCHeatRecipeCapability.CAP) && proxy.contains(IO.OUT, PNCHeatRecipeCapability.CAP)) {
             var outputs = proxy.get(IO.OUT, PNCHeatRecipeCapability.CAP);
             toCheck.addAll(outputs);
         }
-        toCheck.addAll(proxy.get(IO.BOTH, PNCHeatRecipeCapability.CAP));
+        if (proxy.contains(IO.BOTH, PNCHeatRecipeCapability.CAP)) {
+            toCheck.addAll(proxy.get(IO.BOTH, PNCHeatRecipeCapability.CAP));
+        }
         for (IRecipeHandler<?> handler : toCheck) {
             if (handler instanceof PNCHeatExchangerTrait.HeatRecipeHandler heatRecipeHandler) {
-                var temp = ((PNCHeatExchangerTrait)heatRecipeHandler.trait).getHandler().getTemperature();
+                var temp = ((PNCHeatExchangerTrait)heatRecipeHandler.trait).getHandler().getTemperature() - 273;
                 if (temp >= minTemperature && temp <= maxTemperature) {
                     return true;
                 }

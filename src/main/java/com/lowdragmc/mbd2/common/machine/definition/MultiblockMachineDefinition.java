@@ -1,5 +1,6 @@
 package com.lowdragmc.mbd2.common.machine.definition;
 
+import com.google.common.base.Suppliers;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.mbd2.MBD2;
 import com.lowdragmc.mbd2.api.blockentity.IMachineBlockEntity;
@@ -13,6 +14,7 @@ import com.lowdragmc.mbd2.common.machine.definition.config.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -128,25 +130,26 @@ public class MultiblockMachineDefinition extends MBDMachineDefinition {
             var blockPattern = createBlockPattern(placeholders, layerAxis, aisleRepetitions, this);
             blockPatternFactory(controller -> blockPattern);
             // setup shape info
-            var shapeInfos = new ArrayList<>(projectTag.getList("shape_infos", Tag.TAG_COMPOUND).stream()
-                    .map(CompoundTag.class::cast)
-                    .map(MultiblockShapeInfo::loadFromTag)
-                    .toList());
-            if (shapeInfos.isEmpty()) {
-                // generate builtin shape info from pattern
-                var repetition = Arrays.stream(aisleRepetitions).mapToInt(range -> range[0]).toArray();
-                shapeInfos.add(new MultiblockShapeInfo(blockPattern.getPreview(repetition)));
-                for (int layer = 0; layer < aisleRepetitions.length; layer++) {
-                    var range = aisleRepetitions[layer];
-                    for (int i = range[0] + 1; i <= range[1]; i++) {
-                        repetition[layer] = i;
-                        shapeInfos.add(new MultiblockShapeInfo(blockPattern.getPreview(repetition)));
-                        repetition[layer] = range[0];
+            shapeInfoFactory(Util.memoize(definition -> {
+                var shapeInfos = new ArrayList<>(projectTag.getList("shape_infos", Tag.TAG_COMPOUND).stream()
+                        .map(CompoundTag.class::cast)
+                        .map(MultiblockShapeInfo::loadFromTag)
+                        .toList());
+                if (shapeInfos.isEmpty()) {
+                    // generate builtin shape info from pattern
+                    var repetition = Arrays.stream(aisleRepetitions).mapToInt(range -> range[0]).toArray();
+                    shapeInfos.add(new MultiblockShapeInfo(blockPattern.getPreview(repetition)));
+                    for (int layer = 0; layer < aisleRepetitions.length; layer++) {
+                        var range = aisleRepetitions[layer];
+                        for (int i = range[0] + 1; i <= range[1]; i++) {
+                            repetition[layer] = i;
+                            shapeInfos.add(new MultiblockShapeInfo(blockPattern.getPreview(repetition)));
+                            repetition[layer] = range[0];
+                        }
                     }
                 }
-            }
-            var shapes = shapeInfos.toArray(new MultiblockShapeInfo[0]);
-            shapeInfoFactory(definition -> shapes);
+                return shapeInfos.toArray(new MultiblockShapeInfo[0]);
+            }));
         });
         return this;
     }

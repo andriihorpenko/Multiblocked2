@@ -4,16 +4,22 @@ import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.mbd2.api.blockentity.ProxyPartBlockEntity;
 import com.lowdragmc.mbd2.client.renderer.ProxyPartRenderer;
-import com.lowdragmc.mbd2.common.machine.MBDMultiblockMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,13 +36,24 @@ public class ProxyPartBlock extends Block implements EntityBlock, IBlockRenderer
 
     @Override
     public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.INVISIBLE;
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ProxyPartBlockEntity(pos, state);
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+        // drop the original block's drops
+        var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+        if (context.getParamOrNull(LootContextParams.BLOCK_ENTITY) instanceof ProxyPartBlockEntity blockEntity &&
+                blockEntity.getOriginalState() != null) {
+            return blockEntity.getOriginalState().getDrops(builder);
+        }
+        return super.getDrops(state, builder);
     }
 
     @Override
@@ -51,6 +68,14 @@ public class ProxyPartBlock extends Block implements EntityBlock, IBlockRenderer
                 }
             }
         }
+    }
+
+    @Override
+    public float getDestroyProgress(BlockState pState, Player pPlayer, BlockGetter pLevel, BlockPos pPos) {
+        if (pLevel.getBlockEntity(pPos) instanceof ProxyPartBlockEntity blockEntity && blockEntity.getOriginalState() != null) {
+            return blockEntity.getOriginalState().getDestroyProgress(pPlayer, pLevel, pPos);
+        }
+        return 0;
     }
 
     /**
