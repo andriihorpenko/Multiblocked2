@@ -32,7 +32,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
         @Override
         public @Nullable ResourceLocation getId() {
-            return definition.id();
+            return new ResourceLocation(definition.id().getNamespace(), "/" + definition.id().getPath());
         }
     }
 
