@@ -232,7 +232,7 @@ public class MultiblockPatternPanel extends WidgetGroup {
                 intersection.addAll(values);
                 notifyUpdate.run();
             });
-            predicatesConfigurator.setOnReorder((index, value) -> predicatesConfigurator.notifyListUpdate());
+            predicatesConfigurator.setOnReorder((index, value) -> {});
             father.addConfigurators(predicatesConfigurator);
         }
     }
